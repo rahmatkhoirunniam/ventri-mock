@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Kandang — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* sidebar */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        .nav .bdg {
+            background: var(--rust);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* main */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tb-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .tb-sub {
+            font-size: 12px;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            margin-top: 1px;
+        }
+
+        .tb-right {
+            display: flex;
+            gap: 9px;
+        }
+
+        /* buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: .13s;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--bdr2);
+            color: var(--ink);
+        }
+
+        .btn-solid {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .btn-solid:hover {
+            background: #2e5640;
+        }
+
+        /* content */
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+        }
+
+        /* FILTERS SECTION */
+        .filter-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr auto;
+            gap: 16px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 16px 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .03);
+        }
+
+        .fg-filter {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .fg-filter label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--ink2);
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .fg-filter input,
+        .fg-filter select {
+            padding: 9px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--ink);
+            background: var(--surf);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+            height: 38px;
+        }
+
+        .fg-filter input:focus,
+        .fg-filter select:focus {
+            border-color: var(--sage);
+        }
+
+        .btn-reset {
+            background: none;
+            border: none;
+            color: var(--ink2);
+            font-size: 13px;
+            cursor: pointer;
+            padding: 10px 14px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            transition: .12s;
+        }
+
+        .btn-reset:hover {
+            color: var(--sage);
+        }
+
+        /* TABS */
+        .status-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stab {
+            padding: 7px 18px;
+            border: 1px solid var(--bdr);
+            border-radius: 6px;
+            background: var(--surf);
+            color: var(--ink2);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: .12s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .stab:hover {
+            border-color: var(--bdr2);
+            color: var(--ink);
+        }
+
+        .stab.active {
+            background: var(--sage);
+            border-color: var(--sage);
+            color: #fff;
+        }
+
+        /* COOP GRID */
+        .coop-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .coop-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .coop-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .coop-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+            transition: .15s;
+        }
+
+        .coop-card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .08);
+            transform: translateY(-1px);
+        }
+
+        .coop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .coop-title-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .coop-name {
+            font-family: 'Fraunces', serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        .coop-loc {
+            font-size: 11.5px;
+            color: var(--ink2);
+            margin-top: 3px;
+        }
+
+        .badge-status {
+            font-size: 9.5px;
+            font-weight: 600;
+            padding: 2.5px 7px;
+            border-radius: 4px;
+            letter-spacing: .3px;
+        }
+
+        .badge-status.aktif {
+            background: #e0f5f0;
+            color: #1a6b55;
+        }
+
+        .badge-status.terhapus {
+            background: var(--surf3);
+            color: var(--ink2);
+        }
+
+        /* Periode Aktif Box */
+        .period-box {
+            background: var(--surf2);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+            border: 1px solid var(--bdr);
+        }
+
+        .pb-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .pb-label {
+            font-size: 8.5px;
+            font-weight: 600;
+            letter-spacing: .5px;
+            color: var(--sky);
+            text-transform: uppercase;
+        }
+
+        .pb-date {
+            font-size: 9px;
+            background: var(--sky-l);
+            color: var(--sky);
+            padding: 1.5px 5px;
+            border-radius: 3px;
+            font-family: 'DM Mono', monospace;
+            font-weight: 500;
+        }
+
+        .pb-desc {
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 12.5px;
+        }
+
+        /* Density Section */
+        .density-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .density-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 12px;
+            color: var(--ink2);
+        }
+
+        .density-title {
+            font-weight: 500;
+        }
+
+        .density-vals {
+            font-family: 'Fraunces', serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .density-bar-track {
+            height: 6px;
+            background: var(--surf3);
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, .03);
+        }
+
+        .density-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: var(--sage);
+            transition: width .4s ease;
+        }
+
+        .density-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--ink2);
+            margin-top: 2px;
+        }
+
+        .dots-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot-val {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .d-circle {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .d-circle.sehat {
+            background: var(--sage);
+        }
+
+        .d-circle.sakit {
+            background: var(--amber);
+        }
+
+        .d-circle.mati {
+            background: var(--rust);
+        }
+
+        .capacity-pct {
+            font-weight: 600;
+            font-size: 9.5px;
+            color: var(--ink2);
+            text-transform: uppercase;
+        }
+
+        /* Specs section */
+        .specs-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-top: 1px solid var(--bdr);
+            border-bottom: 1px solid var(--bdr);
+            padding: 8px 0;
+            gap: 12px;
+            margin: 2px 0;
+        }
+
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .spec-lbl {
+            font-size: 9.5px;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .spec-val {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        /* Occupants section */
+        .occupants-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .occ-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--ink2);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 2px;
+        }
+
+        .occ-card {
+            background: #faf9f5;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 9px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: .1s;
+        }
+
+        .occ-card:hover {
+            border-color: var(--bdr2);
+            background: #fdfdfc;
+        }
+
+        .occ-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .occ-name {
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 12.5px;
+        }
+
+        .occ-species {
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .occ-metric-row {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 12px;
+            font-size: 11px;
+            color: var(--ink2);
+        }
+
+        .occ-sub-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .occ-metric-lbl {
+            font-size: 8.5px;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: .3px;
+        }
+
+        .occ-metric-val {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .mini-dot-list {
+            display: inline-flex;
+            gap: 4px;
+            font-size: 9.5px;
+            font-weight: 500;
+            color: var(--ink2);
+            font-family: 'DM Mono', monospace;
+        }
+
+        .mini-dot-badge {
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 9px;
+        }
+
+        .md-sehat {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .md-sakit {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+
+        .md-mati {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+
+        /* CARD ACTION BUTTONS (Sesuai Gambar Mockup Baru) */
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 14px;
+            border-top: 1px solid var(--bdr);
+            padding-top: 14px;
+        }
+
+        .btn-action-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            color: #fff;
+            background: var(--sage);
+            padding: 10px 16px;
+            cursor: pointer;
+            text-align: center;
+            transition: .13s;
+            font-family: 'DM Sans', sans-serif;
+            gap: 6px;
+        }
+
+        .btn-action-primary:hover {
+            background: #2e5640;
+        }
+
+        .btn-action-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            border: 1px solid var(--sky);
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--sky);
+            background: transparent;
+            padding: 9px 16px;
+            cursor: pointer;
+            text-align: center;
+            transition: .13s;
+            font-family: 'DM Sans', sans-serif;
+            gap: 6px;
+        }
+
+        .btn-action-secondary:hover {
+            background: var(--sky-l);
+        }
+
+        .action-row-bottom {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-edit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--ink2);
+            background: transparent;
+            padding: 9px 16px;
+            cursor: pointer;
+            transition: .13s;
+            font-family: 'DM Sans', sans-serif;
+            gap: 6px;
+        }
+
+        .btn-edit:hover {
+            border-color: var(--bdr2);
+            color: var(--ink);
+            background: var(--surf2);
+        }
+
+        .btn-delete {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 38px;
+            border: 1px solid #fca5a5;
+            border-radius: 8px;
+            background: #fff5f5;
+            color: var(--rust);
+            cursor: pointer;
+            transition: .13s;
+            font-size: 14px;
+        }
+
+        .btn-delete:hover {
+            background: var(--rust-l);
+            border-color: var(--rust);
+        }
+
+        /* LIVE MONITOR TELEMETRY UI */
+        .telemetry-live-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tele-live-card {
+            background: var(--surf2);
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .tele-live-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--ink2);
+            margin-bottom: 4px;
+        }
+
+        .tele-live-value {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .tele-live-status {
+            font-size: 10.5px;
+            font-weight: 600;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .tele-good { color: var(--sage); }
+        .tele-warn { color: var(--amber); }
+
+        .hardware-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .hw-card {
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            background: var(--surf);
+            cursor: pointer;
+            transition: .13s;
+            user-select: none;
+        }
+
+        .hw-card.active {
+            border-color: var(--sage);
+            background: var(--sage-l);
+        }
+
+        .hw-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .hw-name {
+            font-weight: 600;
+            font-size: 11.5px;
+            color: var(--ink);
+        }
+
+        .hw-status {
+            font-size: 10px;
+            margin-top: 2px;
+            font-weight: 500;
+            color: var(--ink2);
+        }
+
+        .hw-card.active .hw-status {
+            color: var(--sage);
+            font-weight: 600;
+        }
+
+        /* empty state */
+        .empty-state {
+            grid-column: 1 / -1;
+            background: var(--surf);
+            border: 1px dashed var(--bdr2);
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            color: var(--ink2);
+        }
+
+        .empty-state-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        /* modal */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 6, 2, .5);
+            z-index: 200;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 32px 20px;
+            overflow-y: auto;
+        }
+
+        .overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surf);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .18);
+            animation: up .2s ease;
+            margin: auto;
+        }
+
+        @keyframes up {
+            from {
+                opacity: 0;
+                transform: translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .mh {
+            padding: 20px 24px 14px;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .mt {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ms {
+            font-size: 12px;
+            color: var(--ink2);
+            margin-top: 3px;
+        }
+
+        .mclose {
+            background: var(--surf2);
+            border: none;
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink2);
+        }
+
+        .mclose:hover {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+
+        .mb {
+            padding: 20px 24px;
+        }
+
+        .mfooter {
+            padding: 14px 24px;
+            border-top: 1px solid var(--bdr);
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+        }
+
+        /* forms */
+        .fsec {
+            margin-bottom: 18px;
+        }
+
+        .fsec-title {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .frow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .fg {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .fg label {
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--ink2);
+        }
+
+        .fg label .req {
+            color: var(--rust);
+        }
+
+        .fg input,
+        .fg select {
+            padding: 8px 11px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--ink);
+            background: var(--surf);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+        }
+
+        .fg input:focus,
+        .fg select:focus {
+            border-color: var(--sage);
+        }
+
+        /* Log / Record history */
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 8px;
+            border: 1px solid var(--bdr);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .log-table th {
+            background: var(--surf2);
+            padding: 8px 10px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 9px;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .log-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .log-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo">
+            <div class="sb-mark">🐓 RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav active" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span
+                    class="bdg">3</span></div>
+            <div class="nav"><span class="ico">🏭</span><span class="lbl">Stok per Gudang</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Monitoring Kandang</div>
+                <div class="tb-sub">Kelola data kandang dan pantau kepadatan hewan</div>
+            </div>
+            <div class="tb-right">
+                <button class="btn btn-solid" onclick="openModal('add-kandang-modal')">＋ Tambah Kandang</button>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- FILTERS PANEL -->
+            <div class="filter-container">
+                <div class="fg-filter">
+                    <label>PENCARIAN</label>
+                    <input type="text" id="filter-search" oninput="applyFilters()" placeholder="Cari nama atau lokasi kandang...">
+                </div>
+                <div class="fg-filter">
+                    <label>STATUS</label>
+                    <select id="filter-status" onchange="applyFilters()">
+                        <option value="All">Semua Status</option>
+                        <option value="Aktif">Aktif</option>
+                        <option value="Terhapus">Terhapus</option>
+                    </select>
+                </div>
+                <div class="fg-filter">
+                    <label>TIPE</label>
+                    <select id="filter-type" onchange="applyFilters()">
+                        <option value="All">Semua Tipe</option>
+                        <option value="Battery Cage">Battery Cage</option>
+                        <option value="Free Range">Free Range</option>
+                        <option value="Deep Litter">Deep Litter</option>
+                    </select>
+                </div>
+                <div class="fg-filter">
+                    <label>SPESIES</label>
+                    <select id="filter-species" onchange="applyFilters()">
+                        <option value="All">Semua Spesies</option>
+                        <option value="Ayam Petelur">Ayam Petelur</option>
+                        <option value="Ayam Broiler">Ayam Broiler</option>
+                        <option value="Bebek">Bebek</option>
+                    </select>
+                </div>
+                <button class="btn-reset" onclick="resetFilters()">Reset</button>
+            </div>
+
+            <!-- CATEGORY TABS -->
+            <div class="status-tabs">
+                <button class="stab active" id="tab-aktif" onclick="setTab('Aktif')">Aktif</button>
+                <button class="stab" id="tab-terhapus" onclick="setTab('Terhapus')">Terhapus</button>
+            </div>
+
+            <!-- COOP GRID CONTAINER -->
+            <div class="coop-grid" id="coop-grid">
+                <!-- Injected dynamically by Javascript -->
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======== MODAL: TAMBAH KANDANG ======== -->
+    <div class="overlay" id="add-kandang-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt">Tambah Kandang Baru</div>
+                    <div class="ms">Daftarkan kandang baru ke dalam sistem monitoring.</div>
+                </div>
+                <button class="mclose" onclick="closeModal('add-kandang-modal')">✕</button>
+            </div>
+            <form id="add-kandang-form" onsubmit="submitKandang(event)">
+                <div class="mb">
+                    <div class="fsec">
+                        <div class="fsec-title">Informasi Kandang</div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Nama Kandang <span class="req">*</span></label>
+                                <input type="text" id="k-name" required placeholder="cth. Kandang ayam baru">
+                            </div>
+                            <div class="fg">
+                                <label>Lokasi <span class="req">*</span></label>
+                                <input type="text" id="k-loc" required placeholder="cth. Blok Timur / Utara">
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Tipe Kandang <span class="req">*</span></label>
+                                <select id="k-type" required>
+                                    <option value="">Pilih tipe</option>
+                                    <option value="Battery Cage">Battery Cage</option>
+                                    <option value="Free Range">Free Range</option>
+                                    <option value="Deep Litter">Deep Litter</option>
+                                </select>
+                            </div>
+                            <div class="fg">
+                                <label>Kapasitas (ekor) <span class="req">*</span></label>
+                                <input type="number" id="k-cap" required min="10" placeholder="cth. 500">
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Spesies Utama <span class="req">*</span></label>
+                                <select id="k-species" required>
+                                    <option value="">Pilih spesies</option>
+                                    <option value="Ayam Petelur">Ayam Petelur</option>
+                                    <option value="Ayam Broiler">Ayam Broiler</option>
+                                    <option value="Bebek">Bebek</option>
+                                </select>
+                            </div>
+                            <div class="fg">
+                                <label>Periode Aktif <span class="req">*</span></label>
+                                <input type="text" id="k-period" required placeholder="cth. sss / Test">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mfooter">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('add-kandang-modal')">Batal</button>
+                    <button type="submit" class="btn btn-solid">Simpan Kandang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======== MODAL: EDIT KANDANG ======== -->
+    <div class="overlay" id="edit-kandang-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt">Edit Informasi Kandang</div>
+                    <div class="ms">Perbarui data spesifikasi dan lokasi kandang.</div>
+                </div>
+                <button class="mclose" onclick="closeModal('edit-kandang-modal')">✕</button>
+            </div>
+            <form id="edit-kandang-form" onsubmit="submitEditKandang(event)">
+                <input type="hidden" id="edit-k-id">
+                <div class="mb">
+                    <div class="fsec">
+                        <div class="fsec-title">Detail Kandang</div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Nama Kandang <span class="req">*</span></label>
+                                <input type="text" id="edit-k-name" required>
+                            </div>
+                            <div class="fg">
+                                <label>Lokasi <span class="req">*</span></label>
+                                <input type="text" id="edit-k-loc" required>
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Tipe Kandang <span class="req">*</span></label>
+                                <select id="edit-k-type" required>
+                                    <option value="Battery Cage">Battery Cage</option>
+                                    <option value="Free Range">Free Range</option>
+                                    <option value="Deep Litter">Deep Litter</option>
+                                </select>
+                            </div>
+                            <div class="fg">
+                                <label>Kapasitas (ekor) <span class="req">*</span></label>
+                                <input type="number" id="edit-k-cap" required min="10">
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Spesies Utama <span class="req">*</span></label>
+                                <select id="edit-k-species" required>
+                                    <option value="Ayam Petelur">Ayam Petelur</option>
+                                    <option value="Ayam Broiler">Ayam Broiler</option>
+                                    <option value="Bebek">Bebek</option>
+                                </select>
+                            </div>
+                            <div class="fg">
+                                <label>Periode Aktif <span class="req">*</span></label>
+                                <input type="text" id="edit-k-period" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mfooter">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('edit-kandang-modal')">Batal</button>
+                    <button type="submit" class="btn btn-solid">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======== MODAL: MONITOR KANDANG (LIVE IoT) ======== -->
+    <div class="overlay" id="monitor-iot-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt" id="iot-modal-title">Live Telemetri Kandang</div>
+                    <div class="ms">Pemantauan sensor IoT secara real-time dan panel kontrol peralatan.</div>
+                </div>
+                <button class="mclose" onclick="closeIotModal()">✕</button>
+            </div>
+            <div class="mb">
+                <div class="fsec-title">Sensor IoT Aktif</div>
+                
+                <div class="telemetry-live-grid">
+                    <div class="tele-live-card">
+                        <div class="tele-live-label">🌡️ Suhu Udara</div>
+                        <div class="tele-live-value" id="iot-temp">27.4 °C</div>
+                        <span class="tele-live-status tele-good">● Optimal</span>
+                    </div>
+                    <div class="tele-live-card">
+                        <div class="tele-live-label">💧 Kelembaban</div>
+                        <div class="tele-live-value" id="iot-hum">62 %</div>
+                        <span class="tele-live-status tele-good">● Optimal</span>
+                    </div>
+                    <div class="tele-live-card">
+                        <div class="tele-live-label">💨 Kadar Amonia</div>
+                        <div class="tele-live-value" id="iot-nh3">8 ppm</div>
+                        <span class="tele-live-status tele-good">● Sangat Aman</span>
+                    </div>
+                </div>
+
+                <div class="fsec-title" style="margin-top: 10px;">Kontrol Otomatisasi & Alat</div>
+                <div class="hardware-grid">
+                    <div class="hw-card active" id="hw-fan" onclick="toggleHw('hw-fan')">
+                        <div class="hw-icon">🌀</div>
+                        <div class="hw-name">Kipas Exhaust</div>
+                        <div class="hw-status">AKTIF (AUTO)</div>
+                    </div>
+                    <div class="hw-card" id="hw-heater" onclick="toggleHw('hw-heater')">
+                        <div class="hw-icon">💡</div>
+                        <div class="hw-name">Lampu Pemanas</div>
+                        <div class="hw-status">MATI</div>
+                    </div>
+                    <div class="hw-card active" id="hw-feeder" onclick="toggleHw('hw-feeder')">
+                        <div class="hw-icon">🌾</div>
+                        <div class="hw-name">Auto Feeder</div>
+                        <div class="hw-status">SIAGA</div>
+                    </div>
+                </div>
+                
+                <div style="font-size: 11.5px; color: var(--ink2); background: var(--surf2); padding: 10px; border-radius: 6px; border: 1px solid var(--bdr);">
+                    ℹ️ **Catatan Simulasi**: Nilai sensor di atas berfluktuasi secara dinamis menyerupai sensor IoT fisik di peternakan RayFarm. Klik pada kartu alat untuk mengontrol statusnya secara manual.
+                </div>
+            </div>
+            <div class="mfooter">
+                <button class="btn btn-solid" onclick="closeIotModal()">Tutup Pemantauan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL: DETAIL & PENCATATAN HARIAN ======== -->
+    <div class="overlay" id="detail-record-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt" id="record-modal-title">Detail & Catatan Harian</div>
+                    <div class="ms">Pencatatan harian kesehatan, log kematian, dan log konsumsi pakan.</div>
+                </div>
+                <button class="mclose" onclick="closeModal('detail-record-modal')">✕</button>
+            </div>
+            <form id="pencatatan-harian-form" onsubmit="submitDailyRecord(event)">
+                <input type="hidden" id="record-k-id">
+                <div class="mb" style="max-height: 450px; overflow-y: auto;">
+                    
+                    <div class="fsec">
+                        <div class="fsec-title">Form Entri Log Baru (Hari Ini)</div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Kondisi Hewan Sehat (ekor) <span class="req">*</span></label>
+                                <input type="number" id="rec-sehat" required min="0">
+                            </div>
+                            <div class="fg">
+                                <label>Kondisi Hewan Sakit (ekor) <span class="req">*</span></label>
+                                <input type="number" id="rec-sakit" required min="0">
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Kematian Hari Ini (ekor) <span class="req">*</span></label>
+                                <input type="number" id="rec-mati" required min="0">
+                            </div>
+                            <div class="fg">
+                                <label>Suhu Kandang Terukur (°C)</label>
+                                <input type="number" step="0.1" id="rec-temp" placeholder="cth. 27.5">
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-top: 4px;">
+                            <button type="submit" class="btn btn-solid" style="padding: 7px 14px; font-size: 12px;">Simpan Entri Harian</button>
+                        </div>
+                    </div>
+
+                    <div class="fsec">
+                        <div class="fsec-title">Riwayat Pencatatan Harian (5 Hari Terakhir)</div>
+                        <table class="log-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>🟢 Sehat</th>
+                                    <th>🟡 Sakit</th>
+                                    <th>🔴 Mati</th>
+                                    <th>🌡️ Suhu</th>
+                                </tr>
+                            </thead>
+                            <tbody id="record-history-body">
+                                <!-- Injected dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="mfooter">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('detail-record-modal')">Tutup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======== MODAL: KONFIRMASI HAPUS ======== -->
+    <div class="overlay" id="delete-confirm-modal">
+        <div class="modal" style="max-width: 420px;">
+            <div class="mh">
+                <div>
+                    <div class="mt">Arsipkan Kandang</div>
+                    <div class="ms">Konfirmasi pemindahan data.</div>
+                </div>
+                <button class="mclose" onclick="closeModal('delete-confirm-modal')">✕</button>
+            </div>
+            <div class="mb">
+                <p style="font-size: 13.5px; line-height: 1.5; color: var(--ink2);">
+                    Apakah Anda yakin ingin memindahkan **<span id="del-kandang-name" style="color:var(--ink); font-weight:600;">Kandang</span>** ke tab **Terhapus / Arsip**?
+                </p>
+                <p style="font-size: 11.5px; color: var(--rust); margin-top: 8px; font-weight: 500;">
+                    ⚠️ Kandang yang diarsipkan akan dinonaktifkan tetapi tetap dapat dilihat kembali di tab Kategori Terhapus.
+                </p>
+            </div>
+            <div class="mfooter">
+                <button class="btn btn-ghost" onclick="closeModal('delete-confirm-modal')">Batal</button>
+                <button class="btn btn-solid" style="background: var(--rust);" id="btn-confirm-delete-action">Ya, Arsipkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initial Coops mock dataset (aligned to user mockup)
+        let coops = [];
+        const storedCoops = localStorage.getItem('coops');
+        if (storedCoops) {
+            coops = JSON.parse(storedCoops);
+        } else {
+            coops = [
+                {
+                    id: 1,
+                name: "Kandang ayam ayaman",
+                status: "Aktif",
+                loc: "Lokasi tidak ditentukan",
+                periodName: "sss",
+                periodDate: "20/5/2026",
+                sehat: 3,
+                sakit: 0,
+                mati: 1,
+                capacity: 200,
+                type: "Battery Cage",
+                species: "Ayam Petelur",
+                history: [
+                    { date: "23/5/2026", sehat: 3, sakit: 0, mati: 0, temp: 27.2 },
+                    { date: "22/5/2026", sehat: 3, sakit: 0, mati: 1, temp: 27.8 },
+                    { date: "21/5/2026", sehat: 4, sakit: 0, mati: 0, temp: 28.0 }
+                ],
+                occupants: [
+                    {
+                        name: "Ayam petanjan",
+                        species: "AYAM PETELUR",
+                        hereQty: 0,
+                        hereSehat: 0,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 8029,
+                        totalSehat: 3,
+                        totalSakit: 2,
+                        totalMati: 0
+                    },
+                    {
+                        name: "xxxxxx",
+                        species: "AYAM PETELUR",
+                        hereQty: 2,
+                        hereSehat: 2,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 10,
+                        totalSehat: 0,
+                        totalSakit: 0,
+                        totalMati: 0
+                    },
+                    {
+                        name: "Test Satu",
+                        species: "AYAM PETELUR",
+                        hereQty: 1,
+                        hereSehat: 1,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 10,
+                        totalSehat: 5,
+                        totalSakit: 5,
+                        totalMati: 0
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "Kandang pejantan",
+                status: "Aktif",
+                loc: "Lokasi tidak ditentukan",
+                periodName: "Test",
+                periodDate: "1/6/2026",
+                sehat: 36,
+                sakit: 0,
+                mati: 1,
+                capacity: 1000,
+                type: "Battery Cage",
+                species: "Ayam Petelur",
+                history: [
+                    { date: "23/5/2026", sehat: 36, sakit: 0, mati: 0, temp: 26.9 },
+                    { date: "22/5/2026", sehat: 36, sakit: 0, mati: 1, temp: 27.5 }
+                ],
+                occupants: [
+                    {
+                        name: "Ayam petanjan",
+                        species: "AYAM PETELUR",
+                        hereQty: 76,
+                        hereSehat: 73,
+                        hereSakit: 3,
+                        hereMati: 22,
+                        totalQty: 8029,
+                        totalSehat: 3,
+                        totalSakit: 2,
+                        totalMati: 0
+                    },
+                    {
+                        name: "cccc",
+                        species: "AYAM PETELUR",
+                        hereQty: 197,
+                        hereSehat: 194,
+                        hereSakit: 3,
+                        hereMati: 1,
+                        totalQty: 211,
+                        totalSehat: 3,
+                        totalSakit: 1,
+                        totalMati: 0
+                    },
+                    {
+                        name: "Ayam Petelur Siap P...",
+                        species: "AYAM PETELUR",
+                        hereQty: 35,
+                        hereSehat: 35,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 123,
+                        totalSehat: 0,
+                        totalSakit: 0,
+                        totalMati: 0
+                    },
+                    {
+                        name: "Test Satu",
+                        species: "AYAM PETELUR",
+                        hereQty: 1,
+                        hereSehat: 1,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 10,
+                        totalSehat: 5,
+                        totalSakit: 5,
+                        totalMati: 0
+                    }
+                ]
+            },
+            {
+                id: 3,
+                name: "kandang a",
+                status: "Aktif",
+                loc: "kandang a",
+                periodName: "xxx",
+                periodDate: "16/3/2026",
+                sehat: 39,
+                sakit: 0,
+                mati: 6,
+                capacity: 1000,
+                type: "Battery Cage",
+                species: "Ayam Petelur",
+                history: [
+                    { date: "23/5/2026", sehat: 39, sakit: 0, mati: 1, temp: 28.1 },
+                    { date: "22/5/2026", sehat: 40, sakit: 0, mati: 5, temp: 29.0 }
+                ],
+                occupants: [
+                    {
+                        name: "ayam uye",
+                        species: "AYAM PETELUR",
+                        hereQty: 20,
+                        hereSehat: 20,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 155,
+                        totalSehat: 0,
+                        totalSakit: 0,
+                        totalMati: 0
+                    },
+                    {
+                        name: "DOC Layer Super",
+                        species: "AYAM PETELUR",
+                        hereQty: 10,
+                        hereSehat: 10,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 551,
+                        totalSehat: 0,
+                        totalSakit: 0,
+                        totalMati: 0
+                    },
+                    {
+                        name: "Test Satu",
+                        species: "AYAM PETELUR",
+                        hereQty: 6,
+                        hereSehat: 6,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 10,
+                        totalSehat: 5,
+                        totalSakit: 5,
+                        totalMati: 0
+                    },
+                    {
+                        name: "Test",
+                        species: "AYAM PETELUR",
+                        hereQty: 1,
+                        hereSehat: 1,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 13,
+                        totalSehat: 1,
+                        totalSakit: 1,
+                        totalMati: 0
+                    },
+                    {
+                        name: "Pep Test",
+                        species: "AYAM PETELUR",
+                        hereQty: 2,
+                        hereSehat: 2,
+                        hereSakit: 0,
+                        hereMati: 0,
+                        totalQty: 22,
+                        totalSehat: 1,
+                        totalSakit: 1,
+                        totalMati: 0
+                    }
+                ]
+            },
+            {
+                id: 4,
+                name: "Kandang B Lapis Lama",
+                status: "Terhapus",
+                loc: "Blok Timur",
+                periodName: "Periode Afkir Q1",
+                periodDate: "10/1/2026",
+                sehat: 0,
+                sakit: 0,
+                mati: 0,
+                capacity: 500,
+                type: "Battery Cage",
+                species: "Ayam Petelur",
+                history: [],
+                occupants: []
+            }
+        ];
+        }
+
+        let activeTab = 'Aktif';
+        let iotInterval = null;
+
+        function setTab(tabName) {
+            activeTab = tabName;
+            
+            // update classes of tabs
+            document.getElementById('tab-aktif').classList.toggle('active', tabName === 'Aktif');
+            document.getElementById('tab-terhapus').classList.toggle('active', tabName === 'Terhapus');
+            
+            // update status filter element automatically too
+            const statusFilter = document.getElementById('filter-status');
+            statusFilter.value = tabName;
+            
+            applyFilters();
+        }
+
+        // modal helpers
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.overlay').forEach(o => {
+            o.addEventListener('click', e => {
+                if (e.target === o) {
+                    if (o.id === 'monitor-iot-modal') {
+                        closeIotModal();
+                    } else {
+                        closeModal(o.id);
+                    }
+                }
+            });
+        });
+
+        // submit form
+        function submitKandang(event) {
+            event.preventDefault();
+            const name = document.getElementById('k-name').value;
+            const loc = document.getElementById('k-loc').value;
+            const type = document.getElementById('k-type').value;
+            const cap = parseInt(document.getElementById('k-cap').value) || 200;
+            const species = document.getElementById('k-species').value;
+            const period = document.getElementById('k-period').value;
+
+            const today = new Date();
+            const dateStr = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+
+            const newCoop = {
+                id: Date.now(),
+                name: name,
+                status: "Aktif",
+                loc: loc,
+                periodName: period,
+                periodDate: dateStr,
+                sehat: 0,
+                sakit: 0,
+                mati: 0,
+                capacity: cap,
+                type: type,
+                species: species,
+                history: [],
+                occupants: []
+            };
+
+            coops.unshift(newCoop);
+            closeModal('add-kandang-modal');
+            document.getElementById('add-kandang-form').reset();
+            
+            // Render
+            setTab('Aktif');
+        }
+
+        // reset filters
+        function resetFilters() {
+            document.getElementById('filter-search').value = '';
+            document.getElementById('filter-status').value = 'All';
+            document.getElementById('filter-type').value = 'All';
+            document.getElementById('filter-species').value = 'All';
+            
+            // Back to active tab
+            setTab('Aktif');
+        }
+
+        // apply filtering logic
+        function applyFilters() {
+            const query = document.getElementById('filter-search').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+            const typeFilter = document.getElementById('filter-type').value;
+            const speciesFilter = document.getElementById('filter-species').value;
+
+            // Sync status tabs if dropdown status changed
+            if (statusFilter !== 'All' && statusFilter !== activeTab) {
+                activeTab = statusFilter;
+                document.getElementById('tab-aktif').classList.toggle('active', activeTab === 'Aktif');
+                document.getElementById('tab-terhapus').classList.toggle('active', activeTab === 'Terhapus');
+            }
+
+            const filtered = coops.filter(c => {
+                // Search match
+                const matchSearch = c.name.toLowerCase().includes(query) || c.loc.toLowerCase().includes(query);
+                
+                // Status match (or 'All')
+                let matchStatus = true;
+                if (statusFilter === 'All') {
+                    // Match the activeTab if 'All' is selected in the select input, to match layout tabs
+                    matchStatus = c.status === activeTab;
+                } else {
+                    matchStatus = c.status === statusFilter;
+                }
+
+                // Type match
+                const matchType = typeFilter === 'All' || c.type === typeFilter;
+
+                // Species match
+                const matchSpecies = speciesFilter === 'All' || c.species === speciesFilter;
+
+                return matchSearch && matchStatus && matchType && matchSpecies;
+            });
+
+            renderCoopGrid(filtered);
+        }
+
+        // Action Handlers
+        // Delete Coop (Soft delete to archived category tab)
+        function confirmDeleteCoop(id) {
+            const coop = coops.find(c => c.id === id);
+            if (!coop) return;
+
+            document.getElementById('del-kandang-name').textContent = coop.name;
+            const confirmBtn = document.getElementById('btn-confirm-delete-action');
+            
+            // Re-assign action button click
+            confirmBtn.onclick = function() {
+                // If it is already archived, delete completely or toggle back. But mockup asks to move it
+                if (coop.status === 'Aktif') {
+                    coop.status = 'Terhapus';
+                } else {
+                    // Complete delete if archiving the archived
+                    coops = coops.filter(c => c.id !== id);
+                }
+                closeModal('delete-confirm-modal');
+                applyFilters();
+            };
+
+            openModal('delete-confirm-modal');
+        }
+
+        // Restore Coop from archived state back to active
+        function restoreCoop(id) {
+            const coop = coops.find(c => c.id === id);
+            if (coop) {
+                coop.status = 'Aktif';
+                applyFilters();
+            }
+        }
+
+        // Open Edit Modal
+        function openEditModal(id) {
+            const coop = coops.find(c => c.id === id);
+            if (!coop) return;
+
+            document.getElementById('edit-k-id').value = coop.id;
+            document.getElementById('edit-k-name').value = coop.name;
+            document.getElementById('edit-k-loc').value = coop.loc;
+            document.getElementById('edit-k-type').value = coop.type;
+            document.getElementById('edit-k-cap').value = coop.capacity;
+            document.getElementById('edit-k-species').value = coop.species;
+            document.getElementById('edit-k-period').value = coop.periodName;
+
+            openModal('edit-kandang-modal');
+        }
+
+        function submitEditKandang(event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('edit-k-id').value);
+            const name = document.getElementById('edit-k-name').value;
+            const loc = document.getElementById('edit-k-loc').value;
+            const type = document.getElementById('edit-k-type').value;
+            const cap = parseInt(document.getElementById('edit-k-cap').value) || 200;
+            const species = document.getElementById('edit-k-species').value;
+            const period = document.getElementById('edit-k-period').value;
+
+            const coop = coops.find(c => c.id === id);
+            if (coop) {
+                coop.name = name;
+                coop.loc = loc;
+                coop.type = type;
+                coop.capacity = cap;
+                coop.species = species;
+                coop.periodName = period;
+            }
+
+            closeModal('edit-kandang-modal');
+            applyFilters();
+        }
+
+        // Live IoT Monitor Simulation
+        function openMonitorModal(id) {
+            const coop = coops.find(c => c.id === id);
+            if (!coop) return;
+
+            document.getElementById('iot-modal-title').innerHTML = `🖥️ Live Telemetri — ${coop.name}`;
+            
+            // Randomize starting values
+            let t = 26.5 + Math.random() * 2;
+            let h = 58 + Math.floor(Math.random() * 10);
+            let a = 5 + Math.floor(Math.random() * 6);
+
+            const tEl = document.getElementById('iot-temp');
+            const hEl = document.getElementById('iot-hum');
+            const aEl = document.getElementById('iot-nh3');
+
+            tEl.textContent = `${t.toFixed(1)} °C`;
+            hEl.textContent = `${h} %`;
+            aEl.textContent = `${a} ppm`;
+
+            // Fluctuating interval
+            clearInterval(iotInterval);
+            iotInterval = setInterval(() => {
+                t += (Math.random() - 0.5) * 0.2;
+                h += Math.floor((Math.random() - 0.5) * 3);
+                a += Math.floor((Math.random() - 0.5) * 2);
+
+                if (h > 100) h = 100; if (h < 20) h = 20;
+                if (a < 0) a = 0;
+
+                tEl.textContent = `${t.toFixed(1)} °C`;
+                hEl.textContent = `${h} %`;
+                aEl.textContent = `${a} ppm`;
+            }, 1500);
+
+            openModal('monitor-iot-modal');
+        }
+
+        function closeIotModal() {
+            clearInterval(iotInterval);
+            closeModal('monitor-iot-modal');
+        }
+
+        function toggleHw(hwId) {
+            const el = document.getElementById(hwId);
+            const statusEl = el.querySelector('.hw-status');
+            const isActive = el.classList.toggle('active');
+
+            if (isActive) {
+                if (hwId === 'hw-fan') statusEl.textContent = 'AKTIF (AUTO)';
+                else if (hwId === 'hw-heater') statusEl.textContent = 'AKTIF';
+                else statusEl.textContent = 'SIAGA';
+            } else {
+                statusEl.textContent = 'MATI';
+            }
+        }
+
+        // Daily Record Modal & log history
+        function openRecordModal(id) {
+            const coop = coops.find(c => c.id === id);
+            if (!coop) return;
+
+            document.getElementById('record-k-id').value = coop.id;
+            document.getElementById('record-modal-title').textContent = `📋 Detail & Catatan Harian — ${coop.name}`;
+            
+            // Prefill with current numbers
+            document.getElementById('rec-sehat').value = coop.sehat;
+            document.getElementById('rec-sakit').value = coop.sakit;
+            document.getElementById('rec-mati').value = 0; // Default new mortality to 0 on open
+            document.getElementById('rec-temp').value = coop.history.length > 0 ? coop.history[0].temp : '';
+
+            renderRecordHistory(coop);
+            openModal('detail-record-modal');
+        }
+
+        function renderRecordHistory(coop) {
+            const tbody = document.getElementById('record-history-body');
+            tbody.innerHTML = '';
+
+            if (!coop.history || coop.history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--ink3)">Belum ada riwayat pencatatan harian.</td></tr>`;
+                return;
+            }
+
+            coop.history.forEach(log => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-family:'DM Mono', monospace; font-weight:500;">${log.date}</td>
+                        <td style="color:var(--sage);font-weight:600;">${log.sehat} ekor</td>
+                        <td style="color:var(--amber);font-weight:600;">${log.sakit} ekor</td>
+                        <td style="color:var(--rust);font-weight:600;">${log.mati} ekor</td>
+                        <td style="font-weight:500;">${log.temp ? log.temp + ' °C' : '—'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function submitDailyRecord(event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('record-k-id').value);
+            const sehat = parseInt(document.getElementById('rec-sehat').value) || 0;
+            const sakit = parseInt(document.getElementById('rec-sakit').value) || 0;
+            const mati = parseInt(document.getElementById('rec-mati').value) || 0;
+            const temp = parseFloat(document.getElementById('rec-temp').value) || null;
+
+            const coop = coops.find(c => c.id === id);
+            if (coop) {
+                // Update stats
+                coop.sehat = sehat;
+                coop.sakit = sakit;
+                // Add mortality to cumulative or log
+                coop.mati += mati;
+
+                // Add record entry
+                const today = new Date();
+                const dateStr = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+
+                if (!coop.history) coop.history = [];
+                coop.history.unshift({
+                    date: dateStr,
+                    sehat: sehat,
+                    sakit: sakit,
+                    mati: mati,
+                    temp: temp
+                });
+            }
+
+            closeModal('detail-record-modal');
+            applyFilters();
+        }
+
+        // render grid of coops
+        function renderCoopGrid(data) {
+            const container = document.getElementById('coop-grid');
+            container.innerHTML = '';
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📂</div>
+                        <div class="empty-state-title">Kandang Tidak Ditemukan</div>
+                        <p style="font-size: 12.5px;">Coba ubah kata pencarian atau bersihkan filter Anda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            data.forEach(c => {
+                // calculate totals
+                const totalAlive = c.sehat + c.sakit;
+                const capacityPct = Math.min(100, Math.round((totalAlive / c.capacity) * 100));
+
+                // generate occupants HTML
+                let occupantsHTML = '';
+                if (c.occupants && c.occupants.length > 0) {
+                    occupantsHTML = `
+                        <div class="occupants-section">
+                            <div class="occ-title">Penghuni Kandang</div>
+                    `;
+                    c.occupants.forEach(occ => {
+                        occupantsHTML += `
+                            <div class="occ-card">
+                                <div class="occ-header">
+                                    <span class="occ-name">${occ.name}</span>
+                                    <span class="occ-species">${occ.species}</span>
+                                </div>
+                                <div class="occ-metric-row">
+                                    <div class="occ-sub-metric">
+                                        <span class="occ-metric-lbl">Di Kandang Ini</span>
+                                        <span class="occ-metric-val">
+                                            ${occ.hereQty.toLocaleString('id')} ekor
+                                            <span class="mini-dot-list">
+                                                <span class="mini-dot-badge md-sehat">${occ.hereSehat}</span>
+                                                <span class="mini-dot-badge md-sakit">${occ.hereSakit}</span>
+                                                <span class="mini-dot-badge md-mati">${occ.hereMati}</span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="occ-sub-metric">
+                                        <span class="occ-metric-lbl">Total Batch (Semua)</span>
+                                        <span class="occ-metric-val">
+                                            ${occ.totalQty.toLocaleString('id')}
+                                            <span class="mini-dot-list">
+                                                <span class="mini-dot-badge md-sehat">${occ.totalSehat}</span>
+                                                <span class="mini-dot-badge md-sakit">${occ.totalSakit}</span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    occupantsHTML += `</div>`;
+                } else {
+                    occupantsHTML = `
+                        <div class="occupants-section">
+                            <div class="occ-title">Penghuni Kandang</div>
+                            <div style="font-size: 11.5px; color: var(--ink3); padding: 12px; text-align: center; border: 1px dashed var(--bdr); border-radius: 8px;">
+                                Kosong / Tidak ada penghuni
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Action buttons row (dynamically matches mockup status)
+                let actionsHTML = '';
+                if (c.status === 'Aktif') {
+                    actionsHTML = `
+                        <div class="card-actions">
+                            <button class="btn-action-primary" onclick="location.href='detail-kandang.html?id=${c.id}'">Detail & Pencatatan Harian</button>
+                            <button class="btn-action-secondary" onclick="openMonitorModal(${c.id})">🖥️ Monitor Kandang</button>
+                            <div class="action-row-bottom">
+                                <button class="btn-edit" onclick="openEditModal(${c.id})">📝 Edit</button>
+                                <button class="btn-delete" onclick="confirmDeleteCoop(${c.id})" title="Arsipkan"><span style="color:var(--rust)">🗑️</span></button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // For archived coops, show Restore option instead
+                    actionsHTML = `
+                        <div class="card-actions">
+                            <button class="btn-action-primary" style="background:var(--sky)" onclick="restoreCoop(${c.id})">↩️ Kembalikan / Aktifkan Lagi</button>
+                            <div class="action-row-bottom">
+                                <button class="btn-delete" style="width:100%" onclick="confirmDeleteCoop(${c.id})" title="Hapus Permanen"><span style="color:var(--rust); font-weight:600;">🗑️ Hapus Permanen</span></button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // create coop card element
+                const card = document.createElement('div');
+                card.className = 'coop-card';
+                card.innerHTML = `
+                    <div class="coop-header">
+                        <div class="coop-title-block">
+                            <span class="coop-name">${c.name}</span>
+                            <span class="coop-loc">📍 ${c.loc}</span>
+                        </div>
+                        <span class="badge-status ${c.status.toLowerCase()}">${c.status}</span>
+                    </div>
+
+                    <div class="period-box">
+                        <div class="pb-header">
+                            <span class="pb-label">Periode Aktif</span>
+                            <span class="pb-date">📅 ${c.periodDate}</span>
+                        </div>
+                        <div class="pb-desc">${c.periodName}</div>
+                    </div>
+
+                    <div class="density-section">
+                        <div class="density-title-row">
+                            <span class="density-title">Kepadatan Hewan</span>
+                            <span class="density-vals">${totalAlive.toLocaleString('id')} / ${c.capacity.toLocaleString('id')}</span>
+                        </div>
+                        <div class="density-bar-track">
+                            <div class="density-bar-fill" style="width: ${capacityPct}%"></div>
+                        </div>
+                        <div class="density-detail-row">
+                            <div class="dots-row">
+                                <span class="dot-val"><span class="d-circle sehat"></span> ${c.sehat}</span>
+                                <span class="dot-val"><span class="d-circle sakit"></span> ${c.sakit}</span>
+                                <span class="dot-val"><span class="d-circle mati"></span> ${c.mati}</span>
+                            </div>
+                            <span class="capacity-pct">${capacityPct}% Kapasitas</span>
+                        </div>
+                    </div>
+
+                    <div class="specs-row">
+                        <div class="spec-item">
+                            <span class="spec-lbl">Tipe</span>
+                            <span class="spec-val">${c.type}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-lbl">Kapasitas</span>
+                            <span class="spec-val">${c.capacity.toLocaleString('id')} ekor</span>
+                        </div>
+                    </div>
+
+                    ${occupantsHTML}
+
+                    ${actionsHTML}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Initialize view
+        applyFilters();
+    </script>
+</body>
+
+</html>

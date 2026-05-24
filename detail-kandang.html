@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail & Pencatatan Kandang — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+            --purple: #6b21a8;
+            --purple-l: #f5f3ff;
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* sidebar */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        .nav .bdg {
+            background: var(--rust);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* main */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar with back button */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            background: var(--surf);
+            color: var(--ink);
+            cursor: pointer;
+            font-size: 18px;
+            transition: .12s;
+        }
+
+        .btn-back:hover {
+            border-color: var(--bdr2);
+            background: var(--surf2);
+        }
+
+        .coop-header-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .coop-title {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        .coop-meta-sub {
+            font-size: 11.5px;
+            color: var(--ink2);
+            margin-top: 2px;
+        }
+
+        /* content */
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ACTIVE PERIOD BANNER */
+        .period-banner {
+            background: #e8f5ee;
+            border: 1px solid #cce8d9;
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .period-info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .period-active-title {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a6b55;
+        }
+
+        .period-start-date {
+            font-size: 12px;
+            color: var(--ink2);
+        }
+
+        .btn-close-period {
+            background: var(--rust);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: .12s;
+        }
+
+        .btn-close-period:hover {
+            background: #992015;
+        }
+
+        /* METRICS GRID ROW */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 1024px) {
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .m-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 114px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .02);
+            transition: .15s;
+        }
+
+        .m-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transform: translateY(-1px);
+        }
+
+        .m-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .m-title {
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--ink2);
+        }
+
+        .m-icon {
+            font-size: 15px;
+        }
+
+        .m-val {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .m-unit {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .m-subtext {
+            font-size: 10.5px;
+            color: var(--ink3);
+            margin-top: 4px;
+        }
+
+        /* Accent metric card backgrounds */
+        .m-card.green-bg {
+            background: var(--sage-l);
+            border-color: rgba(58, 107, 80, 0.2);
+        }
+        .m-card.green-bg .m-title,
+        .m-card.green-bg .m-subtext {
+            color: var(--sage);
+        }
+        .m-card.purple-bg {
+            background: var(--purple-l);
+            border-color: rgba(107, 33, 168, 0.15);
+        }
+        .m-card.purple-bg .m-title {
+            color: var(--purple);
+        }
+
+        /* SECTION Occupants */
+        .section-box {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .03);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .sec-title-row {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sec-title {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sec-sub {
+            font-size: 12px;
+            color: var(--ink2);
+            margin-top: 2px;
+        }
+
+        /* Grid of lot cards inside detail */
+        .lots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .lots-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .lot-c {
+            background: #faf9f5;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 12px 14px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lot-c-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .lot-c-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--ink);
+        }
+
+        .lot-c-species {
+            font-size: 9px;
+            color: var(--ink3);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: .4px;
+        }
+
+        .lot-c-badge {
+            background: var(--surf3);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--ink);
+        }
+
+        .lot-c-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11.5px;
+            color: var(--ink2);
+        }
+
+        .lot-c-dots {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lot-c-dot-val {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .l-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .l-dot.sehat { background: var(--sage); }
+        .l-dot.sakit { background: var(--amber); }
+
+        .lot-c-batch-mortality {
+            font-size: 10.5px;
+            font-style: italic;
+            color: var(--ink3);
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* SECTION Pencatatan Harian Header layout */
+        .record-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid var(--bdr);
+            padding-bottom: 12px;
+        }
+
+        .record-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-range-picker {
+            padding: 8px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 12.5px;
+            color: var(--ink2);
+            background: var(--surf);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-input-today {
+            background: var(--sage);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'DM Sans', sans-serif;
+            transition: .12s;
+        }
+
+        .btn-input-today:hover {
+            background: #2e5640;
+        }
+
+        /* EMPTY STATE FOR PENCATATAN HARIAN */
+        .empty-record-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 48px;
+            border: 1.5px dashed var(--bdr2);
+            border-radius: 12px;
+            color: var(--ink2);
+            gap: 8px;
+        }
+
+        .empty-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+
+        .empty-title {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .empty-link {
+            color: var(--sage);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .empty-link:hover {
+            color: #2e5640;
+        }
+
+        /* FILLED STATE TABLE */
+        .records-table-wrap {
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table-rec {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .table-rec th {
+            background: var(--surf2);
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .table-rec td {
+            padding: 12px;
+            border-bottom: 1px solid var(--bdr);
+            vertical-align: middle;
+        }
+
+        .table-rec tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-rec tr:hover td {
+            background: #faf9f6;
+        }
+
+        /* modal forms */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 6, 2, .5);
+            z-index: 200;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 32px 20px;
+            overflow-y: auto;
+        }
+
+        .overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surf);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .18);
+            animation: up .2s ease;
+            margin: auto;
+        }
+
+        @keyframes up {
+            from {
+                opacity: 0;
+                transform: translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .mh {
+            padding: 20px 24px 14px;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .mt {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ms {
+            font-size: 12px;
+            color: var(--ink2);
+            margin-top: 3px;
+        }
+
+        .mclose {
+            background: var(--surf2);
+            border: none;
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink2);
+        }
+
+        .mclose:hover {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+
+        .mb {
+            padding: 20px 24px;
+        }
+
+        .mfooter {
+            padding: 14px 24px;
+            border-top: 1px solid var(--bdr);
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+        }
+
+        /* forms */
+        .fsec {
+            margin-bottom: 18px;
+        }
+
+        .fsec-title {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .frow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .fg {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .fg label {
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--ink2);
+        }
+
+        .fg label .req {
+            color: var(--rust);
+        }
+
+        .fg input,
+        .fg select {
+            padding: 8px 11px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--ink);
+            background: var(--surf);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+        }
+
+        .fg input:focus,
+        .fg select:focus {
+            border-color: var(--sage);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .btn-ghost {
+            background: #fff;
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+        }
+
+        .btn-ghost:hover {
+            background: #f9f8f4;
+            border-color: var(--ink3);
+            color: var(--ink);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+        }
+
+        .btn-solid {
+            background: var(--sage);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(58, 107, 80, 0.2);
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--bdr);
+            padding-bottom: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tab-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--ink);
+            background: var(--surf);
+        }
+
+        .tab-btn.active {
+            color: var(--sage);
+            background: var(--surf);
+            font-weight: 600;
+            border-bottom: 2px solid var(--sage);
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadein .3s ease;
+        }
+
+        @keyframes fadein {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo">
+            <div class="sb-mark">🐓 RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav active" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span
+                    class="bdg">3</span></div>
+            <div class="nav"><span class="ico">🏭</span><span class="lbl">Stok per Gudang</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <!-- TOPBAR with Back Button -->
+        <div class="topbar">
+            <button class="btn-back" onclick="location.href='monitoring-kandang.html'" title="Kembali ke Monitoring Kandang">←</button>
+            <div class="coop-header-info">
+                <div class="coop-title" id="coop-name-title">Loading Kandang...</div>
+                <div class="coop-meta-sub" id="coop-meta-sub">Kapasitas: — | Lokasi tidak diatur</div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- ACTIVE PERIOD BANNER -->
+            <div class="period-banner">
+                <div class="period-info-block">
+                    <div class="period-active-title" id="period-name-display">Periode Aktif: —</div>
+                    <div class="period-start-date" id="period-start-date">Mulai: —</div>
+                </div>
+                <button class="btn-close-period" onclick="closePeriodAction()">
+                    <span>🛑</span> Tutup Periode
+                </button>
+            </div>
+
+            <!-- METRICS GRID ROW (5 Cards) -->
+            <div class="metrics-grid">
+                <!-- Populasi -->
+                <div class="m-card">
+                    <div class="m-header">
+                        <span class="m-title">Populasi Saat Ini</span>
+                        <span class="m-icon" style="color: var(--sage)">📈</span>
+                    </div>
+                    <div>
+                        <div class="m-val"><span id="val-pop">0</span> <span class="m-unit">ekor</span></div>
+                        <div class="m-subtext" id="sub-pop">Dari awal 0 ekor</div>
+                    </div>
+                </div>
+
+                <!-- Deplesi % -->
+                <div class="m-card">
+                    <div class="m-header">
+                        <span class="m-title">Persentase Deplesi</span>
+                        <span class="m-icon" style="color: var(--rust)">📉</span>
+                    </div>
+                    <div>
+                        <div class="m-val" style="color: var(--rust)"><span id="val-dep">0%</span></div>
+                        <div class="m-subtext" id="sub-dep">Mati: 0 | Afkir: 0</div>
+                    </div>
+                </div>
+
+                <!-- FCR (Kumulatif) -->
+                <div class="m-card">
+                    <div class="m-header">
+                        <span class="m-title">FCR (Kumulatif)</span>
+                        <span class="m-icon" style="color: var(--amber)">📊</span>
+                    </div>
+                    <div>
+                        <div class="m-val"><span id="val-fcr">0</span></div>
+                        <div class="m-subtext" id="sub-fcr">Total Pakan: 0 kg</div>
+                    </div>
+                </div>
+
+                <!-- HDP Terakhir (Soft green accent) -->
+                <div class="m-card green-bg">
+                    <div class="m-header">
+                        <span class="m-title">HDP Terakhir</span>
+                        <span class="m-icon">🥚</span>
+                    </div>
+                    <div>
+                        <div class="m-val" style="color: var(--sage)"><span id="val-hdp">0%</span></div>
+                        <div class="m-subtext" id="sub-hdp">Total Telur (Kg): 0</div>
+                    </div>
+                </div>
+
+                <!-- Hasil Lainnya (Soft purple accent) -->
+                <div class="m-card purple-bg">
+                    <div class="m-header">
+                        <span class="m-title">Hasil Lainnya</span>
+                        <span class="m-icon">⚡</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div style="display: flex; justify-content: space-between; font-weight: 500; font-size:12px;">
+                            <span style="color: var(--ink2)">Susu</span>
+                            <span style="color: var(--purple); font-weight:700;"><span id="val-susu">0</span> L</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 500; font-size:12px;">
+                            <span style="color: var(--ink2)">Daging</span>
+                            <span style="color: var(--purple); font-weight:700;"><span id="val-daging">0</span> Kg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Penghuni Kandang Saat Ini -->
+            <div class="section-box">
+                <div class="sec-title-row">
+                    <div class="sec-title"><span>🏠</span> Penghuni Kandang Saat Ini</div>
+                    <div class="sec-sub">Daftar batch hewan yang sedang dipelihara di kandang ini</div>
+                </div>
+                <div class="lots-grid" id="lots-grid-container">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- SECTION: Pencatatan Harian -->
+            <div class="section-box">
+                <div class="record-header-row">
+                    <div class="sec-title-row">
+                        <div class="sec-title"><span>📅</span> Pencatatan Harian</div>
+                        <div class="sec-sub">Data harian pakan, telur, dan angka kematian.</div>
+                    </div>
+                    <div class="record-controls">
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <input type="date" id="filter-date" onchange="renderDailyLogsTable()" style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; background: var(--surf); color: var(--ink);" title="Filter Tanggal">
+                            <button class="btn-input-today" onclick="openModal('input-log-modal')">
+                                <span>＋</span> Input Hari Ini
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchRecordTab('pakan', this)">Pakan</button>
+                    <button class="tab-btn" onclick="switchRecordTab('produksi', this)">Produksi</button>
+                    <button class="tab-btn" onclick="switchRecordTab('deplesi', this)">Deplesi</button>
+                    <button class="tab-btn" onclick="switchRecordTab('catatan', this)">Foto & Catatan</button>
+                </div>
+
+                <!-- Empty state visual block -->
+                <div class="empty-record-state" id="empty-records-block">
+                    <div class="empty-icon">📅</div>
+                    <div class="empty-title">Belum ada pencatatan harian di periode ini.</div>
+                    <p style="font-size:12px; margin-top:2px;">Silakan isi pencatatan pertama Anda untuk mengaktifkan pemantauan.</p>
+                    <div class="empty-link" style="margin-top: 6px;" onclick="openModal('input-log-modal')">Catat Data Pertama</div>
+                </div>
+
+                <!-- Filled state block (hidden by default) -->
+                <div class="records-table-wrap" id="records-table-block" style="display: none;">
+                    
+                    <!-- Tab Pane Pakan -->
+                    <div id="pane-pakan" class="tab-pane active">
+                        <table class="table-rec">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Flock / Batch</th>
+                                    <th>Jenis Pakan</th>
+                                    <th>Jumlah (Kg)</th>
+                                    <th>Air (Liter)</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-pakan"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tab Pane Produksi -->
+                    <div id="pane-produksi" class="tab-pane">
+                        <table class="table-rec">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Flock / Batch</th>
+                                    <th>Komoditas</th>
+                                    <th>Total</th>
+                                    <th>Total Berat (Kg)</th>
+                                    <th>HDP</th>
+                                    <th>FCR</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-produksi"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tab Pane Deplesi -->
+                    <div id="pane-deplesi" class="tab-pane">
+                        <table class="table-rec">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Flock / Batch</th>
+                                    <th>🔴 Kematian (Ekor)</th>
+                                    <th>Afkir (Ekor)</th>
+                                    <th>🟡 Sakit Update</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-deplesi"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tab Pane Catatan -->
+                    <div id="pane-catatan" class="tab-pane">
+                        <table class="table-rec">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Catatan Tambahan</th>
+                                    <th>Foto</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-catatan"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======== MODAL: INPUT HARI INI ======== -->
+    <div class="overlay" id="input-log-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt">Catat Log Harian Kandang</div>
+                    <div class="ms">Masukkan data produksi, pakan, dan mortalitas untuk hari ini.</div>
+                </div>
+                <button class="mclose" onclick="closeModal('input-log-modal')">✕</button>
+            </div>
+            <div class="mb">
+                <!-- Global Input Fields -->
+                <div class="fsec" style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--bdr);">
+                    <div class="frow">
+                        <div class="fg">
+                            <label>Tanggal Pencatatan <span class="req">*</span></label>
+                            <input type="date" id="global-inp-date" required style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; background: var(--surf); color: var(--ink);">
+                        </div>
+                        <div class="fg">
+                            <label>Flock / Batch <span class="req">*</span></label>
+                            <select id="global-inp-flock" required style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; background: var(--surf); color: var(--ink);">
+                                <option value="Semua">Semua Flock</option>
+                                <!-- Injected dynamically by JS -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Tabs -->
+                <div class="tab-nav" style="margin-bottom: 20px;">
+                    <button class="tab-btn active" onclick="switchModalTab('pakan', this)">Pakan</button>
+                    <button class="tab-btn" onclick="switchModalTab('produksi', this)">Produksi</button>
+                    <button class="tab-btn" onclick="switchModalTab('deplesi', this)">Deplesi</button>
+                    <button class="tab-btn" onclick="switchModalTab('catatan', this)">Foto & Catatan</button>
+                </div>
+
+                <!-- Form Pakan -->
+                <form id="form-tab-pakan" class="modal-tab-pane active" style="display: block;" onsubmit="submitDailyLog(event, 'pakan')">
+                    <div class="fsec">
+                        <div class="fsec-title">Pakan yang Dihabiskan</div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Pilih Pakan <span class="req">*</span></label>
+                                <select id="inp-pakan-type" required>
+                                    <option value="">-- Pilih Pakan --</option>
+                                    <option value="pakan-premix">Pakan Premium Mix</option>
+                                    <option value="pakan-standar">Pakan Standar</option>
+                                    <option value="pakan-konsentrat">Pakan Konsentrat</option>
+                                    <option value="pakan-limbah">Pakan Limbah</option>
+                                </select>
+                            </div>
+                            <div class="fg">
+                                <label>Jumlah <span class="req">*</span></label>
+                                <div style="display: flex; gap: 8px; align-items: flex-end;">
+                                    <input type="number" id="inp-pakan-jumlah" required min="0" value="0" style="flex: 1;">
+                                    <span style="color: var(--ink2); font-weight: 500; white-space: nowrap;">Kg</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Konsumsi Air (Opsional)</label>
+                                <div style="display: flex; gap: 8px; align-items: flex-end;">
+                                    <input type="number" id="inp-air" min="0" value="0" step="0.1" style="flex: 1;">
+                                    <span style="color: var(--ink2); font-weight: 500; white-space: nowrap;">Liter</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form Produksi -->
+                <form id="form-tab-produksi" class="modal-tab-pane" style="display: none;" onsubmit="submitDailyLog(event, 'produksi')">
+                    <div class="fsec">
+                        <div class="fsec-title">Hasil Produksi</div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Komoditas Hasil</label>
+                                <select id="inp-komoditas" style="padding:8px; border:1px solid var(--bdr); border-radius:6px; background:var(--surf); width:100%;">
+                                    <option value="">Pilih Komoditas</option>
+                                    <option value="Telur Ayam Gred A">Telur Ayam Gred A</option>
+                                    <option value="Telur pecah">Telur pecah</option>
+                                    <option value="Eksrata">Eksrata</option>
+                                </select>
+                            </div>
+                            <div class="fg">
+                                <label>Total</label>
+                                <div style="display:flex; gap:8px; align-items:flex-end;">
+                                    <input type="number" id="inp-total" min="0" value="0" step="0.1" style="flex:1;">
+                                    <input type="text" id="inp-satuan" placeholder="cth. butir / kg / ekor" style="width:110px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Total Berat (Kg)</label>
+                                <input type="number" id="inp-total-kg" min="0" value="0" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form Deplesi -->
+                <form id="form-tab-deplesi" class="modal-tab-pane" style="display: none;" onsubmit="submitDailyLog(event, 'deplesi')">
+                    <div class="fsec">
+                        <div class="fsec-title">Pengurangan & Kondisi Hewan</div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Populasi Sakit Update (ekor)</label>
+                                <input type="number" id="inp-sakit" min="0">
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg">
+                                <label>Mati Hari Ini (ekor) <span class="req">*</span></label>
+                                <input type="number" id="inp-mati" required min="0" value="0">
+                            </div>
+                            <div class="fg">
+                                <label>Afkir Hari Ini (ekor)</label>
+                                <input type="number" id="inp-afkir" min="0" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Form Catatan -->
+                <form id="form-tab-catatan" class="modal-tab-pane" style="display: none;" onsubmit="submitDailyLog(event, 'catatan')">
+                    <div class="fsec">
+                        <div class="fsec-title">Foto & Catatan Tambahan</div>
+                        <div class="frow" style="grid-template-columns: 1fr;">
+                            <div class="fg">
+                                <label>Catatan / Keterangan</label>
+                                <textarea id="inp-notes" rows="3" style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; resize: vertical;"></textarea>
+                            </div>
+                            <div class="fg">
+                                <label>Upload Foto (Opsional)</label>
+                                <input type="file" id="inp-photo" accept="image/*" style="border: none; padding: 0;">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="mfooter">
+                <button type="button" class="btn btn-ghost" onclick="closeModal('input-log-modal')"><span>✕</span> Batal</button>
+                <button type="button" class="btn btn-solid" onclick="submitActiveTab()"><span>💾</span> Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT BINDINGS -->
+    <script>
+        // Load dataset from localStorage or fallback
+        let coops = [];
+        const storedCoops = localStorage.getItem('coops');
+        if (storedCoops) {
+            coops = JSON.parse(storedCoops);
+            // Inject dummy data for Kandang 1 if history is empty (for demo purposes)
+            let kandang1 = coops.find(c => c.id === 1);
+            if (kandang1 && (!kandang1.history || kandang1.history.length < 5)) {
+                kandang1.history = [
+                    { date: "24/05/2026", type: "pakan", pakan_type: "pakan-premix", pakan: 55, air: 120 },
+                    { date: "23/05/2026", type: "produksi", telur: 18.5, susu: 0, daging: 0 },
+                    { date: "22/05/2026", type: "deplesi", sehat: 3, sakit: 0, mati: 1, afkir: 0 },
+                    { date: "21/05/2026", type: "catatan", notes: "Pengecekan rutin ventilasi berjalan lancar. Hewan terpantau aktif.", photo: "kondisi_pagi.jpg" },
+                    { date: "20/05/2026", type: "pakan", pakan_type: "pakan-standar", pakan: 54, air: 115 },
+                    { date: "20/05/2026", type: "produksi", telur: 17.8, susu: 0, daging: 0 }
+                ];
+                localStorage.setItem('coops', JSON.stringify(coops));
+            }
+        } else {
+            // Initial Coops dataset fallback
+            coops = [
+                {
+                    id: 1,
+                    name: "Kandang ayam ayaman",
+                    status: "Aktif",
+                    loc: "Lokasi tidak ditentukan",
+                    periodName: "sss",
+                    periodDate: "20/5/2026",
+                    sehat: 3,
+                    sakit: 0,
+                    mati: 1,
+                    capacity: 200,
+                    type: "Battery Cage",
+                    species: "Ayam Petelur",
+                    history: [
+                        { date: "24/05/2026", type: "pakan", pakan_type: "pakan-premix", pakan: 55, air: 120 },
+                        { date: "23/05/2026", type: "produksi", telur: 18.5, susu: 0, daging: 0 },
+                        { date: "22/05/2026", type: "deplesi", sehat: 3, sakit: 0, mati: 1, afkir: 0 },
+                        { date: "21/05/2026", type: "catatan", notes: "Pengecekan rutin ventilasi berjalan lancar. Hewan terpantau aktif.", photo: "kondisi_pagi.jpg" },
+                        { date: "20/05/2026", type: "pakan", pakan_type: "pakan-standar", pakan: 54, air: 115 },
+                        { date: "20/05/2026", type: "produksi", telur: 17.8, susu: 0, daging: 0 }
+                    ],
+                    occupants: [
+                        {
+                            name: "xxxxxx",
+                            species: "AYAM PETELUR",
+                            hereQty: 2,
+                            hereSehat: 2,
+                            hereSakit: 0,
+                            hereMati: 0,
+                            totalQty: 10,
+                            totalSehat: 0,
+                            totalSakit: 0,
+                            totalMati: 0,
+                            batchMatiCount: 0
+                        },
+                        {
+                            name: "Test Satu",
+                            species: "AYAM PETELUR",
+                            hereQty: 1,
+                            hereSehat: 1,
+                            hereSakit: 0,
+                            hereMati: 0,
+                            totalQty: 10,
+                            totalSehat: 5,
+                            totalSakit: 5,
+                            totalMati: 0,
+                            batchMatiCount: 5
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "Kandang pejantan",
+                    status: "Aktif",
+                    loc: "Lokasi tidak ditentukan",
+                    periodName: "Test",
+                    periodDate: "1/6/2026",
+                    sehat: 36,
+                    sakit: 0,
+                    mati: 1,
+                    capacity: 1000,
+                    type: "Battery Cage",
+                    species: "Ayam Petelur",
+                    history: [],
+                    occupants: [
+                        {
+                            name: "Ayam petanjan",
+                            species: "AYAM PETELUR",
+                            hereQty: 76,
+                            hereSehat: 73,
+                            hereSakit: 3,
+                            hereMati: 22,
+                            totalQty: 8029,
+                            totalSehat: 3,
+                            totalSakit: 2,
+                            totalMati: 0,
+                            batchMatiCount: 22
+                        },
+                        {
+                            name: "cccc",
+                            species: "AYAM PETELUR",
+                            hereQty: 197,
+                            hereSehat: 194,
+                            hereSakit: 3,
+                            hereMati: 1,
+                            totalQty: 211,
+                            totalSehat: 3,
+                            totalSakit: 1,
+                            totalMati: 0,
+                            batchMatiCount: 1
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: "kandang a",
+                    status: "Aktif",
+                    loc: "kandang a",
+                    periodName: "xxx",
+                    periodDate: "16/3/2026",
+                    sehat: 39,
+                    sakit: 0,
+                    mati: 6,
+                    capacity: 1000,
+                    type: "Battery Cage",
+                    species: "Ayam Petelur",
+                    history: [],
+                    occupants: [
+                        {
+                            name: "ayam uye",
+                            species: "AYAM PETELUR",
+                            hereQty: 20,
+                            hereSehat: 20,
+                            hereSakit: 0,
+                            hereMati: 0,
+                            totalQty: 155,
+                            totalSehat: 0,
+                            totalSakit: 0,
+                            totalMati: 0,
+                            batchMatiCount: 0
+                        },
+                        {
+                            name: "DOC Layer Super",
+                            species: "AYAM PETELUR",
+                            hereQty: 10,
+                            hereSehat: 10,
+                            hereSakit: 0,
+                            hereMati: 0,
+                            totalQty: 551,
+                            totalSehat: 0,
+                            totalSakit: 0,
+                            totalMati: 0,
+                            batchMatiCount: 0
+                        }
+                    ]
+                }
+            ];
+            localStorage.setItem('coops', JSON.stringify(coops));
+        }
+
+        // Parse query string for ?id=X
+        const urlParams = new URLSearchParams(window.location.search);
+        const coopId = parseInt(urlParams.get('id')) || 1;
+
+        // Retrieve coop details
+        const coop = coops.find(c => c.id === coopId);
+
+        // State variables
+        let initialPop = 3;
+
+        // Save coops state back to localStorage
+        function saveState() {
+            localStorage.setItem('coops', JSON.stringify(coops));
+        }
+
+        // Initialize Page Information
+        function initPage() {
+            if (!coop) {
+                document.getElementById('coop-name-title').textContent = "Kandang Tidak Ditemukan";
+                return;
+            }
+
+            // Header info
+            document.getElementById('coop-name-title').textContent = coop.name;
+            document.getElementById('coop-meta-sub').textContent = `Kapasitas: ${coop.capacity.toLocaleString('id')} ekor | Lokasi: ${coop.loc}`;
+
+            // Banner Period
+            document.getElementById('period-name-display').textContent = `Periode Aktif: ${coop.periodName}`;
+            document.getElementById('period-start-date').textContent = `Mulai: ${coop.periodDate}`;
+
+            // Calculate Initial Population based on sum of occupants hereQty + mati
+            const sumOccupantsQty = coop.occupants ? coop.occupants.reduce((s, o) => s + o.hereQty, 0) : 0;
+            // Let initial pop be sumOccupantsQty + coop.mati
+            initialPop = sumOccupantsQty + coop.mati;
+            if (initialPop === 0) initialPop = coop.capacity; // Fallback
+
+            // Fill prefilled values in the input form based on current coop states
+            document.getElementById('form-sehat').value = coop.sehat;
+            document.getElementById('form-sakit').value = coop.sakit;
+
+            // Render components
+            renderMetrics();
+            renderOccupants();
+            renderDailyLogsTable();
+        }
+
+        // Render Occupants grid
+        function renderOccupants() {
+            const container = document.getElementById('lots-grid-container');
+            container.innerHTML = '';
+
+            if (!coop.occupants || coop.occupants.length === 0) {
+                container.innerHTML = `<div class="empty-grid-col">Tidak ada batch penghuni di kandang ini saat ini.</div>`;
+                return;
+            }
+
+            coop.occupants.forEach(occ => {
+                const healthy = occ.hereSehat ?? occ.hereQty;
+                const sick = occ.hereSakit ?? 0;
+                const deadCount = occ.batchMatiCount ?? 0;
+                container.innerHTML += `
+                    <div class="lot-c">
+                        <div class="lot-c-header">
+                            <span class="lot-c-name">${occ.name}</span>
+                            <span class="lot-c-badge">${occ.hereQty} Ekor</span>
+                        </div>
+                        <div style="font-size:10px; color:var(--ink3); font-weight:600; text-transform:uppercase;">${occ.species}</div>
+                        <div class="lot-c-details">
+                            <div class="lot-c-dots">
+                                <span class="lot-c-dot-val"><span class="l-dot sehat"></span> ${healthy}</span>
+                                <span class="lot-c-dot-val"><span class="l-dot sakit"></span> ${sick}</span>
+                            </div>
+                            <span class="lot-c-batch-mortality">Batch: ${deadCount} Mati</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Calculate and Render Metrics Cards
+        function renderMetrics() {
+            const totalAlive = coop.sehat + coop.sakit;
+            
+            // 1. Populasi Card
+            document.getElementById('val-pop').textContent = totalAlive.toLocaleString('id');
+            document.getElementById('sub-pop').textContent = `Dari awal ${initialPop.toLocaleString('id')} ekor`;
+
+            // 2. Persentase Deplesi Card
+            const deplesiPct = initialPop > 0 ? ((coop.mati / initialPop) * 100) : 0;
+            document.getElementById('val-dep').textContent = `${deplesiPct.toFixed(0)}%`;
+            document.getElementById('sub-dep').textContent = `Mati: ${coop.mati} | Afkir: 0`;
+
+            // 3. FCR Cumulative Card
+            // Calculate total feed and egg weight from history
+            let totalFeed = 0;
+            let totalEgg = 0;
+            let totalSusu = 0;
+            let totalDaging = 0;
+
+            if (coop.history) {
+                coop.history.forEach(log => {
+                    totalFeed += log.pakan || 0;
+                    totalEgg += log.telur || 0;
+                    totalSusu += log.susu || 0;
+                    totalDaging += log.daging || 0;
+                });
+            }
+
+            const fcr = totalEgg > 0 ? (totalFeed / totalEgg) : 0;
+            document.getElementById('val-fcr').textContent = fcr > 0 ? fcr.toFixed(1) : '0';
+            document.getElementById('sub-fcr').textContent = `Total Pakan: ${totalFeed.toLocaleString('id')} kg`;
+
+            // 4. HDP Terakhir Card (Hen Day Production)
+            // HDP = (Eggs produced (butir) / laying hens population) * 100
+            // Assuming 1 kg of egg = 16 eggs. For the last log:
+            let lastHdp = 0;
+            let totalEggHistory = totalEgg;
+            
+            if (coop.history && coop.history.length > 0) {
+                const lastLog = coop.history[0];
+                const eggsCount = (lastLog.telur || 0) * 16;
+                const layingPop = lastLog.sehat + lastLog.sakit;
+                lastHdp = layingPop > 0 ? ((eggsCount / layingPop) * 100) : 0;
+            }
+
+            document.getElementById('val-hdp').textContent = `${lastHdp.toFixed(0)}%`;
+            document.getElementById('sub-hdp').textContent = `Total Telur (Kg): ${totalEggHistory.toLocaleString('id')}`;
+
+            // 5. Hasil Lainnya Card
+            document.getElementById('val-susu').textContent = totalSusu.toLocaleString('id');
+            document.getElementById('val-daging').textContent = totalDaging.toLocaleString('id');
+        }
+
+        // Tab Switchers
+        function switchRecordTab(tabName, btnElement) {
+            const btns = btnElement.parentElement.querySelectorAll('.tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            const panes = document.querySelectorAll('#records-table-block .tab-pane');
+            panes.forEach(p => p.classList.remove('active'));
+            document.getElementById('pane-' + tabName).classList.add('active');
+        }
+
+        function switchModalTab(tabName, btnElement) {
+            const btns = btnElement.parentElement.querySelectorAll('.tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            const modal = document.getElementById('input-log-modal');
+            if (modal) modal.dataset.activeTab = tabName;
+
+            const panes = document.querySelectorAll('#input-log-modal .modal-tab-pane');
+            panes.forEach(p => { p.style.display = 'none'; p.classList.remove('active'); });
+            const target = document.getElementById('form-tab-' + tabName);
+            if (target) { target.style.display = 'block'; target.classList.add('active'); }
+        }
+
+        // Set modal UI mode: 'create' shows tabs; 'edit' hides tabs and only shows specific form
+        function setModalMode(mode, type) {
+            const modal = document.getElementById('input-log-modal');
+            if (!modal) return;
+            const tabNav = modal.querySelector('.tab-nav');
+            const titleEl = modal.querySelector('.mt');
+            const saveBtn = modal.querySelector('.mfooter .btn-solid');
+            if (mode === 'edit') {
+                modal.dataset.mode = 'edit';
+                if (tabNav) tabNav.style.display = 'none';
+                // show only the supplied type form
+                if (type) {
+                    const tabBtn = modal.querySelector(`.tab-nav .tab-btn[onclick*="${type}"]`) || modal.querySelector(`.tab-nav .tab-btn`);
+                    if (tabBtn) switchModalTab(type, tabBtn);
+                }
+                // update title and save text
+                if (titleEl) titleEl.textContent = `Edit ${type === 'pakan' ? 'Pakan' : type === 'produksi' ? 'Produksi' : type === 'deplesi' ? 'Deplesi' : 'Catatan'}`;
+                if (saveBtn) saveBtn.textContent = 'Simpan Perubahan';
+            } else {
+                // create mode
+                delete modal.dataset.mode;
+                if (tabNav) tabNav.style.display = '';
+                if (titleEl) titleEl.textContent = 'Catat Log Harian Kandang';
+                if (saveBtn) saveBtn.textContent = 'Simpan';
+            }
+        }
+
+        // Submit the currently active tab form (used by unified footer Save button)
+        function submitActiveTab() {
+            const modal = document.getElementById('input-log-modal');
+            const activeTab = modal && modal.dataset.activeTab ? modal.dataset.activeTab : 'pakan';
+            const form = document.getElementById('form-tab-' + activeTab);
+            if (!form) return;
+            const fakeEvent = { preventDefault: function(){}, target: form };
+            submitDailyLog(fakeEvent, activeTab);
+        }
+
+        // Render Daily Logs table / switch empty state
+        function renderDailyLogsTable() {
+            const emptyBlock = document.getElementById('empty-records-block');
+            const tableBlock = document.getElementById('records-table-block');
+
+            // Apply filter date
+            const filterDateEl = document.getElementById('filter-date');
+            const filterDateVal = filterDateEl ? filterDateEl.value : '';
+            let filterDateStr = '';
+            if (filterDateVal) {
+                const parts = filterDateVal.split('-');
+                filterDateStr = `${parseInt(parts[2], 10)}/${parseInt(parts[1], 10)}/${parts[0]}`;
+            }
+
+            let displayHistory = coop.history || [];
+            if (filterDateStr) {
+                displayHistory = displayHistory.filter(log => log.date === filterDateStr);
+            }
+
+            if (!displayHistory || displayHistory.length === 0) {
+                emptyBlock.style.display = 'flex';
+                tableBlock.style.display = 'none';
+                return;
+            }
+
+            emptyBlock.style.display = 'none';
+            tableBlock.style.display = 'block';
+
+            const tbodyPakan = document.getElementById('tbody-pakan');
+            const tbodyProduksi = document.getElementById('tbody-produksi');
+            const tbodyDeplesi = document.getElementById('tbody-deplesi');
+            const tbodyCatatan = document.getElementById('tbody-catatan');
+
+            tbodyPakan.innerHTML = '';
+            tbodyProduksi.innerHTML = '';
+            tbodyDeplesi.innerHTML = '';
+            tbodyCatatan.innerHTML = '';
+
+            displayHistory.forEach(log => {
+                const originalIndex = coop.history.indexOf(log);
+                const eggsCount = (log.telur || 0) * 16;
+                const pop = (log.sehat || 0) + (log.sakit || 0);
+                const hdp = pop > 0 ? ((eggsCount / pop) * 100) : 0;
+                const fcr = log.telur > 0 ? ((log.pakan || 0) / log.telur) : 0;
+
+                const aksiHtml = `<td style="white-space:nowrap;">
+                    <button style="border:none; background:none; cursor:pointer; font-size:14px; margin-right:6px;" onclick="editLog(${originalIndex})" title="Edit">✏️</button>
+                    <button style="border:none; background:none; cursor:pointer; font-size:14px;" onclick="deleteLog(${originalIndex})" title="Hapus">🗑️</button>
+                </td>`;
+
+                // Render Pakan
+                if (!log.type || log.type === 'pakan') {
+                    const pakanTypeLabel = {
+                        'pakan-premix': 'Premium Mix',
+                        'pakan-standar': 'Standar',
+                        'pakan-konsentrat': 'Konsentrat',
+                        'pakan-limbah': 'Limbah'
+                    }[log.pakan_type] || log.pakan_type || '—';
+                    tbodyPakan.innerHTML += `
+                        <tr>
+                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
+                            <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
+                            <td style="font-weight: 500;">${pakanTypeLabel}</td>
+                            <td style="font-weight: 500;">${log.pakan || 0} kg</td>
+                            <td style="font-weight: 500; color: var(--sky);">${log.air || 0} L</td>
+                            ${aksiHtml}
+                        </tr>
+                    `;
+                }
+
+                // Render Produksi
+                if (!log.type || log.type === 'produksi') {
+                    // compute HDP only for egg commodities
+                    let prodLabel = log.komoditas || (log.telur ? 'Telur' : '—');
+                    let totalLabel = (typeof log.total !== 'undefined') ? `${log.total} ${log.satuan || ''}` : (log.telur ? `${log.telur} kg` : '—');
+                    const totalKg = log.total_kg || log.telur || 0;
+                    const fcrVal = totalKg > 0 ? ((log.pakan || 0) / totalKg) : 0;
+                    let lastHdpCell = '—';
+                    if ((log.komoditas && log.komoditas.toLowerCase().includes('telur')) || log.telur) {
+                        const eggsCount = (typeof log.total === 'number' && log.total > 0) ? log.total : (log.total_kg ? log.total_kg * 16 : (log.telur || 0) * 16);
+                        const layingPop = (log.sehat || 0) + (log.sakit || 0);
+                        const hdpCalc = layingPop > 0 ? ((eggsCount / layingPop) * 100) : 0;
+                        lastHdpCell = hdpCalc > 0 ? hdpCalc.toFixed(0) + '%' : '—';
+                    }
+                    tbodyProduksi.innerHTML += `
+                        <tr>
+                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
+                            <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
+                            <td style="font-weight: 500;">${prodLabel}</td>
+                            <td style="font-weight: 500;">${totalLabel}</td>
+                            <td style="font-weight: 500;">${totalKg ? totalKg + ' kg' : '—'}</td>
+                            <td style="font-family:'DM Mono', monospace; font-weight:600; color:var(--sage);">${lastHdpCell}</td>
+                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${fcrVal > 0 ? fcrVal.toFixed(1) : '—'}</td>
+                            ${aksiHtml}
+                        </tr>
+                    `;
+                }
+
+                // Render Deplesi
+                if (!log.type || log.type === 'deplesi') {
+                    tbodyDeplesi.innerHTML += `
+                        <tr>
+                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
+                            <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
+                            <td style="color: var(--rust); font-weight: 600;">${log.mati || 0} ekor</td>
+                            <td style="color: var(--rust); font-weight: 600;">${log.afkir || 0} ekor</td>
+                            <td style="color: var(--amber); font-weight: 600;">${log.sakit || 0} ekor</td>
+                            ${aksiHtml}
+                        </tr>
+                    `;
+                }
+
+                // Render Catatan
+                if (!log.type || log.type === 'catatan') {
+                    tbodyCatatan.innerHTML += `
+                        <tr>
+                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}<br><span style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</span></td>
+                            <td style="font-weight: 500;">${log.notes || '—'}</td>
+                            <td style="font-weight: 500;">${log.photo ? '📷 Terlampir' : '—'}</td>
+                            ${aksiHtml}
+                        </tr>
+                    `;
+                }
+            });
+        }
+
+        // Modal Helpers
+        function openModal(id) {
+            if (id === 'input-log-modal') {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                document.getElementById('global-inp-date').value = `${yyyy}-${mm}-${dd}`;
+
+                const flockSelect = document.getElementById('global-inp-flock');
+                flockSelect.innerHTML = '<option value="Semua">Semua Flock</option>';
+                if (coop && coop.occupants) {
+                    coop.occupants.forEach(occ => {
+                        flockSelect.innerHTML += `<option value="${occ.name}">${occ.name}</option>`;
+                    });
+                }
+                // default the active tab to pakan and update UI
+                const modal = document.getElementById('input-log-modal');
+                if (modal) {
+                    setModalMode('create');
+                    modal.dataset.activeTab = 'pakan';
+                    const firstBtn = modal.querySelector('.tab-nav .tab-btn');
+                    if (firstBtn) switchModalTab('pakan', firstBtn);
+                }
+            }
+            document.getElementById(id).classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+            document.body.style.overflow = '';
+            currentEditIndex = -1;
+            // reset modal to create mode when closing
+            const modal = document.getElementById('input-log-modal');
+            if (modal) setModalMode('create');
+        }
+
+        // Close Active Period action simulation
+        function closePeriodAction() {
+            if (confirm("Apakah Anda yakin ingin menutup periode aktif saat ini? Semua hewan yang tersisa akan dipindahkan ke kandang afkir.")) {
+                coop.sehat = 0;
+                coop.sakit = 0;
+                coop.periodName = "Periode Ditutup / Afkir";
+                coop.status = "Terhapus";
+                saveState();
+                location.href = 'monitoring-kandang.html';
+            }
+        }
+
+        let currentEditIndex = -1;
+
+        function editLog(index) {
+            currentEditIndex = index;
+            const log = coop.history[index];
+            const type = log.type || 'pakan';
+            
+            if (log.date) {
+                const parts = log.date.split('/');
+                if (parts.length === 3) {
+                    const dd = parts[0].padStart(2, '0');
+                    const mm = parts[1].padStart(2, '0');
+                    const yyyy = parts[2];
+                    document.getElementById('global-inp-date').value = `${yyyy}-${mm}-${dd}`;
+                }
+            }
+            
+            const flockSelect = document.getElementById('global-inp-flock');
+            flockSelect.innerHTML = '<option value="Semua">Semua Flock</option>';
+            if (coop && coop.occupants) {
+                coop.occupants.forEach(occ => {
+                    flockSelect.innerHTML += `<option value="${occ.name}">${occ.name}</option>`;
+                });
+            }
+            flockSelect.value = log.flock || 'Semua';
+
+            if (type === 'pakan') {
+                document.getElementById('inp-pakan-type').value = log.pakan_type || '';
+                document.getElementById('inp-pakan-jumlah').value = log.pakan || 0;
+                document.getElementById('inp-air').value = log.air || 0;
+            } else if (type === 'produksi') {
+                document.getElementById('inp-komoditas').value = log.komoditas || '';
+                document.getElementById('inp-total').value = log.total || 0;
+                document.getElementById('inp-satuan').value = log.satuan || '';
+                document.getElementById('inp-total-kg').value = log.total_kg || 0;
+            } else if (type === 'deplesi') {
+                const inpSakitEl = document.getElementById('inp-sakit');
+                if (inpSakitEl) inpSakitEl.value = log.sakit || '';
+                document.getElementById('inp-mati').value = log.mati || 0;
+                document.getElementById('inp-afkir').value = log.afkir || 0;
+            } else if (type === 'catatan') {
+                document.getElementById('inp-notes').value = log.notes || '';
+            }
+
+            // open modal and set edit mode (hide tabs)
+            document.getElementById('input-log-modal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            setModalMode('edit', type);
+        }
+
+        function deleteLog(index) {
+            if (confirm("Apakah Anda yakin ingin menghapus catatan harian ini?")) {
+                coop.history.splice(index, 1);
+                saveState();
+                renderDailyLogsTable();
+                renderMetrics();
+                renderOccupants();
+            }
+        }
+
+        // Submit daily record log entry
+        function submitDailyLog(event, type) {
+            event.preventDefault();
+
+            const globalDateVal = document.getElementById('global-inp-date').value;
+            const globalFlock = document.getElementById('global-inp-flock').value;
+
+            let dateStr = '';
+            if (globalDateVal) {
+                const parts = globalDateVal.split('-');
+                dateStr = `${parseInt(parts[2], 10)}/${parseInt(parts[1], 10)}/${parts[0]}`;
+            } else {
+                const today = new Date();
+                dateStr = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+            }
+
+            const newLog = {
+                date: dateStr,
+                type: type,
+                flock: globalFlock
+            };
+
+            if (type === 'pakan') {
+                newLog.pakan_type = document.getElementById('inp-pakan-type').value;
+                newLog.pakan = parseFloat(document.getElementById('inp-pakan-jumlah').value) || 0;
+                newLog.air = parseFloat(document.getElementById('inp-air').value) || 0;
+            } else if (type === 'produksi') {
+                newLog.komoditas = document.getElementById('inp-komoditas').value || '';
+                newLog.total = parseFloat(document.getElementById('inp-total').value) || 0;
+                newLog.satuan = document.getElementById('inp-satuan').value || '';
+                newLog.total_kg = parseFloat(document.getElementById('inp-total-kg').value) || 0;
+            } else if (type === 'deplesi') {
+                const inpSakitEl = document.getElementById('inp-sakit');
+                newLog.sakit = inpSakitEl ? parseInt(inpSakitEl.value) || 0 : 0;
+                newLog.mati = parseInt(document.getElementById('inp-mati').value) || 0;
+                newLog.afkir = parseInt(document.getElementById('inp-afkir').value) || 0;
+                
+                // Update cumulative status in coop
+                if (inpSakitEl && inpSakitEl.value !== "") {
+                    coop.sakit = newLog.sakit;
+                }
+                coop.mati += newLog.mati;
+
+                // Also reduce one of the lot quantities dynamically for fidelity simulation
+                if (coop.occupants && coop.occupants.length > 0 && newLog.mati > 0) {
+                    const primaryLot = coop.occupants[0];
+                    primaryLot.hereQty = Math.max(0, primaryLot.hereQty - newLog.mati);
+                    primaryLot.hereSehat = Math.max(0, primaryLot.hereSehat - newLog.mati);
+                    primaryLot.batchMatiCount += newLog.mati;
+                }
+            } else if (type === 'catatan') {
+                newLog.notes = document.getElementById('inp-notes').value;
+                const photoInput = document.getElementById('inp-photo');
+                newLog.photo = photoInput.files.length > 0 ? photoInput.files[0].name : null;
+            }
+
+            if (currentEditIndex > -1) {
+                coop.history[currentEditIndex] = newLog;
+                currentEditIndex = -1;
+            } else {
+                if (!coop.history) coop.history = [];
+                coop.history.unshift(newLog);
+            }
+
+            // Save state & re-render
+            saveState();
+            closeModal('input-log-modal');
+            
+            // Re-render components
+            renderMetrics();
+            renderOccupants();
+            renderDailyLogsTable();
+            
+            // Clear the form
+            event.target.reset();
+        }
+
+        // Initialize Page
+        initPage();
+    </script>
+</body>
+
+</html>

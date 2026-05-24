@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Flock — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* sidebar */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        .nav .bdg {
+            background: var(--rust);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* main */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tb-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .tb-sub {
+            font-size: 12px;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            margin-top: 1px;
+        }
+
+        .tb-right {
+            display: flex;
+            gap: 9px;
+        }
+
+        /* buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: .13s;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--bdr2);
+            color: var(--ink);
+        }
+
+        .btn-solid {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .btn-solid:hover {
+            background: #2e5640;
+        }
+
+        /* content */
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+        }
+
+        /* PLACEMENT OVERVIEW */
+        .placement-section {
+            margin-bottom: 24px;
+        }
+
+        .section-label {
+            font-size: 10.5px;
+            font-weight: 500;
+            letter-spacing: .9px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            margin-bottom: 12px;
+        }
+
+        .placement-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .pc {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 14px 16px;
+            position: relative;
+            overflow: hidden;
+            transition: .13s;
+            cursor: default;
+        }
+
+        .pc:hover {
+            box-shadow: 0 3px 14px rgba(0, 0, 0, .08);
+            transform: translateY(-1px);
+        }
+
+        .pc::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .pc.unassigned::after {
+            background: var(--amber);
+        }
+
+        .pc.kandang-a::after {
+            background: var(--sage);
+        }
+
+        .pc.kandang-b::after {
+            background: var(--sky);
+        }
+
+        .pc.kandang-c::after {
+            background: var(--clay);
+        }
+
+        .pc.total::after {
+            background: var(--ink3);
+        }
+
+        .pc-icon {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .pc-val {
+            font-family: 'Fraunces', serif;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--ink);
+        }
+
+        .pc.unassigned .pc-val {
+            color: var(--amber);
+        }
+
+        .pc-label {
+            font-size: 11px;
+            color: var(--ink2);
+            margin-top: 3px;
+        }
+
+        .pc-sub {
+            font-size: 10px;
+            color: var(--ink3);
+            margin-top: 2px;
+        }
+
+        .cap-bar {
+            height: 4px;
+            background: var(--surf3);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .cap-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width .4s ease;
+        }
+
+        .fill-sage {
+            background: var(--sage);
+        }
+
+        .fill-sky {
+            background: var(--sky);
+        }
+
+        .fill-clay {
+            background: var(--clay);
+        }
+
+        .fill-amber {
+            background: var(--amber);
+        }
+
+        /* flock table section */
+        .filters {
+            display: flex;
+            gap: 9px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 33px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--surf);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--sage);
+        }
+
+        .si {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink3);
+            font-size: 13px;
+        }
+
+        .sel {
+            padding: 8px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--surf);
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* table */
+        .table-wrap {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--surf2);
+        }
+
+        th {
+            padding: 10px 15px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--bdr);
+            transition: background .1s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #faf9f5;
+        }
+
+        td {
+            padding: 13px 15px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .fname {
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .fmeta {
+            font-size: 11px;
+            color: var(--ink3);
+            margin-top: 2px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* age display */
+        .age-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .age-num {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1;
+            color: var(--ink);
+        }
+
+        .age-unit {
+            font-size: 10px;
+            color: var(--ink2);
+        }
+
+        .age-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .phase-tag {
+            display: inline-flex;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: .3px;
+        }
+
+        .phase-doc {
+            background: #e0f5f0;
+            color: #1a6b55;
+        }
+
+        .phase-grower {
+            background: var(--sky-l);
+            color: var(--sky);
+        }
+
+        .phase-layer {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .phase-afkir {
+            background: var(--surf3);
+            color: var(--ink2);
+        }
+
+        /* population */
+        .pop-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pop-num {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .pop-detail {
+            font-size: 11px;
+            color: var(--ink2);
+            line-height: 1.5;
+        }
+
+        /* placement breakdown inline */
+        .placement-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .pb-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+        }
+
+        .pb-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .pb-name {
+            color: var(--ink2);
+            min-width: 80px;
+        }
+
+        .pb-qty {
+            font-weight: 500;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--ink);
+        }
+
+        .dot-amber {
+            background: var(--amber);
+        }
+
+        .dot-sage {
+            background: var(--sage);
+        }
+
+        .dot-sky {
+            background: var(--sky);
+        }
+
+        .dot-clay {
+            background: var(--clay);
+        }
+
+        /* expand btn */
+        .exp-btn {
+            background: none;
+            border: 1px solid var(--bdr);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: var(--ink2);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: .13s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .exp-btn:hover,
+        .exp-btn.open {
+            border-color: var(--sage);
+            color: var(--sage);
+            background: var(--sage-l);
+        }
+
+        /* batch sub-row */
+        .brow {
+            display: none;
+        }
+
+        .brow.show {
+            display: table-row;
+        }
+
+        .brow>td {
+            background: #f5f2e9;
+            padding: 0;
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .b-inner {
+            padding: 10px 15px 16px 44px;
+        }
+
+        .b-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .b-head-title {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+            color: var(--ink2);
+        }
+
+        .btable {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12px;
+        }
+
+        .btable thead tr {
+            background: #ece9df;
+        }
+
+        .btable th {
+            padding: 7px 12px;
+            text-align: left;
+            font-size: 9.5px;
+            font-weight: 600;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .btable td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #e5e1d6;
+        }
+
+        .btable tr:last-child td {
+            border-bottom: none;
+        }
+
+        .btable tr:hover td {
+            background: #ede9df;
+        }
+
+        /* lot tag */
+        .lot-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            background: var(--surf3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--ink2);
+        }
+
+        .loc-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .loc-unassigned {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+
+        .loc-kandang {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .loc-kandang-b {
+            background: var(--sky-l);
+            color: var(--sky);
+        }
+
+        .loc-kandang-c {
+            background: var(--clay-l);
+            color: var(--clay);
+        }
+
+        /* action btns */
+        .abt {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--ink3);
+            padding: 4px 5px;
+            border-radius: 4px;
+            transition: .1s;
+            font-size: 14px;
+        }
+
+        .abt:hover {
+            color: var(--sage);
+            background: var(--sage-l);
+        }
+
+        .abt.del:hover {
+            color: var(--rust);
+            background: var(--rust-l);
+        }
+
+        /* modal */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 6, 2, .5);
+            z-index: 200;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 32px 20px;
+            overflow-y: auto;
+        }
+
+        .overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surf);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .18);
+            animation: up .2s ease;
+            margin: auto;
+        }
+
+        @keyframes up {
+            from {
+                opacity: 0;
+                transform: translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .mh {
+            padding: 20px 24px 14px;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .mt {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ms {
+            font-size: 12px;
+            color: var(--ink2);
+            margin-top: 3px;
+        }
+
+        .mclose {
+            background: var(--surf2);
+            border: none;
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink2);
+        }
+
+        .mclose:hover {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+
+        .mb {
+            padding: 20px 24px;
+        }
+
+        .mfooter {
+            padding: 14px 24px;
+            border-top: 1px solid var(--bdr);
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+        }
+
+        /* form */
+        .fsec {
+            margin-bottom: 18px;
+        }
+
+        .fsec-title {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .frow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .frow.s1 {
+            grid-template-columns: 1fr;
+        }
+
+        .frow.s3 {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .fg {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .fg label {
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--ink2);
+        }
+
+        .fg label .req {
+            color: var(--rust);
+        }
+
+        .fg input,
+        .fg select,
+        .fg textarea {
+            padding: 8px 11px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--ink);
+            background: var(--surf);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+        }
+
+        .fg input:focus,
+        .fg select:focus {
+            border-color: var(--sage);
+        }
+
+        .fg .hint {
+            font-size: 11px;
+            color: var(--ink3);
+        }
+
+        /* summary strip */
+        .sum-strip {
+            background: var(--sage-l);
+            border: 1px solid #b3d4c0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .ss-item .sv {
+            font-family: 'Fraunces', serif;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .ss-item .sl {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--ink2);
+        }
+
+        .sv-g {
+            color: var(--sage);
+        }
+
+        .sv-a {
+            color: var(--amber);
+        }
+
+        .sv-r {
+            color: var(--rust);
+        }
+
+        /* kandang selector cards */
+        .kandang-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .kcard {
+            border: 2px solid var(--bdr);
+            border-radius: 10px;
+            padding: 13px;
+            cursor: pointer;
+            transition: .13s;
+        }
+
+        .kcard:hover {
+            border-color: var(--sage);
+        }
+
+        .kcard.sel {
+            border-color: var(--sage);
+            background: var(--sage-l);
+        }
+
+        .kcard-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+
+        .kcard-name {
+            font-weight: 600;
+            font-size: 13.5px;
+        }
+
+        .kcard-type {
+            font-size: 10.5px;
+            color: var(--ink2);
+            margin-top: 2px;
+        }
+
+        .kcard-nums {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--ink2);
+            margin-top: 8px;
+        }
+
+        .cap-bar2 {
+            height: 5px;
+            border-radius: 3px;
+            background: var(--surf3);
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .cap-fill2 {
+            height: 100%;
+            border-radius: 3px;
+            transition: width .3s;
+        }
+
+        /* tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 18px;
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .tab {
+            padding: 9px 18px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--ink2);
+            transition: .12s;
+            user-select: none;
+        }
+
+        .tab:hover {
+            color: var(--ink);
+        }
+
+        .tab.active {
+            color: var(--sage);
+            border-bottom-color: var(--sage);
+            font-weight: 500;
+        }
+
+        /* received date badge */
+        .recv-badge {
+            font-size: 11px;
+            background: var(--surf2);
+            color: var(--ink2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo">
+            <div class="sb-mark">🐓 RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav active" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span
+                    class="bdg">3</span></div>
+            <div class="nav"><span class="ico">🏭</span><span class="lbl">Stok per Gudang</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Flock / Hewan</div>
+                <div class="tb-sub">Komoditas ternak · kelola penerimaan dan penempatan kandang</div>
+            </div>
+            <div class="tb-right">
+                <button class="btn btn-ghost" onclick="openModal('assign-modal')">🏠 Assign ke Kandang</button>
+                <button class="btn btn-solid" onclick="openModal('add-modal')">＋ Terima Flock Baru</button>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- PLACEMENT OVERVIEW -->
+            <div class="placement-section">
+                <div class="section-label">Ringkasan Penempatan Populasi</div>
+                <div class="placement-grid" id="placement-grid">
+                    <!-- injected by JS -->
+                </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active">Aktif</div>
+                <div class="tab">Terhapus / Afkir</div>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="filters">
+                <div class="search-box">
+                    <span class="si">🔍</span>
+                    <input type="text" placeholder="Cari nama flock, spesies, atau ras…">
+                </div>
+                <select class="sel">
+                    <option>Semua Spesies</option>
+                    <option>Ayam Petelur</option>
+                    <option>Ayam Broiler</option>
+                    <option>Bebek</option>
+                </select>
+                <select class="sel">
+                    <option>Semua Fase</option>
+                    <option>DOC</option>
+                    <option>Grower</option>
+                    <option>Layer / Produksi</option>
+                </select>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Flock</th>
+                            <th>Spesies / Ras</th>
+                            <th>Tanggal Terima & Tetas</th>
+                            <th>Umur & Fase</th>
+                            <th>Total Populasi</th>
+                            <th>Penempatan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="flock-body"></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======== MODAL: TERIMA FLOCK BARU ======== -->
+    <div class="overlay" id="add-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt">Terima Flock Baru</div>
+                    <div class="ms">Hewan masuk sebagai <strong>Unassigned</strong>. Assign ke kandang bisa dilakukan
+                        setelah ini.</div>
+                </div>
+                <button class="mclose" onclick="closeModal('add-modal')">✕</button>
+            </div>
+            <div class="mb">
+                <div class="sum-strip">
+                    <div class="ss-item">
+                        <div class="sv sv-g" id="s-sehat">0</div>
+                        <div class="sl">Sehat</div>
+                    </div>
+                    <div class="ss-item">
+                        <div class="sv sv-a" id="s-sakit">0</div>
+                        <div class="sl">Sakit</div>
+                    </div>
+                    <div class="ss-item">
+                        <div class="sv sv-r" id="s-mati">0</div>
+                        <div class="sl">Mati Transit</div>
+                    </div>
+                    <div style="flex:1"></div>
+                    <div class="ss-item" style="text-align:right">
+                        <div class="sl" style="margin-bottom:3px">Total Diterima</div>
+                        <div class="sv" id="s-total"
+                            style="font-family:'Fraunces',serif;font-size:24px;font-weight:700">0</div>
+                    </div>
+                </div>
+
+                <div class="fsec">
+                    <div class="fsec-title">Identitas Komoditas</div>
+                    <div class="frow">
+                        <div class="fg">
+                            <label>Nama Flock <span class="req">*</span></label>
+                            <input type="text" placeholder="cth. DOC Layer Batch Mei 2025">
+                        </div>
+                        <div class="fg">
+                            <label>Spesies <span class="req">*</span></label>
+                            <select>
+                                <option>Pilih spesies</option>
+                                <option>Ayam Petelur</option>
+                                <option>Ayam Broiler</option>
+                                <option>Bebek</option>
+                                <option>Puyuh</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="frow">
+                        <div class="fg">
+                            <label>Ras / Strain</label>
+                            <input type="text" placeholder="cth. Lohmann Brown">
+                        </div>
+                        <div class="fg">
+                            <label>Jenis Kelamin</label>
+                            <select>
+                                <option>Betina</option>
+                                <option>Jantan</option>
+                                <option>Campuran</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fsec">
+                    <div class="fsec-title">Data Penerimaan</div>
+                    <div class="frow s3">
+                        <div class="fg">
+                            <label>Jumlah Sehat <span class="req">*</span></label>
+                            <input type="number" id="i-sehat" value="0" min="0" oninput="calcSum()">
+                        </div>
+                        <div class="fg">
+                            <label>Sakit / Isolasi</label>
+                            <input type="number" id="i-sakit" value="0" min="0" oninput="calcSum()">
+                        </div>
+                        <div class="fg">
+                            <label>Mati saat Transit</label>
+                            <input type="number" id="i-mati" value="0" min="0" oninput="calcSum()">
+                        </div>
+                    </div>
+                    <div class="frow">
+                        <div class="fg">
+                            <label>Tanggal Terima <span class="req">*</span></label>
+                            <input type="date">
+                            <span class="hint">Tanggal tetas diasumsikan sama jika tidak diketahui berbeda.</span>
+                        </div>
+                        <div class="fg">
+                            <label>Tanggal Tetas <span class="req">*</span></label>
+                            <input type="date">
+                            <span class="hint">Dasar perhitungan umur flock.</span>
+                        </div>
+                    </div>
+                    <div class="frow">
+                        <div class="fg">
+                            <label>Supplier / Asal</label>
+                            <select>
+                                <option>Internal</option>
+                                <option>PT. Japfa Comfeed</option>
+                                <option>PT. Charoen Pokphand</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="fg">
+                            <label>Biaya Akuisisi per Ekor (Rp)</label>
+                            <input type="number" placeholder="cth. 7500">
+                        </div>
+                    </div>
+                    <div class="frow">
+                        <div class="fg">
+                            <label>No. Lot / Referensi</label>
+                            <input type="text" placeholder="Otomatis: FLOCK-202505-001">
+                            <span class="hint">Kosongkan untuk generate otomatis.</span>
+                        </div>
+                        <div class="fg">
+                            <label>Berat Rata-rata per Ekor (kg)</label>
+                            <input type="number" placeholder="cth. 0.05" step="0.01">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fg">
+                    <label>Catatan</label>
+                    <textarea rows="2" placeholder="cth. Batch pengiriman April, kondisi baik semua"></textarea>
+                </div>
+            </div>
+            <div class="mfooter">
+                <button class="btn btn-ghost" onclick="closeModal('add-modal')">Batal</button>
+                <button class="btn btn-solid">Simpan Penerimaan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL: ASSIGN KE KANDANG ======== -->
+    <div class="overlay" id="assign-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt">Assign Flock ke Kandang</div>
+                    <div class="ms">Hewan yang belum di-assign akan dibuatkan lot baru di kandang tujuan.</div>
+                </div>
+                <button class="mclose" onclick="closeModal('assign-modal')">✕</button>
+            </div>
+            <div class="mb">
+                <div class="fsec">
+                    <div class="fsec-title">Pilih Flock & Jumlah</div>
+                    <div class="frow s1">
+                        <div class="fg">
+                            <label>Flock <span class="req">*</span></label>
+                            <select>
+                                <option>DOC Layer Super — 551 ekor Unassigned</option>
+                                <option>Ayam Petelur Siap Produksi — 76 ekor Unassigned</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="frow">
+                        <div class="fg">
+                            <label>Jumlah yang Di-assign <span class="req">*</span></label>
+                            <input type="number" value="300" min="1">
+                            <span class="hint">Stok Unassigned tersedia: 551 ekor</span>
+                        </div>
+                        <div class="fg">
+                            <label>Tanggal Masuk Kandang</label>
+                            <input type="date">
+                        </div>
+                    </div>
+                </div>
+                <div class="fsec">
+                    <div class="fsec-title">Pilih Kandang Tujuan</div>
+                    <div class="kandang-grid">
+                        <div class="kcard sel" onclick="pickKandang(this)">
+                            <div class="kcard-top">
+                                <div>
+                                    <div class="kcard-name">🏠 Kandang A</div>
+                                    <div class="kcard-type">Layer · Open House</div>
+                                </div>
+                                <span
+                                    style="font-size:10px;background:var(--sage-l);color:var(--sage);padding:2px 7px;border-radius:4px">62%
+                                    terisi</span>
+                            </div>
+                            <div class="kcard-nums"><span>Terisi: <strong>1.240</strong></span><span>Kapasitas:
+                                    <strong>2.000</strong></span></div>
+                            <div class="cap-bar2">
+                                <div class="cap-fill2 fill-sage" style="width:62%"></div>
+                            </div>
+                        </div>
+                        <div class="kcard" onclick="pickKandang(this)">
+                            <div class="kcard-top">
+                                <div>
+                                    <div class="kcard-name">🏠 Kandang B</div>
+                                    <div class="kcard-type">Broiler · Closed House</div>
+                                </div>
+                                <span
+                                    style="font-size:10px;background:var(--amber-l);color:var(--amber);padding:2px 7px;border-radius:4px">96%
+                                    terisi</span>
+                            </div>
+                            <div class="kcard-nums"><span>Terisi: <strong>2.880</strong></span><span>Kapasitas:
+                                    <strong>3.000</strong></span></div>
+                            <div class="cap-bar2">
+                                <div class="cap-fill2 fill-amber" style="width:96%"></div>
+                            </div>
+                        </div>
+                        <div class="kcard" onclick="pickKandang(this)">
+                            <div class="kcard-top">
+                                <div>
+                                    <div class="kcard-name">🏠 Kandang C</div>
+                                    <div class="kcard-type">DOC Brooder · Pemanas Gas</div>
+                                </div>
+                                <span
+                                    style="font-size:10px;background:var(--surf2);color:var(--ink2);padding:2px 7px;border-radius:4px">Kosong</span>
+                            </div>
+                            <div class="kcard-nums"><span>Terisi: <strong>0</strong></span><span>Kapasitas:
+                                    <strong>1.500</strong></span></div>
+                            <div class="cap-bar2">
+                                <div class="cap-fill2 fill-sky" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="kcard" onclick="pickKandang(this)"
+                            style="border-style:dashed;display:flex;align-items:center;justify-content:center;color:var(--ink2);gap:6px;font-size:13px;">
+                            ＋ Kandang Baru
+                        </div>
+                    </div>
+                    <div class="fg">
+                        <label>Catatan Pemindahan</label>
+                        <input type="text" placeholder="cth. Pindah ke kandang produksi, umur 18 minggu">
+                    </div>
+                </div>
+            </div>
+            <div class="mfooter">
+                <button class="btn btn-ghost" onclick="closeModal('assign-modal')">Batal</button>
+                <button class="btn btn-solid">Assign ke Kandang</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── DATA ──
+        // lot: null = unassigned, string = nama kandang
+        const flocks = [
+            {
+                id: 1, name: 'DOC Layer Super', species: 'Ayam Petelur', strain: 'Lohmann Brown', gender: 'Betina',
+                received_at: '2025-04-02', hatch_date: '2025-04-02', supplier: 'PT. Japfa Comfeed',
+                cost: 7500,
+                lots: [
+                    { lot: 'FLOCK-202504-001-UA', kandang: null, sehat: 547, sakit: 4, mati: 0 }
+                ]
+            },
+            {
+                id: 2, name: 'Ayam Petelur Siap Produksi', species: 'Ayam Petelur', strain: 'ISA Brown', gender: 'Betina',
+                received_at: '2025-01-15', hatch_date: '2024-08-10', supplier: 'PT. Charoen Pokphand',
+                cost: 45000,
+                lots: [
+                    { lot: 'FLOCK-202501-001-KA', kandang: 'Kandang A', sehat: 1235, sakit: 3, mati: 2 },
+                    { lot: 'FLOCK-202501-001-UA', kandang: null, sehat: 74, sakit: 2, mati: 0 }
+                ]
+            },
+            {
+                id: 3, name: 'Ayam Petanjan', species: 'Ayam Petelur', strain: '—', gender: 'Campuran',
+                received_at: '2024-12-10', hatch_date: '2024-06-01', supplier: 'Internal',
+                cost: 38000,
+                lots: [
+                    { lot: 'FLOCK-202412-001-KB', kandang: 'Kandang B', sehat: 8039, sakit: 3, mati: 2 }
+                ]
+            },
+            {
+                id: 4, name: '234342422', species: 'Bebek', strain: 'QW ZZ', gender: 'Campuran',
+                received_at: '2025-02-01', hatch_date: '2024-11-20', supplier: 'Supplier lainnya',
+                cost: 12000,
+                lots: [
+                    { lot: 'FLOCK-202502-001-KC', kandang: 'Kandang C', sehat: 97, sakit: 36, mati: 10 }
+                ]
+            }
+        ];
+
+        // ── KANDANG config (for placement overview) ──
+        const kandangs = [
+            { key: null, label: 'Unassigned', icon: '📦', cls: 'unassigned', barCls: 'fill-amber', cap: null },
+            { key: 'Kandang A', label: 'Kandang A', icon: '🏠', cls: 'kandang-a', barCls: 'fill-sage', cap: 2000 },
+            { key: 'Kandang B', label: 'Kandang B', icon: '🏠', cls: 'kandang-b', barCls: 'fill-sky', cap: 3000 },
+            { key: 'Kandang C', label: 'Kandang C', icon: '🏠', cls: 'kandang-c', barCls: 'fill-clay', cap: 1500 },
+        ];
+
+        const dotCls = { null: 'dot-amber', 'Kandang A': 'dot-sage', 'Kandang B': 'dot-sky', 'Kandang C': 'dot-clay' };
+        const locCls = { null: 'loc-unassigned', 'Kandang A': 'loc-kandang', 'Kandang B': 'loc-kandang-b', 'Kandang C': 'loc-kandang-c' };
+
+        // ── HELPERS ──
+        function daysDiff(d) { return Math.floor((Date.now() - new Date(d)) / 86400000); }
+
+        function age(hatch) {
+            const d = daysDiff(hatch);
+            if (d < 7) return { num: d, unit: 'hari', pct: Math.min(d / 7 * 12, 12) };
+            if (d < 30) return { num: Math.floor(d / 7), unit: 'minggu', pct: Math.min(d / 126 * 40, 40) };
+            if (d < 365) return { num: Math.floor(d / 30), unit: 'bulan', pct: Math.min(d / 365 * 80, 80) };
+            return { num: (d / 365).toFixed(1), unit: 'tahun', pct: 95 };
+        }
+
+        function phase(hatch) {
+            const w = daysDiff(hatch) / 7;
+            if (w < 4) return { label: 'DOC', cls: 'phase-doc' };
+            if (w < 18) return { label: 'Grower', cls: 'phase-grower' };
+            if (w < 72) return { label: 'Layer / Prod.', cls: 'phase-layer' };
+            return { label: 'Afkir', cls: 'phase-afkir' };
+        }
+
+        // ── PLACEMENT OVERVIEW ──
+        function renderPlacement() {
+            // tally per kandang
+            const tally = {};
+            kandangs.forEach(k => tally[k.key] = 0);
+            let grand = 0;
+            flocks.forEach(f => f.lots.forEach(l => {
+                const alive = l.sehat + l.sakit;
+                tally[l.kandang] = (tally[l.kandang] || 0) + alive;
+                grand += alive;
+            }));
+
+            const grid = document.getElementById('placement-grid');
+            let html = '';
+
+            // total card first
+            html += `
+    <div class="pc total">
+      <div class="pc-icon">🐔</div>
+      <div class="pc-val">${grand.toLocaleString('id')}</div>
+      <div class="pc-label">Total Populasi</div>
+      <div class="pc-sub">${flocks.length} jenis flock</div>
+    </div>`;
+
+            kandangs.forEach(k => {
+                const qty = tally[k.key] || 0;
+                const pct = k.cap ? Math.round(qty / k.cap * 100) : null;
+                html += `
+      <div class="pc ${k.cls}">
+        <div class="pc-icon">${k.icon}</div>
+        <div class="pc-val">${qty.toLocaleString('id')}</div>
+        <div class="pc-label">${k.label}</div>
+        ${k.cap
+                        ? `<div class="pc-sub">${pct}% dari ${k.cap.toLocaleString('id')} kapasitas</div>
+             <div class="cap-bar"><div class="cap-fill ${k.barCls}" style="width:${pct}%"></div></div>`
+                        : `<div class="pc-sub">Belum ditempatkan</div>`
+                    }
+      </div>`;
+            });
+
+            grid.innerHTML = html;
+        }
+
+        // ── FLOCK TABLE ──
+        const expanded = new Set();
+
+        function renderTable() {
+            const tbody = document.getElementById('flock-body');
+            tbody.innerHTML = '';
+
+            flocks.forEach(f => {
+                const a = age(f.hatch_date);
+                const ph = phase(f.hatch_date);
+                const totalSehat = f.lots.reduce((s, l) => s + l.sehat, 0);
+                const totalSakit = f.lots.reduce((s, l) => s + l.sakit, 0);
+                const totalMati = f.lots.reduce((s, l) => s + l.mati, 0);
+                const totalAlive = totalSehat + totalSakit;
+
+                // group lots by kandang for placement breakdown
+                const byKandang = {};
+                f.lots.forEach(l => {
+                    const k = l.kandang ?? '__unassigned__';
+                    byKandang[k] = (byKandang[k] || 0) + l.sehat + l.sakit;
+                });
+
+                // placement breakdown HTML
+                let placementHTML = '<div class="placement-breakdown">';
+                Object.entries(byKandang).forEach(([k, qty]) => {
+                    const realKey = k === '__unassigned__' ? null : k;
+                    const dc = dotCls[realKey] || 'dot-sage';
+                    const lbl = realKey || 'Unassigned';
+                    placementHTML += `
+        <div class="pb-row">
+          <span class="pb-dot ${dc}"></span>
+          <span class="pb-name">${lbl === 'Unassigned' ? '📦 Unassigned' : '🏠 ' + lbl}</span>
+          <span class="pb-qty">${qty.toLocaleString('id')}</span>
+        </div>`;
+                });
+                placementHTML += '</div>';
+
+                // main row
+                const tr = document.createElement('tr');
+                tr.id = `row-${f.id}`;
+                tr.innerHTML = `
+      <td>
+        <div class="fname">${f.name}</div>
+        <div class="fmeta">${f.gender} · ${f.lots.length} lot</div>
+      </td>
+      <td>
+        <div style="font-weight:500">${f.species}</div>
+        <div style="font-size:11px;color:var(--ink3)">${f.strain}</div>
+      </td>
+      <td>
+        <div><span class="recv-badge">${f.received_at}</span></div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:4px">🐣 Tetas: ${f.hatch_date}</div>
+      </td>
+      <td>
+        <div class="age-block">
+          <div class="age-row">
+            <span class="age-num">${a.num}</span>
+            <span class="age-unit">${a.unit}</span>
+          </div>
+          <span class="phase-tag ${ph.cls}">${ph.label}</span>
+        </div>
+      </td>
+      <td>
+        <div class="pop-row">
+          <span class="pop-num">${totalAlive.toLocaleString('id')}</span>
+          <span style="font-size:11px;color:var(--ink3)">ekor</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px;font-size:11px;">
+          <span style="color:var(--sage);font-weight:500">${totalSehat.toLocaleString('id')} sht</span>
+          ${totalSakit > 0 ? `<span style="color:var(--amber);font-weight:500">${totalSakit} skt</span>` : ''}
+          ${totalMati > 0 ? `<span style="color:var(--rust);font-weight:500">${totalMati} mati</span>` : ''}
+        </div>
+      </td>
+      <td>${placementHTML}</td>
+      <td>
+        <button class="exp-btn ${expanded.has(f.id) ? 'open' : ''}" id="ebtn-${f.id}" onclick="toggleLot(${f.id})">
+          📋 ${f.lots.length} lot
+        </button>
+        <button class="abt" style="margin-left:4px" onclick="openModal('assign-modal')" title="Assign ke kandang">🏠</button>
+        <button class="abt" title="Edit">✏️</button>
+        <button class="abt del" title="Hapus">🗑</button>
+      </td>
+    `;
+                tbody.appendChild(tr);
+
+                // lot sub-row
+                const btr = document.createElement('tr');
+                btr.className = `brow${expanded.has(f.id) ? ' show' : ''}`;
+                btr.id = `brow-${f.id}`;
+
+                const lotRows = f.lots.map(l => {
+                    const lc = locCls[l.kandang] || 'loc-unassigned';
+                    const locLabel = l.kandang ? '🏠 ' + l.kandang : '📦 Unassigned';
+                    const alive = l.sehat + l.sakit;
+                    return `
+        <tr>
+          <td><span class="lot-tag">${l.lot}</span></td>
+          <td><span class="loc-chip ${lc}">${locLabel}</span></td>
+          <td>
+            <span style="font-weight:600;font-family:'Fraunces',serif;font-size:15px">${alive.toLocaleString('id')}</span>
+            <span style="font-size:11px;color:var(--ink2)"> ekor</span>
+          </td>
+          <td>
+            <span style="color:var(--sage);font-weight:500;font-size:12px">${l.sehat.toLocaleString('id')} sehat</span>
+            ${l.sakit > 0 ? `<span style="color:var(--amber);font-size:12px;margin-left:8px">${l.sakit} sakit</span>` : ''}
+            ${l.mati > 0 ? `<span style="color:var(--rust);font-size:12px;margin-left:8px">${l.mati} mati</span>` : ''}
+          </td>
+          <td>
+            ${!l.kandang
+                            ? `<button class="exp-btn" onclick="openModal('assign-modal')" style="font-size:10.5px">🏠 Assign ke Kandang</button>`
+                            : `<button class="exp-btn" style="font-size:10.5px">↔️ Pindah Kandang</button>`
+                        }
+            <button class="abt del" style="margin-left:4px;font-size:13px">🗑</button>
+          </td>
+        </tr>
+      `;
+                }).join('');
+
+                btr.innerHTML = `
+      <td colspan="7">
+        <div class="b-inner">
+          <div class="b-head">
+            <span class="b-head-title">📋 Lot / Penempatan — ${f.name}</span>
+            <button class="btn btn-solid" style="font-size:11px;padding:5px 12px" onclick="openModal('assign-modal')">＋ Assign Lot Baru</button>
+          </div>
+          <table class="btable">
+            <thead>
+              <tr>
+                <th>No. Lot</th>
+                <th>Penempatan</th>
+                <th>Total Hidup</th>
+                <th>Detail Kondisi</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>${lotRows}</tbody>
+          </table>
+        </div>
+      </td>
+    `;
+                tbody.appendChild(btr);
+            });
+        }
+
+        function toggleLot(id) {
+            const brow = document.getElementById(`brow-${id}`);
+            const btn = document.getElementById(`ebtn-${id}`);
+            if (expanded.has(id)) {
+                brow.classList.remove('show');
+                btn.classList.remove('open');
+                expanded.delete(id);
+            } else {
+                brow.classList.add('show');
+                btn.classList.add('open');
+                expanded.add(id);
+            }
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+        document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); }));
+
+        function calcSum() {
+            const s = +document.getElementById('i-sehat').value || 0;
+            const k = +document.getElementById('i-sakit').value || 0;
+            const m = +document.getElementById('i-mati').value || 0;
+            document.getElementById('s-sehat').textContent = s;
+            document.getElementById('s-sakit').textContent = k;
+            document.getElementById('s-mati').textContent = m;
+            document.getElementById('s-total').textContent = s + k + m;
+        }
+
+        function pickKandang(el) {
+            document.querySelectorAll('.kcard').forEach(c => c.classList.remove('sel'));
+            el.classList.add('sel');
+        }
+
+        // init
+        renderPlacement();
+        renderTable();
+    </script>
+</body>
+
+</html>
