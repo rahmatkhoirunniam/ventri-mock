@@ -1741,6 +1741,7 @@
             listContainer.innerHTML = '';
 
             coop.occupants.forEach(occ => {
+                const totalDead = occ.totalMati ?? 0;
                 listContainer.innerHTML += `
                     <div class="occ-card" style="margin-bottom: 0; border: 1px solid var(--bdr); border-radius: 8px; padding: 12px; background: var(--surf);">
                         <div class="occ-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--bdr); padding-bottom: 6px;">
@@ -1762,10 +1763,10 @@
                             <div class="occ-sub-metric">
                                 <span class="occ-metric-lbl" style="display: block; font-size: 10.5px; color: var(--ink3); margin-bottom: 2px;">Total Batch (Semua)</span>
                                 <span class="occ-metric-val" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 12px; font-weight: 600; color: var(--ink);">
-                                    ${occ.totalQty.toLocaleString('id')}
                                     <span class="mini-dot-list" style="display: inline-flex; gap: 4px; font-weight: 600; font-size: 10.5px;">
                                         <span style="color: var(--sage);">${occ.totalSehat} sht</span>
                                         <span style="color: var(--amber);">${occ.totalSakit} skt</span>
+                                        <span style="color: var(--rust);">${totalDead} mati</span>
                                     </span>
                                 </span>
                             </div>
@@ -2147,6 +2148,7 @@
                     `;
                     const visibleOccupants = c.occupants.slice(0, 2);
                     visibleOccupants.forEach(occ => {
+                        const totalDead = occ.totalMati ?? 0;
                         occupantsHTML += `
                             <div class="occ-card">
                                 <div class="occ-header">
@@ -2168,10 +2170,10 @@
                                     <div class="occ-sub-metric">
                                         <span class="occ-metric-lbl">Total Batch (Semua)</span>
                                         <span class="occ-metric-val" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                                            ${occ.totalQty.toLocaleString('id')}
                                             <span class="mini-dot-list" style="display: inline-flex; gap: 6px; font-weight: 600; font-size: 11px;">
                                                 <span style="color: var(--sage);">${occ.totalSehat} sht</span>
                                                 <span style="color: var(--amber);">${occ.totalSakit} skt</span>
+                                                <span style="color: var(--rust);">${totalDead.toLocaleString('id')} mati</span>
                                             </span>
                                         </span>
                                     </div>

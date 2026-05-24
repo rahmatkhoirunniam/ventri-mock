@@ -1754,6 +1754,7 @@
                 const totalQty = occ.totalQty ?? occ.hereQty;
                 const totalHealthy = occ.totalSehat ?? 0;
                 const totalSick = occ.totalSakit ?? 0;
+                const totalDead = occ.totalMati ?? 0;
 
                 container.innerHTML += `
                     <div class="lot-c">
@@ -1774,9 +1775,9 @@
                             <div class="lot-c-col">
                                 <span class="lot-c-col-label">Total Batch (Semua)</span>
                                 <div class="lot-c-col-value-row" style="display: flex; gap: 8px; font-weight: 600; font-size: 12px; align-items: center; flex-wrap: wrap;">
-                                    <span class="lot-c-qty-text" style="margin-right: 4px;">${totalQty}</span>
                                     <span style="color: var(--sage);">${totalHealthy.toLocaleString('id')} sht</span>
                                     <span style="color: var(--amber);">${totalSick.toLocaleString('id')} skt</span>
+                                    <span style="color: var(--rust);">${totalDead.toLocaleString('id')} mati</span>
                                 </div>
                             </div>
                         </div>
@@ -1846,8 +1847,8 @@
             document.getElementById('pane-' + tabName).classList.add('active');
         }
 
-        function switchModalTab(tabName, btnElement) {
-            if (btnElement && btnElement.classList.contains('disabled')) return;
+        function switchModalTab(tabName, btnElement, force = false) {
+            if (!force && btnElement && btnElement.classList.contains('disabled')) return;
 
             const btns = btnElement.parentElement.querySelectorAll('.tab-btn');
             btns.forEach(b => b.classList.remove('active'));
@@ -1939,8 +1940,8 @@
                 if (tabNav) tabNav.style.display = 'none';
                 // show only the supplied type form
                 if (type) {
-                    const tabBtn = modal.querySelector(`.tab-nav .tab-btn[onclick*="${type}"]`) || modal.querySelector(`.tab-nav .tab-btn`);
-                    if (tabBtn) switchModalTab(type, tabBtn);
+                    const tabBtn = document.getElementById('modal-tab-' + type) || modal.querySelector('.tab-nav .tab-btn');
+                    if (tabBtn) switchModalTab(type, tabBtn, true);
                 }
                 // update title and save text
                 if (titleEl) titleEl.textContent = `Edit ${type === 'pakan' ? 'Pakan' : type === 'produksi' ? 'Produksi' : type === 'deplesi' ? 'Deplesi' : 'Catatan'}`;
@@ -2195,6 +2196,7 @@
                 });
             }
             flockSelect.value = log.flock || 'Semua';
+            handleFlockChange();
 
             if (type === 'pakan') {
                 document.getElementById('inp-pakan-type').value = log.pakan_type || '';
