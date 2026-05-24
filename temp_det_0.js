@@ -12,7 +12,7 @@
                     { date: "23/05/2026", type: "produksi", telur: 18.5, susu: 0, daging: 0 },
                     { date: "22/05/2026", type: "deplesi", sehat: 3, sakit: 0, mati: 1, afkir: 0 },
                     { date: "21/05/2026", type: "catatan", notes: "Pengecekan rutin ventilasi berjalan lancar. Hewan terpantau aktif.", photo: "kondisi_pagi.jpg" },
-                    { date: "20/05/2026", type: "pakan", pakan: 54, temp: 27.5 },
+                    { date: "20/05/2026", type: "pakan", pakan_type: "pakan-standar", pakan: 54, air: 115 },
                     { date: "20/05/2026", type: "produksi", telur: 17.8, susu: 0, daging: 0 }
                 ];
                 localStorage.setItem('coops', JSON.stringify(coops));
@@ -309,9 +309,50 @@
             btns.forEach(b => b.classList.remove('active'));
             btnElement.classList.add('active');
 
+            const modal = document.getElementById('input-log-modal');
+            if (modal) modal.dataset.activeTab = tabName;
+
             const panes = document.querySelectorAll('#input-log-modal .modal-tab-pane');
-            panes.forEach(p => p.style.display = 'none');
-            document.getElementById('form-tab-' + tabName).style.display = 'block';
+            panes.forEach(p => { p.style.display = 'none'; p.classList.remove('active'); });
+            const target = document.getElementById('form-tab-' + tabName);
+            if (target) { target.style.display = 'block'; target.classList.add('active'); }
+        }
+
+        // Set modal UI mode: 'create' shows tabs; 'edit' hides tabs and only shows specific form
+        function setModalMode(mode, type) {
+            const modal = document.getElementById('input-log-modal');
+            if (!modal) return;
+            const tabNav = modal.querySelector('.tab-nav');
+            const titleEl = modal.querySelector('.mt');
+            const saveBtn = modal.querySelector('.mfooter .btn-solid');
+            if (mode === 'edit') {
+                modal.dataset.mode = 'edit';
+                if (tabNav) tabNav.style.display = 'none';
+                // show only the supplied type form
+                if (type) {
+                    const tabBtn = modal.querySelector(`.tab-nav .tab-btn[onclick*="${type}"]`) || modal.querySelector(`.tab-nav .tab-btn`);
+                    if (tabBtn) switchModalTab(type, tabBtn);
+                }
+                // update title and save text
+                if (titleEl) titleEl.textContent = `Edit ${type === 'pakan' ? 'Pakan' : type === 'produksi' ? 'Produksi' : type === 'deplesi' ? 'Deplesi' : 'Catatan'}`;
+                if (saveBtn) saveBtn.textContent = 'Simpan Perubahan';
+            } else {
+                // create mode
+                delete modal.dataset.mode;
+                if (tabNav) tabNav.style.display = '';
+                if (titleEl) titleEl.textContent = 'Catat Log Harian Kandang';
+                if (saveBtn) saveBtn.textContent = 'Simpan';
+            }
+        }
+
+        // Submit the currently active tab form (used by unified footer Save button)
+        function submitActiveTab() {
+            const modal = document.getElementById('input-log-modal');
+            const activeTab = modal && modal.dataset.activeTab ? modal.dataset.activeTab : 'pakan';
+            const form = document.getElementById('form-tab-' + activeTab);
+            if (!form) return;
+            const fakeEvent = { preventDefault: function(){}, target: form };
+            submitDailyLog(fakeEvent, activeTab);
         }
 
         // Render Daily Logs table / switch empty state
@@ -353,10 +394,16 @@
             tbodyCatatan.innerHTML = '';
 
             displayHistory.forEach(log => {
+                const originalIndex = coop.history.indexOf(log);
                 const eggsCount = (log.telur || 0) * 16;
                 const pop = (log.sehat || 0) + (log.sakit || 0);
                 const hdp = pop > 0 ? ((eggsCount / pop) * 100) : 0;
                 const fcr = log.telur > 0 ? ((log.pakan || 0) / log.telur) : 0;
+
+                const aksiHtml = `<td style="white-space:nowrap;">
+                    <button style="border:none; background:none; cursor:pointer; font-size:14px; margin-right:6px;" onclick="editLog(${originalIndex})" title="Edit">✏️</button>
+                    <button style="border:none; background:none; cursor:pointer; font-size:14px;" onclick="deleteLog(${originalIndex})" title="Hapus">🗑️</button>
+                </td>`;
 
                 // Render Pakan
                 if (!log.type || log.type === 'pakan') {
@@ -373,6 +420,7 @@
                             <td style="font-weight: 500;">${pakanTypeLabel}</td>
                             <td style="font-weight: 500;">${log.pakan || 0} kg</td>
                             <td style="font-weight: 500; color: var(--sky);">${log.air || 0} L</td>
+                            ${aksiHtml}
                         </tr>
                     `;
                 }
@@ -400,6 +448,7 @@
                             <td style="font-weight: 500;">${totalKg ? totalKg + ' kg' : '—'}</td>
                             <td style="font-family:'DM Mono', monospace; font-weight:600; color:var(--sage);">${lastHdpCell}</td>
                             <td style="font-family:'DM Mono', monospace; font-weight:600;">${fcrVal > 0 ? fcrVal.toFixed(1) : '—'}</td>
+                            ${aksiHtml}
                         </tr>
                     `;
                 }
@@ -412,8 +461,8 @@
                             <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
                             <td style="color: var(--rust); font-weight: 600;">${log.mati || 0} ekor</td>
                             <td style="color: var(--rust); font-weight: 600;">${log.afkir || 0} ekor</td>
-                            <td style="color: var(--sage); font-weight: 600;">${log.sehat || 0} ekor</td>
                             <td style="color: var(--amber); font-weight: 600;">${log.sakit || 0} ekor</td>
+                            ${aksiHtml}
                         </tr>
                     `;
                 }
@@ -425,6 +474,7 @@
                             <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}<br><span style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</span></td>
                             <td style="font-weight: 500;">${log.notes || '—'}</td>
                             <td style="font-weight: 500;">${log.photo ? '📷 Terlampir' : '—'}</td>
+                            ${aksiHtml}
                         </tr>
                     `;
                 }
@@ -447,6 +497,14 @@
                         flockSelect.innerHTML += `<option value="${occ.name}">${occ.name}</option>`;
                     });
                 }
+                // default the active tab to pakan and update UI
+                const modal = document.getElementById('input-log-modal');
+                if (modal) {
+                    setModalMode('create');
+                    modal.dataset.activeTab = 'pakan';
+                    const firstBtn = modal.querySelector('.tab-nav .tab-btn');
+                    if (firstBtn) switchModalTab('pakan', firstBtn);
+                }
             }
             document.getElementById(id).classList.add('open');
             document.body.style.overflow = 'hidden';
@@ -455,6 +513,10 @@
         function closeModal(id) {
             document.getElementById(id).classList.remove('open');
             document.body.style.overflow = '';
+            currentEditIndex = -1;
+            // reset modal to create mode when closing
+            const modal = document.getElementById('input-log-modal');
+            if (modal) setModalMode('create');
         }
 
         // Close Active Period action simulation
@@ -466,6 +528,66 @@
                 coop.status = "Terhapus";
                 saveState();
                 location.href = 'monitoring-kandang.html';
+            }
+        }
+
+        let currentEditIndex = -1;
+
+        function editLog(index) {
+            currentEditIndex = index;
+            const log = coop.history[index];
+            const type = log.type || 'pakan';
+            
+            if (log.date) {
+                const parts = log.date.split('/');
+                if (parts.length === 3) {
+                    const dd = parts[0].padStart(2, '0');
+                    const mm = parts[1].padStart(2, '0');
+                    const yyyy = parts[2];
+                    document.getElementById('global-inp-date').value = `${yyyy}-${mm}-${dd}`;
+                }
+            }
+            
+            const flockSelect = document.getElementById('global-inp-flock');
+            flockSelect.innerHTML = '<option value="Semua">Semua Flock</option>';
+            if (coop && coop.occupants) {
+                coop.occupants.forEach(occ => {
+                    flockSelect.innerHTML += `<option value="${occ.name}">${occ.name}</option>`;
+                });
+            }
+            flockSelect.value = log.flock || 'Semua';
+
+            if (type === 'pakan') {
+                document.getElementById('inp-pakan-type').value = log.pakan_type || '';
+                document.getElementById('inp-pakan-jumlah').value = log.pakan || 0;
+                document.getElementById('inp-air').value = log.air || 0;
+            } else if (type === 'produksi') {
+                document.getElementById('inp-komoditas').value = log.komoditas || '';
+                document.getElementById('inp-total').value = log.total || 0;
+                document.getElementById('inp-satuan').value = log.satuan || '';
+                document.getElementById('inp-total-kg').value = log.total_kg || 0;
+            } else if (type === 'deplesi') {
+                const inpSakitEl = document.getElementById('inp-sakit');
+                if (inpSakitEl) inpSakitEl.value = log.sakit || '';
+                document.getElementById('inp-mati').value = log.mati || 0;
+                document.getElementById('inp-afkir').value = log.afkir || 0;
+            } else if (type === 'catatan') {
+                document.getElementById('inp-notes').value = log.notes || '';
+            }
+
+            // open modal and set edit mode (hide tabs)
+            document.getElementById('input-log-modal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            setModalMode('edit', type);
+        }
+
+        function deleteLog(index) {
+            if (confirm("Apakah Anda yakin ingin menghapus catatan harian ini?")) {
+                coop.history.splice(index, 1);
+                saveState();
+                renderDailyLogsTable();
+                renderMetrics();
+                renderOccupants();
             }
         }
 
@@ -501,14 +623,15 @@
                 newLog.satuan = document.getElementById('inp-satuan').value || '';
                 newLog.total_kg = parseFloat(document.getElementById('inp-total-kg').value) || 0;
             } else if (type === 'deplesi') {
-                newLog.sehat = parseInt(document.getElementById('inp-sehat').value) || 0;
-                newLog.sakit = parseInt(document.getElementById('inp-sakit').value) || 0;
+                const inpSakitEl = document.getElementById('inp-sakit');
+                newLog.sakit = inpSakitEl ? parseInt(inpSakitEl.value) || 0 : 0;
                 newLog.mati = parseInt(document.getElementById('inp-mati').value) || 0;
                 newLog.afkir = parseInt(document.getElementById('inp-afkir').value) || 0;
                 
                 // Update cumulative status in coop
-                coop.sehat = newLog.sehat;
-                coop.sakit = newLog.sakit;
+                if (inpSakitEl && inpSakitEl.value !== "") {
+                    coop.sakit = newLog.sakit;
+                }
                 coop.mati += newLog.mati;
 
                 // Also reduce one of the lot quantities dynamically for fidelity simulation
@@ -524,8 +647,13 @@
                 newLog.photo = photoInput.files.length > 0 ? photoInput.files[0].name : null;
             }
 
-            if (!coop.history) coop.history = [];
-            coop.history.unshift(newLog);
+            if (currentEditIndex > -1) {
+                coop.history[currentEditIndex] = newLog;
+                currentEditIndex = -1;
+            } else {
+                if (!coop.history) coop.history = [];
+                coop.history.unshift(newLog);
+            }
 
             // Save state & re-render
             saveState();

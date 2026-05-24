@@ -1165,59 +1165,88 @@
             <div class="mh">
                 <div>
                     <div class="mt">Tambah Kandang Baru</div>
-                    <div class="ms">Daftarkan kandang baru ke dalam sistem monitoring.</div>
+                    <div class="ms">Isi informasi lengkap tentang kandang ternak</div>
                 </div>
                 <button class="mclose" onclick="closeModal('add-kandang-modal')">✕</button>
             </div>
             <form id="add-kandang-form" onsubmit="submitKandang(event)">
-                <div class="mb">
+                <div class="mb" style="max-height: 70vh; overflow-y: auto;">
                     <div class="fsec">
-                        <div class="fsec-title">Informasi Kandang</div>
                         <div class="frow">
                             <div class="fg">
                                 <label>Nama Kandang <span class="req">*</span></label>
-                                <input type="text" id="k-name" required placeholder="cth. Kandang ayam baru">
+                                <input type="text" id="k-name" required placeholder="Contoh: Kandang A" style="border: 2px solid #000000; border-radius: 8px;">
                             </div>
                             <div class="fg">
-                                <label>Lokasi <span class="req">*</span></label>
-                                <input type="text" id="k-loc" required placeholder="cth. Blok Timur / Utara">
+                                <label>Lokasi</label>
+                                <input type="text" id="k-loc" placeholder="Contoh: Gedung utama, sebelah kiri">
                             </div>
                         </div>
                         <div class="frow">
                             <div class="fg">
+                                <label>Kapasitas (ekor) <span class="req">*</span></label>
+                                <input type="number" id="k-cap" required min="10" value="100">
+                            </div>
+                            <div class="fg">
                                 <label>Tipe Kandang <span class="req">*</span></label>
                                 <select id="k-type" required>
-                                    <option value="">Pilih tipe</option>
                                     <option value="Battery Cage">Battery Cage</option>
                                     <option value="Free Range">Free Range</option>
                                     <option value="Deep Litter">Deep Litter</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg" style="max-width: 50%;">
+                                <label>Status <span class="req">*</span></label>
+                                <select id="k-status" required>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Nonaktif">Nonaktif</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <hr style="border: 0; border-top: 1px solid var(--bdr); margin: 20px 0;">
+                        
+                        <div class="fsec-title" style="font-weight: 700; margin-bottom: 12px; color: var(--ink);">Kondisi Optimal (Opsional)</div>
+                        
+                        <div class="frow">
                             <div class="fg">
-                                <label>Kapasitas (ekor) <span class="req">*</span></label>
-                                <input type="number" id="k-cap" required min="10" placeholder="cth. 500">
+                                <label>Suhu Minimum (°C)</label>
+                                <input type="number" id="k-temp-min" min="0" step="0.1" value="18.0">
+                            </div>
+                            <div class="fg">
+                                <label>Suhu Maksimum (°C)</label>
+                                <input type="number" id="k-temp-max" min="0" step="0.1" value="28.0">
                             </div>
                         </div>
                         <div class="frow">
                             <div class="fg">
-                                <label>Spesies Utama <span class="req">*</span></label>
-                                <select id="k-species" required>
-                                    <option value="">Pilih spesies</option>
-                                    <option value="Ayam Petelur">Ayam Petelur</option>
-                                    <option value="Ayam Broiler">Ayam Broiler</option>
-                                    <option value="Bebek">Bebek</option>
-                                </select>
+                                <label>Kelembaban Minimum (%)</label>
+                                <input type="number" id="k-hum-min" min="0" max="100" step="0.1" value="40.0">
                             </div>
                             <div class="fg">
-                                <label>Periode Aktif <span class="req">*</span></label>
-                                <input type="text" id="k-period" required placeholder="cth. sss / Test">
+                                <label>Kelembaban Maksimum (%)</label>
+                                <input type="number" id="k-hum-max" min="0" max="100" step="0.1" value="70.0">
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg" style="max-width: 50%;">
+                                <label>Kapasitas Tandon Air (Liter)</label>
+                                <input type="number" id="k-water-cap" min="0" value="1000">
+                            </div>
+                        </div>
+                        <div class="frow" style="grid-template-columns: 1fr; margin-top: 8px;">
+                            <div class="fg">
+                                <label>Catatan</label>
+                                <textarea id="k-notes" rows="3" placeholder="Catatan tambahan tentang kandang..." style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; resize: vertical;"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="mfooter">
-                    <button type="button" class="btn btn-ghost" onclick="closeModal('add-kandang-modal')">Batal</button>
-                    <button type="submit" class="btn btn-solid">Simpan Kandang</button>
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('add-kandang-modal')" style="background: #ffffff; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 500;">Batal</button>
+                    <button type="submit" class="btn btn-solid" style="background: #137333; color: #ffffff; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 500; padding: 8px 16px;">Simpan</button>
                 </div>
             </form>
         </div>
@@ -1229,26 +1258,29 @@
             <div class="mh">
                 <div>
                     <div class="mt">Edit Informasi Kandang</div>
-                    <div class="ms">Perbarui data spesifikasi dan lokasi kandang.</div>
+                    <div class="ms">Isi informasi lengkap tentang kandang ternak</div>
                 </div>
                 <button class="mclose" onclick="closeModal('edit-kandang-modal')">✕</button>
             </div>
             <form id="edit-kandang-form" onsubmit="submitEditKandang(event)">
                 <input type="hidden" id="edit-k-id">
-                <div class="mb">
+                <div class="mb" style="max-height: 70vh; overflow-y: auto;">
                     <div class="fsec">
-                        <div class="fsec-title">Detail Kandang</div>
                         <div class="frow">
                             <div class="fg">
                                 <label>Nama Kandang <span class="req">*</span></label>
-                                <input type="text" id="edit-k-name" required>
+                                <input type="text" id="edit-k-name" required placeholder="Contoh: Kandang A" style="border: 2px solid #000000; border-radius: 8px;">
                             </div>
                             <div class="fg">
-                                <label>Lokasi <span class="req">*</span></label>
-                                <input type="text" id="edit-k-loc" required>
+                                <label>Lokasi</label>
+                                <input type="text" id="edit-k-loc" placeholder="Contoh: Gedung utama, sebelah kiri">
                             </div>
                         </div>
                         <div class="frow">
+                            <div class="fg">
+                                <label>Kapasitas (ekor) <span class="req">*</span></label>
+                                <input type="number" id="edit-k-cap" required min="10">
+                            </div>
                             <div class="fg">
                                 <label>Tipe Kandang <span class="req">*</span></label>
                                 <select id="edit-k-type" required>
@@ -1257,30 +1289,58 @@
                                     <option value="Deep Litter">Deep Litter</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg" style="max-width: 50%;">
+                                <label>Status <span class="req">*</span></label>
+                                <select id="edit-k-status" required>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Nonaktif">Nonaktif</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <hr style="border: 0; border-top: 1px solid var(--bdr); margin: 20px 0;">
+                        
+                        <div class="fsec-title" style="font-weight: 700; margin-bottom: 12px; color: var(--ink);">Kondisi Optimal (Opsional)</div>
+                        
+                        <div class="frow">
                             <div class="fg">
-                                <label>Kapasitas (ekor) <span class="req">*</span></label>
-                                <input type="number" id="edit-k-cap" required min="10">
+                                <label>Suhu Minimum (°C)</label>
+                                <input type="number" id="edit-k-temp-min" min="0" step="0.1">
+                            </div>
+                            <div class="fg">
+                                <label>Suhu Maksimum (°C)</label>
+                                <input type="number" id="edit-k-temp-max" min="0" step="0.1">
                             </div>
                         </div>
                         <div class="frow">
                             <div class="fg">
-                                <label>Spesies Utama <span class="req">*</span></label>
-                                <select id="edit-k-species" required>
-                                    <option value="Ayam Petelur">Ayam Petelur</option>
-                                    <option value="Ayam Broiler">Ayam Broiler</option>
-                                    <option value="Bebek">Bebek</option>
-                                </select>
+                                <label>Kelembaban Minimum (%)</label>
+                                <input type="number" id="edit-k-hum-min" min="0" max="100" step="0.1">
                             </div>
                             <div class="fg">
-                                <label>Periode Aktif <span class="req">*</span></label>
-                                <input type="text" id="edit-k-period" required>
+                                <label>Kelembaban Maksimum (%)</label>
+                                <input type="number" id="edit-k-hum-max" min="0" max="100" step="0.1">
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fg" style="max-width: 50%;">
+                                <label>Kapasitas Tandon Air (Liter)</label>
+                                <input type="number" id="edit-k-water-cap" min="0">
+                            </div>
+                        </div>
+                        <div class="frow" style="grid-template-columns: 1fr; margin-top: 8px;">
+                            <div class="fg">
+                                <label>Catatan</label>
+                                <textarea id="edit-k-notes" rows="3" placeholder="Catatan tambahan tentang kandang..." style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; resize: vertical;"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="mfooter">
-                    <button type="button" class="btn btn-ghost" onclick="closeModal('edit-kandang-modal')">Batal</button>
-                    <button type="submit" class="btn btn-solid">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('edit-kandang-modal')" style="background: #ffffff; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 500;">Batal</button>
+                    <button type="submit" class="btn btn-solid" style="background: #137333; color: #ffffff; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 500; padding: 8px 16px;">Simpan</button>
                 </div>
             </form>
         </div>
@@ -1438,237 +1498,208 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- ======== MODAL: DAFTAR PENGHUNI KANDANG ======== -->
+    <div class="overlay" id="occupants-modal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="mh">
+                <div>
+                    <div class="mt" id="occ-modal-title">Penghuni Kandang</div>
+                    <div class="ms" id="occ-modal-subtitle">Daftar lengkap batch ayam petelur aktif.</div>
+                </div>
+                <button class="mclose" onclick="closeModal('occupants-modal')">✕</button>
+            </div>
+            <div class="mb">
+                <div id="occ-modal-list" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 4px;">
+                    <!-- Filled dynamically -->
+                </div>
+            </div>
+            <div class="mfooter" style="padding-top: 14px; border-top: 1px solid var(--bdr);">
+                <button type="button" class="btn btn-ghost" onclick="closeModal('occupants-modal')" style="width: 100%; justify-content: center; background: #ffffff; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 500;">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        function saveState() {
+            localStorage.setItem('coops', JSON.stringify(coops));
+        }
+
         // Initial Coops mock dataset (aligned to user mockup)
         let coops = [];
         const storedCoops = localStorage.getItem('coops');
+        let needsFallback = false;
         if (storedCoops) {
             coops = JSON.parse(storedCoops);
-        } else {
+            needsFallback = coops.some(c => c.name === "Kandang ayam ayaman" || c.name === "Kandang pejantan" || c.name === "kandang a");
+        }
+        if (!storedCoops || needsFallback) {
             coops = [
                 {
                     id: 1,
-                name: "Kandang ayam ayaman",
-                status: "Aktif",
-                loc: "Lokasi tidak ditentukan",
-                periodName: "sss",
-                periodDate: "20/5/2026",
-                sehat: 3,
-                sakit: 0,
-                mati: 1,
-                capacity: 200,
-                type: "Battery Cage",
-                species: "Ayam Petelur",
-                history: [
-                    { date: "23/5/2026", sehat: 3, sakit: 0, mati: 0, temp: 27.2 },
-                    { date: "22/5/2026", sehat: 3, sakit: 0, mati: 1, temp: 27.8 },
-                    { date: "21/5/2026", sehat: 4, sakit: 0, mati: 0, temp: 28.0 }
-                ],
-                occupants: [
-                    {
-                        name: "Ayam petanjan",
-                        species: "AYAM PETELUR",
-                        hereQty: 0,
-                        hereSehat: 0,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 8029,
-                        totalSehat: 3,
-                        totalSakit: 2,
-                        totalMati: 0
-                    },
-                    {
-                        name: "xxxxxx",
-                        species: "AYAM PETELUR",
-                        hereQty: 2,
-                        hereSehat: 2,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 10,
-                        totalSehat: 0,
-                        totalSakit: 0,
-                        totalMati: 0
-                    },
-                    {
-                        name: "Test Satu",
-                        species: "AYAM PETELUR",
-                        hereQty: 1,
-                        hereSehat: 1,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 10,
-                        totalSehat: 5,
-                        totalSakit: 5,
-                        totalMati: 0
-                    }
-                ]
-            },
-            {
-                id: 2,
-                name: "Kandang pejantan",
-                status: "Aktif",
-                loc: "Lokasi tidak ditentukan",
-                periodName: "Test",
-                periodDate: "1/6/2026",
-                sehat: 36,
-                sakit: 0,
-                mati: 1,
-                capacity: 1000,
-                type: "Battery Cage",
-                species: "Ayam Petelur",
-                history: [
-                    { date: "23/5/2026", sehat: 36, sakit: 0, mati: 0, temp: 26.9 },
-                    { date: "22/5/2026", sehat: 36, sakit: 0, mati: 1, temp: 27.5 }
-                ],
-                occupants: [
-                    {
-                        name: "Ayam petanjan",
-                        species: "AYAM PETELUR",
-                        hereQty: 76,
-                        hereSehat: 73,
-                        hereSakit: 3,
-                        hereMati: 22,
-                        totalQty: 8029,
-                        totalSehat: 3,
-                        totalSakit: 2,
-                        totalMati: 0
-                    },
-                    {
-                        name: "cccc",
-                        species: "AYAM PETELUR",
-                        hereQty: 197,
-                        hereSehat: 194,
-                        hereSakit: 3,
-                        hereMati: 1,
-                        totalQty: 211,
-                        totalSehat: 3,
-                        totalSakit: 1,
-                        totalMati: 0
-                    },
-                    {
-                        name: "Ayam Petelur Siap P...",
-                        species: "AYAM PETELUR",
-                        hereQty: 35,
-                        hereSehat: 35,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 123,
-                        totalSehat: 0,
-                        totalSakit: 0,
-                        totalMati: 0
-                    },
-                    {
-                        name: "Test Satu",
-                        species: "AYAM PETELUR",
-                        hereQty: 1,
-                        hereSehat: 1,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 10,
-                        totalSehat: 5,
-                        totalSakit: 5,
-                        totalMati: 0
-                    }
-                ]
-            },
-            {
-                id: 3,
-                name: "kandang a",
-                status: "Aktif",
-                loc: "kandang a",
-                periodName: "xxx",
-                periodDate: "16/3/2026",
-                sehat: 39,
-                sakit: 0,
-                mati: 6,
-                capacity: 1000,
-                type: "Battery Cage",
-                species: "Ayam Petelur",
-                history: [
-                    { date: "23/5/2026", sehat: 39, sakit: 0, mati: 1, temp: 28.1 },
-                    { date: "22/5/2026", sehat: 40, sakit: 0, mati: 5, temp: 29.0 }
-                ],
-                occupants: [
-                    {
-                        name: "ayam uye",
-                        species: "AYAM PETELUR",
-                        hereQty: 20,
-                        hereSehat: 20,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 155,
-                        totalSehat: 0,
-                        totalSakit: 0,
-                        totalMati: 0
-                    },
-                    {
-                        name: "DOC Layer Super",
-                        species: "AYAM PETELUR",
-                        hereQty: 10,
-                        hereSehat: 10,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 551,
-                        totalSehat: 0,
-                        totalSakit: 0,
-                        totalMati: 0
-                    },
-                    {
-                        name: "Test Satu",
-                        species: "AYAM PETELUR",
-                        hereQty: 6,
-                        hereSehat: 6,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 10,
-                        totalSehat: 5,
-                        totalSakit: 5,
-                        totalMati: 0
-                    },
-                    {
-                        name: "Test",
-                        species: "AYAM PETELUR",
-                        hereQty: 1,
-                        hereSehat: 1,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 13,
-                        totalSehat: 1,
-                        totalSakit: 1,
-                        totalMati: 0
-                    },
-                    {
-                        name: "Pep Test",
-                        species: "AYAM PETELUR",
-                        hereQty: 2,
-                        hereSehat: 2,
-                        hereSakit: 0,
-                        hereMati: 0,
-                        totalQty: 22,
-                        totalSehat: 1,
-                        totalSakit: 1,
-                        totalMati: 0
-                    }
-                ]
-            },
-            {
-                id: 4,
-                name: "Kandang B Lapis Lama",
-                status: "Terhapus",
-                loc: "Blok Timur",
-                periodName: "Periode Afkir Q1",
-                periodDate: "10/1/2026",
-                sehat: 0,
-                sakit: 0,
-                mati: 0,
-                capacity: 500,
-                type: "Battery Cage",
-                species: "Ayam Petelur",
-                history: [],
-                occupants: []
-            }
-        ];
+                    name: "Kandang Petelur Alpha",
+                    status: "Aktif",
+                    loc: "Sektor Timur - Lantai 1",
+                    periodName: "Periode 1 / BATCH-01",
+                    periodDate: "10/04/2026",
+                    sehat: 18,
+                    sakit: 2,
+                    mati: 1,
+                    capacity: 200,
+                    type: "Battery Cage",
+                    species: "Ayam Petelur",
+                    history: [
+                        { date: "24/05/2026", sehat: 18, sakit: 2, mati: 0, temp: 27.2 },
+                        { date: "23/05/2026", sehat: 18, sakit: 2, mati: 1, temp: 27.8 }
+                    ],
+                    occupants: [
+                        {
+                            name: "Batch Layer A",
+                            species: "AYAM PETELUR",
+                            hereQty: 2,
+                            hereSehat: 2,
+                            hereSakit: 0,
+                            hereMati: 0,
+                            totalQty: 10,
+                            totalSehat: 10,
+                            totalSakit: 0,
+                            totalMati: 0
+                        },
+                        {
+                            name: "Flock Layer B",
+                            species: "AYAM PETELUR",
+                            hereQty: 1,
+                            hereSehat: 1,
+                            hereSakit: 0,
+                            hereMati: 0,
+                            totalQty: 10,
+                            totalSehat: 5,
+                            totalSakit: 5
+                        },
+                        {
+                            name: "Batch Bravo",
+                            species: "AYAM PETELUR",
+                            hereQty: 5,
+                            hereSehat: 5,
+                            hereSakit: 0,
+                            hereMati: 0,
+                            totalQty: 20,
+                            totalSehat: 20,
+                            totalSakit: 0
+                        },
+                        {
+                            name: "Flock Delta",
+                            species: "AYAM PETELUR",
+                            hereQty: 12,
+                            hereSehat: 10,
+                            hereSakit: 2,
+                            hereMati: 0,
+                            totalQty: 15,
+                            totalSehat: 13,
+                            totalSakit: 2
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "Kandang Petelur Bravo",
+                    status: "Aktif",
+                    loc: "Sektor Timur - Lantai 2",
+                    periodName: "Periode 2 / BATCH-02",
+                    periodDate: "01/05/2026",
+                    sehat: 392,
+                    sakit: 8,
+                    mati: 3,
+                    capacity: 1000,
+                    type: "Battery Cage",
+                    species: "Ayam Petelur",
+                    history: [
+                        { date: "24/05/2026", sehat: 392, sakit: 8, mati: 0, temp: 26.9 },
+                        { date: "23/05/2026", sehat: 392, sakit: 8, mati: 3, temp: 27.5 }
+                    ],
+                    occupants: [
+                        {
+                            name: "Flock Layer B",
+                            species: "AYAM PETELUR",
+                            hereQty: 220,
+                            hereSehat: 215,
+                            hereSakit: 5,
+                            hereMati: 2,
+                            totalQty: 300,
+                            totalSehat: 290,
+                            totalSakit: 10
+                        },
+                        {
+                            name: "Batch Layer C",
+                            species: "AYAM PETELUR",
+                            hereQty: 180,
+                            hereSehat: 177,
+                            hereSakit: 3,
+                            hereMati: 1,
+                            totalQty: 200,
+                            totalSehat: 197,
+                            totalSakit: 3
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: "Kandang Petelur Charlie",
+                    status: "Aktif",
+                    loc: "Sektor Barat - Lantai 1",
+                    periodName: "Periode 3 / BATCH-03",
+                    periodDate: "16/03/2026",
+                    sehat: 39,
+                    sakit: 1,
+                    mati: 0,
+                    capacity: 1000,
+                    type: "Battery Cage",
+                    species: "Ayam Petelur",
+                    history: [
+                        { date: "24/05/2026", sehat: 39, sakit: 1, mati: 0, temp: 28.1 }
+                    ],
+                    occupants: [
+                        {
+                            name: "Flock Layer Alpha",
+                            species: "AYAM PETELUR",
+                            hereQty: 25,
+                            hereSehat: 24,
+                            hereSakit: 1,
+                            hereMati: 0,
+                            totalQty: 100,
+                            totalSehat: 99,
+                            totalSakit: 1
+                        },
+                        {
+                            name: "DOC Layer Super",
+                            species: "AYAM PETELUR",
+                            hereQty: 15,
+                            hereSehat: 15,
+                            hereSakit: 0,
+                            hereMati: 0,
+                            totalQty: 15,
+                            totalSehat: 15,
+                            totalSakit: 0
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    name: "Kandang B Lapis Lama",
+                    status: "Terhapus",
+                    loc: "Blok Timur",
+                    periodName: "Periode Afkir Q1",
+                    periodDate: "10/1/2026",
+                    sehat: 0,
+                    sakit: 0,
+                    mati: 0,
+                    capacity: 500,
+                    type: "Battery Cage",
+                    species: "Ayam Petelur",
+                    history: [],
+                    occupants: []
+                }
+            ];
+            localStorage.setItem('coops', JSON.stringify(coops));
         }
 
         let activeTab = 'Aktif';
@@ -1699,6 +1730,53 @@
             document.body.style.overflow = '';
         }
 
+        function openOccupantsModal(coopId) {
+            const coop = coops.find(c => c.id === coopId);
+            if (!coop) return;
+
+            document.getElementById('occ-modal-title').textContent = `Penghuni — ${coop.name}`;
+            document.getElementById('occ-modal-subtitle').textContent = `Daftar lengkap batch ayam petelur aktif di kandang ini (${coop.occupants.length} batch).`;
+
+            const listContainer = document.getElementById('occ-modal-list');
+            listContainer.innerHTML = '';
+
+            coop.occupants.forEach(occ => {
+                listContainer.innerHTML += `
+                    <div class="occ-card" style="margin-bottom: 0; border: 1px solid var(--bdr); border-radius: 8px; padding: 12px; background: var(--surf);">
+                        <div class="occ-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--bdr); padding-bottom: 6px;">
+                            <span class="occ-name" style="font-weight: 700; color: var(--ink); font-size: 13px;">${occ.name}</span>
+                            <span class="occ-species" style="font-size: 10px; font-weight: 700; color: var(--ink3); background: var(--surf2); padding: 2px 6px; border-radius: 4px;">${occ.species}</span>
+                        </div>
+                        <div class="occ-metric-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="occ-sub-metric">
+                                <span class="occ-metric-lbl" style="display: block; font-size: 10.5px; color: var(--ink3); margin-bottom: 2px;">Di Kandang Ini</span>
+                                <span class="occ-metric-val" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 12px; font-weight: 600; color: var(--ink);">
+                                    ${occ.hereQty.toLocaleString('id')} ekor
+                                    <span class="mini-dot-list" style="display: inline-flex; gap: 4px; font-weight: 600; font-size: 10.5px;">
+                                        <span style="color: var(--sage);">${occ.hereSehat} sht</span>
+                                        <span style="color: var(--amber);">${occ.hereSakit} skt</span>
+                                        <span style="color: var(--rust);">${occ.hereMati} mati</span>
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="occ-sub-metric">
+                                <span class="occ-metric-lbl" style="display: block; font-size: 10.5px; color: var(--ink3); margin-bottom: 2px;">Total Batch (Semua)</span>
+                                <span class="occ-metric-val" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 12px; font-weight: 600; color: var(--ink);">
+                                    ${occ.totalQty.toLocaleString('id')}
+                                    <span class="mini-dot-list" style="display: inline-flex; gap: 4px; font-weight: 600; font-size: 10.5px;">
+                                        <span style="color: var(--sage);">${occ.totalSehat} sht</span>
+                                        <span style="color: var(--amber);">${occ.totalSakit} skt</span>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            openModal('occupants-modal');
+        }
+
         document.querySelectorAll('.overlay').forEach(o => {
             o.addEventListener('click', e => {
                 if (e.target === o) {
@@ -1715,11 +1793,17 @@
         function submitKandang(event) {
             event.preventDefault();
             const name = document.getElementById('k-name').value;
-            const loc = document.getElementById('k-loc').value;
+            const loc = document.getElementById('k-loc').value || 'Lokasi tidak ditentukan';
             const type = document.getElementById('k-type').value;
-            const cap = parseInt(document.getElementById('k-cap').value) || 200;
-            const species = document.getElementById('k-species').value;
-            const period = document.getElementById('k-period').value;
+            const cap = parseInt(document.getElementById('k-cap').value) || 100;
+            const status = document.getElementById('k-status').value || 'Aktif';
+
+            const tempMin = parseFloat(document.getElementById('k-temp-min').value) || 18.0;
+            const tempMax = parseFloat(document.getElementById('k-temp-max').value) || 28.0;
+            const humMin = parseFloat(document.getElementById('k-hum-min').value) || 40.0;
+            const humMax = parseFloat(document.getElementById('k-hum-max').value) || 70.0;
+            const waterCap = parseInt(document.getElementById('k-water-cap').value) || 1000;
+            const notes = document.getElementById('k-notes').value || '';
 
             const today = new Date();
             const dateStr = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
@@ -1727,26 +1811,33 @@
             const newCoop = {
                 id: Date.now(),
                 name: name,
-                status: "Aktif",
+                status: status,
                 loc: loc,
-                periodName: period,
+                periodName: "Periode 1",
                 periodDate: dateStr,
                 sehat: 0,
                 sakit: 0,
                 mati: 0,
                 capacity: cap,
                 type: type,
-                species: species,
+                species: "Ayam Petelur",
+                tempMin: tempMin,
+                tempMax: tempMax,
+                humMin: humMin,
+                humMax: humMax,
+                waterCap: waterCap,
+                notes: notes,
                 history: [],
                 occupants: []
             };
 
             coops.unshift(newCoop);
+            saveState(); // Persist the new coop in localStorage!
             closeModal('add-kandang-modal');
             document.getElementById('add-kandang-form').reset();
             
             // Render
-            setTab('Aktif');
+            setTab(status);
         }
 
         // reset filters
@@ -1817,6 +1908,7 @@
                     // Complete delete if archiving the archived
                     coops = coops.filter(c => c.id !== id);
                 }
+                saveState(); // Persist archive/delete!
                 closeModal('delete-confirm-modal');
                 applyFilters();
             };
@@ -1829,6 +1921,7 @@
             const coop = coops.find(c => c.id === id);
             if (coop) {
                 coop.status = 'Aktif';
+                saveState(); // Persist restore!
                 applyFilters();
             }
         }
@@ -1840,11 +1933,17 @@
 
             document.getElementById('edit-k-id').value = coop.id;
             document.getElementById('edit-k-name').value = coop.name;
-            document.getElementById('edit-k-loc').value = coop.loc;
+            document.getElementById('edit-k-loc').value = coop.loc === 'Lokasi tidak ditentukan' ? '' : coop.loc;
             document.getElementById('edit-k-type').value = coop.type;
             document.getElementById('edit-k-cap').value = coop.capacity;
-            document.getElementById('edit-k-species').value = coop.species;
-            document.getElementById('edit-k-period').value = coop.periodName;
+            document.getElementById('edit-k-status').value = coop.status || 'Aktif';
+
+            document.getElementById('edit-k-temp-min').value = coop.tempMin ?? 18.0;
+            document.getElementById('edit-k-temp-max').value = coop.tempMax ?? 28.0;
+            document.getElementById('edit-k-hum-min').value = coop.humMin ?? 40.0;
+            document.getElementById('edit-k-hum-max').value = coop.humMax ?? 70.0;
+            document.getElementById('edit-k-water-cap').value = coop.waterCap ?? 1000;
+            document.getElementById('edit-k-notes').value = coop.notes ?? '';
 
             openModal('edit-kandang-modal');
         }
@@ -1853,11 +1952,17 @@
             event.preventDefault();
             const id = parseInt(document.getElementById('edit-k-id').value);
             const name = document.getElementById('edit-k-name').value;
-            const loc = document.getElementById('edit-k-loc').value;
+            const loc = document.getElementById('edit-k-loc').value || 'Lokasi tidak ditentukan';
             const type = document.getElementById('edit-k-type').value;
-            const cap = parseInt(document.getElementById('edit-k-cap').value) || 200;
-            const species = document.getElementById('edit-k-species').value;
-            const period = document.getElementById('edit-k-period').value;
+            const cap = parseInt(document.getElementById('edit-k-cap').value) || 100;
+            const status = document.getElementById('edit-k-status').value || 'Aktif';
+
+            const tempMin = parseFloat(document.getElementById('edit-k-temp-min').value) || 18.0;
+            const tempMax = parseFloat(document.getElementById('edit-k-temp-max').value) || 28.0;
+            const humMin = parseFloat(document.getElementById('edit-k-hum-min').value) || 40.0;
+            const humMax = parseFloat(document.getElementById('edit-k-hum-max').value) || 70.0;
+            const waterCap = parseInt(document.getElementById('edit-k-water-cap').value) || 1000;
+            const notes = document.getElementById('edit-k-notes').value || '';
 
             const coop = coops.find(c => c.id === id);
             if (coop) {
@@ -1865,8 +1970,16 @@
                 coop.loc = loc;
                 coop.type = type;
                 coop.capacity = cap;
-                coop.species = species;
-                coop.periodName = period;
+                coop.status = status;
+                
+                coop.tempMin = tempMin;
+                coop.tempMax = tempMax;
+                coop.humMin = humMin;
+                coop.humMax = humMax;
+                coop.waterCap = waterCap;
+                coop.notes = notes;
+                
+                saveState(); // Persist edit!
             }
 
             closeModal('edit-kandang-modal');
@@ -2032,7 +2145,8 @@
                         <div class="occupants-section">
                             <div class="occ-title">Penghuni Kandang</div>
                     `;
-                    c.occupants.forEach(occ => {
+                    const visibleOccupants = c.occupants.slice(0, 2);
+                    visibleOccupants.forEach(occ => {
                         occupantsHTML += `
                             <div class="occ-card">
                                 <div class="occ-header">
@@ -2042,22 +2156,22 @@
                                 <div class="occ-metric-row">
                                     <div class="occ-sub-metric">
                                         <span class="occ-metric-lbl">Di Kandang Ini</span>
-                                        <span class="occ-metric-val">
+                                        <span class="occ-metric-val" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                                             ${occ.hereQty.toLocaleString('id')} ekor
-                                            <span class="mini-dot-list">
-                                                <span class="mini-dot-badge md-sehat">${occ.hereSehat}</span>
-                                                <span class="mini-dot-badge md-sakit">${occ.hereSakit}</span>
-                                                <span class="mini-dot-badge md-mati">${occ.hereMati}</span>
+                                            <span class="mini-dot-list" style="display: inline-flex; gap: 6px; font-weight: 600; font-size: 11px;">
+                                                <span style="color: var(--sage);">${occ.hereSehat} sht</span>
+                                                <span style="color: var(--amber);">${occ.hereSakit} skt</span>
+                                                <span style="color: var(--rust);">${occ.hereMati} mati</span>
                                             </span>
                                         </span>
                                     </div>
                                     <div class="occ-sub-metric">
                                         <span class="occ-metric-lbl">Total Batch (Semua)</span>
-                                        <span class="occ-metric-val">
+                                        <span class="occ-metric-val" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                                             ${occ.totalQty.toLocaleString('id')}
-                                            <span class="mini-dot-list">
-                                                <span class="mini-dot-badge md-sehat">${occ.totalSehat}</span>
-                                                <span class="mini-dot-badge md-sakit">${occ.totalSakit}</span>
+                                            <span class="mini-dot-list" style="display: inline-flex; gap: 6px; font-weight: 600; font-size: 11px;">
+                                                <span style="color: var(--sage);">${occ.totalSehat} sht</span>
+                                                <span style="color: var(--amber);">${occ.totalSakit} skt</span>
                                             </span>
                                         </span>
                                     </div>
@@ -2065,6 +2179,16 @@
                             </div>
                         `;
                     });
+
+                    if (c.occupants.length > 2) {
+                        occupantsHTML += `
+                            <button type="button" class="btn-show-more" onclick="openOccupantsModal(${c.id})" 
+                                onmouseover="this.style.background='var(--sage-l)'" onmouseout="this.style.background='var(--surf)'"
+                                style="width: 100%; border: 1px solid var(--bdr); border-radius: 8px; padding: 8px; background: var(--surf); color: var(--sage); font-family: 'DM Sans', sans-serif; font-size: 11.5px; font-weight: 600; cursor: pointer; text-align: center; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.12s;">
+                                <span>🔍</span> Lihat Semua Penghuni (${c.occupants.length})
+                            </button>
+                        `;
+                    }
                     occupantsHTML += `</div>`;
                 } else {
                     occupantsHTML = `
@@ -2131,10 +2255,10 @@
                             <div class="density-bar-fill" style="width: ${capacityPct}%"></div>
                         </div>
                         <div class="density-detail-row">
-                            <div class="dots-row">
-                                <span class="dot-val"><span class="d-circle sehat"></span> ${c.sehat}</span>
-                                <span class="dot-val"><span class="d-circle sakit"></span> ${c.sakit}</span>
-                                <span class="dot-val"><span class="d-circle mati"></span> ${c.mati}</span>
+                            <div class="dots-row" style="gap: 12px; font-weight: 600;">
+                                <span class="dot-val" style="color: var(--sage);">${c.sehat.toLocaleString('id')} sht</span>
+                                <span class="dot-val" style="color: var(--amber);">${c.sakit.toLocaleString('id')} skt</span>
+                                <span class="dot-val" style="color: var(--rust);">${c.mati.toLocaleString('id')} mati</span>
                             </div>
                             <span class="capacity-pct">${capacityPct}% Kapasitas</span>
                         </div>

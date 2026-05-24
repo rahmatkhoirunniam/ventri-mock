@@ -265,7 +265,7 @@
         /* METRICS GRID ROW */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 14px;
         }
 
@@ -295,7 +295,7 @@
         }
 
         .m-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transform: translateY(-1px);
         }
 
@@ -343,14 +343,17 @@
             background: var(--sage-l);
             border-color: rgba(58, 107, 80, 0.2);
         }
+
         .m-card.green-bg .m-title,
         .m-card.green-bg .m-subtext {
             color: var(--sage);
         }
+
         .m-card.purple-bg {
             background: var(--purple-l);
             border-color: rgba(107, 33, 168, 0.15);
         }
+
         .m-card.purple-bg .m-title {
             color: var(--purple);
         }
@@ -392,89 +395,207 @@
         .lots-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
+            gap: 16px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            .lots-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
             .lots-grid {
                 grid-template-columns: 1fr;
             }
         }
 
         .lot-c {
-            background: #faf9f5;
+            background: #ffffff;
             border: 1px solid var(--bdr);
-            border-radius: 8px;
-            padding: 12px 14px;
-            position: relative;
+            border-radius: 16px;
+            padding: 16px 20px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .lot-c:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.15);
         }
 
         .lot-c-header {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
         }
 
         .lot-c-name {
-            font-weight: 600;
-            font-size: 13px;
+            font-weight: 700;
+            font-size: 15px;
             color: var(--ink);
+            letter-spacing: -0.2px;
         }
 
         .lot-c-species {
-            font-size: 9px;
-            color: var(--ink3);
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: .4px;
-        }
-
-        .lot-c-badge {
-            background: var(--surf3);
             font-size: 10px;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: var(--ink);
+            color: #9ca3af;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: .6px;
         }
 
-        .lot-c-details {
+        .lot-c-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .lot-c-col {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 11.5px;
-            color: var(--ink2);
+            flex-direction: column;
+            gap: 4px;
         }
 
-        .lot-c-dots {
+        .lot-c-col-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lot-c-col-value-row {
             display: flex;
             align-items: center;
             gap: 6px;
+            flex-wrap: wrap;
         }
 
-        .lot-c-dot-val {
+        .lot-c-qty-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .lot-badge {
             display: inline-flex;
+            justify-content: center;
             align-items: center;
-            gap: 3px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+            line-height: 1;
         }
 
-        .l-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
+        .lot-badge.green {
+            background-color: #e6f4ea;
+            color: #137333;
         }
 
-        .l-dot.sehat { background: var(--sage); }
-        .l-dot.sakit { background: var(--amber); }
+        .lot-badge.orange {
+            background-color: #fef7e0;
+            color: #b06000;
+        }
 
-        .lot-c-batch-mortality {
-            font-size: 10.5px;
-            font-style: italic;
-            color: var(--ink3);
-            font-family: 'DM Mono', monospace;
+        .lot-badge.red {
+            background-color: #fce8e6;
+            color: #c5221f;
+        }
+
+        /* SECTION Previous Period History */
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .history-card {
+            background: #ffffff;
+            border: 1px solid var(--bdr);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .history-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+
+        .history-card-header {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            padding-bottom: 8px;
+        }
+
+        .history-card-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--ink);
+            letter-spacing: -0.2px;
+        }
+
+        .history-card-subtitle {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .history-card-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .h-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .h-lbl {
+            opacity: 0.8;
+        }
+
+        .h-val {
+            font-weight: 700;
+        }
+
+        /* Color variations for history metrics */
+        .h-metric.gray {
+            background-color: #f3f4f6;
+            color: var(--ink2);
+        }
+        .h-metric.red {
+            background-color: #fce8e6;
+            color: #c5221f;
+        }
+        .h-metric.green {
+            background-color: #e6f4ea;
+            color: #137333;
+        }
+        .h-metric.blue {
+            background-color: #e8f0fe;
+            color: #1a73e8;
         }
 
         /* SECTION Pencatatan Harian Header layout */
@@ -751,7 +872,7 @@
         .fg select:focus {
             border-color: var(--sage);
         }
-        
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -829,7 +950,7 @@
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
         }
-        
+
         .tab-pane {
             display: none;
         }
@@ -840,8 +961,15 @@
         }
 
         @keyframes fadein {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -864,11 +992,13 @@
             <div class="nav"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
             <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
             <div class="nav"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
-            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock /
+                    Hewan</span></div>
         </div>
         <div class="sb-sec">
             <div class="sb-lbl">Operasional</div>
-            <div class="nav active" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav active" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span
+                    class="lbl">Monitoring Kandang</span></div>
             <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
             <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span
                     class="bdg">3</span></div>
@@ -880,7 +1010,8 @@
     <div class="main">
         <!-- TOPBAR with Back Button -->
         <div class="topbar">
-            <button class="btn-back" onclick="location.href='monitoring-kandang.html'" title="Kembali ke Monitoring Kandang">←</button>
+            <button class="btn-back" onclick="location.href='monitoring-kandang.html'"
+                title="Kembali ke Monitoring Kandang">←</button>
             <div class="coop-header-info">
                 <div class="coop-title" id="coop-name-title">Loading Kandang...</div>
                 <div class="coop-meta-sub" id="coop-meta-sub">Kapasitas: — | Lokasi tidak diatur</div>
@@ -949,24 +1080,6 @@
                         <div class="m-subtext" id="sub-hdp">Total Telur (Kg): 0</div>
                     </div>
                 </div>
-
-                <!-- Hasil Lainnya (Soft purple accent) -->
-                <div class="m-card purple-bg">
-                    <div class="m-header">
-                        <span class="m-title">Hasil Lainnya</span>
-                        <span class="m-icon">⚡</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <div style="display: flex; justify-content: space-between; font-weight: 500; font-size:12px;">
-                            <span style="color: var(--ink2)">Susu</span>
-                            <span style="color: var(--purple); font-weight:700;"><span id="val-susu">0</span> L</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; font-weight: 500; font-size:12px;">
-                            <span style="color: var(--ink2)">Daging</span>
-                            <span style="color: var(--purple); font-weight:700;"><span id="val-daging">0</span> Kg</span>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- SECTION: Penghuni Kandang Saat Ini -->
@@ -989,7 +1102,13 @@
                     </div>
                     <div class="record-controls">
                         <div style="display: flex; gap: 8px; align-items: center;">
-                            <input type="date" id="filter-date" onchange="renderDailyLogsTable()" style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; background: var(--surf); color: var(--ink);" title="Filter Tanggal">
+                            <input type="date" id="filter-date-from" onchange="renderDailyLogsTable()"
+                                style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; background: var(--surf); color: var(--ink);"
+                                title="Dari Tanggal">
+                            <span style="font-size: 12px; color: var(--ink3);">-</span>
+                            <input type="date" id="filter-date-to" onchange="renderDailyLogsTable()"
+                                style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; background: var(--surf); color: var(--ink);"
+                                title="Sampai Tanggal">
                             <button class="btn-input-today" onclick="openModal('input-log-modal')">
                                 <span>＋</span> Input Hari Ini
                             </button>
@@ -1009,13 +1128,15 @@
                 <div class="empty-record-state" id="empty-records-block">
                     <div class="empty-icon">📅</div>
                     <div class="empty-title">Belum ada pencatatan harian di periode ini.</div>
-                    <p style="font-size:12px; margin-top:2px;">Silakan isi pencatatan pertama Anda untuk mengaktifkan pemantauan.</p>
-                    <div class="empty-link" style="margin-top: 6px;" onclick="openModal('input-log-modal')">Catat Data Pertama</div>
+                    <p style="font-size:12px; margin-top:2px;">Silakan isi pencatatan pertama Anda untuk mengaktifkan
+                        pemantauan.</p>
+                    <div class="empty-link" style="margin-top: 6px;" onclick="openModal('input-log-modal')">Catat Data
+                        Pertama</div>
                 </div>
 
                 <!-- Filled state block (hidden by default) -->
                 <div class="records-table-wrap" id="records-table-block" style="display: none;">
-                    
+
                     <!-- Tab Pane Pakan -->
                     <div id="pane-pakan" class="tab-pane active">
                         <table class="table-rec">
@@ -1061,6 +1182,7 @@
                                     <th>Flock / Batch</th>
                                     <th>🔴 Kematian (Ekor)</th>
                                     <th>Afkir (Ekor)</th>
+                                    <th>🔵 Mutasi / Keluar (Ekor)</th>
                                     <th>🟡 Sakit Update</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -1075,6 +1197,7 @@
                             <thead>
                                 <tr>
                                     <th>Tanggal</th>
+                                    <th>Flock / Batch</th>
                                     <th>Catatan Tambahan</th>
                                     <th>Foto</th>
                                     <th>Aksi</th>
@@ -1084,6 +1207,67 @@
                         </table>
                     </div>
 
+                </div>
+            </div>
+
+            <!-- SECTION: Riwayat Periode Sebelumnya -->
+            <div class="section-box">
+                <div class="sec-title-row">
+                    <div class="sec-title"><span>⏳</span> Riwayat Periode Sebelumnya</div>
+                    <div class="sec-sub">Laporan performa dari periode pemeliharaan yang telah selesai</div>
+                </div>
+                <div class="history-grid">
+                    <!-- Periode 1 Card -->
+                    <div class="history-card">
+                        <div class="history-card-header">
+                            <span class="history-card-title">Periode 1 / BATCH-01</span>
+                            <span class="history-card-subtitle">10/04/2026 - 20/05/2026</span>
+                        </div>
+                        <div class="history-card-body">
+                            <div class="h-metric gray">
+                                <span class="h-lbl">Populasi Akhir:</span>
+                                <span class="h-val">190 Ekor</span>
+                            </div>
+                            <div class="h-metric red">
+                                <span class="h-lbl">Deplesi:</span>
+                                <span class="h-val">5% (10 Ekor)</span>
+                            </div>
+                            <div class="h-metric green">
+                                <span class="h-lbl">Telur:</span>
+                                <span class="h-val">160 Kg</span>
+                            </div>
+                            <div class="h-metric blue">
+                                <span class="h-lbl">Pakan:</span>
+                                <span class="h-val">24 Kg</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Periode Latar Card -->
+                    <div class="history-card">
+                        <div class="history-card-header">
+                            <span class="history-card-title">Periode Latar / BATCH-00</span>
+                            <span class="history-card-subtitle">01/03/2026 - 05/04/2026</span>
+                        </div>
+                        <div class="history-card-body">
+                            <div class="h-metric gray">
+                                <span class="h-lbl">Populasi Akhir:</span>
+                                <span class="h-val">194 Ekor</span>
+                            </div>
+                            <div class="h-metric red">
+                                <span class="h-lbl">Deplesi:</span>
+                                <span class="h-val">3% (6 Ekor)</span>
+                            </div>
+                            <div class="h-metric green">
+                                <span class="h-lbl">Telur:</span>
+                                <span class="h-val">155 Kg</span>
+                            </div>
+                            <div class="h-metric blue">
+                                <span class="h-lbl">Pakan:</span>
+                                <span class="h-val">22 Kg</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1102,15 +1286,18 @@
             </div>
             <div class="mb">
                 <!-- Global Input Fields -->
-                <div class="fsec" style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--bdr);">
+                <div class="fsec"
+                    style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--bdr);">
                     <div class="frow">
                         <div class="fg">
                             <label>Tanggal Pencatatan <span class="req">*</span></label>
-                            <input type="date" id="global-inp-date" required style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; background: var(--surf); color: var(--ink);">
+                            <input type="date" id="global-inp-date" required
+                                style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; background: var(--surf); color: var(--ink);">
                         </div>
                         <div class="fg">
                             <label>Flock / Batch <span class="req">*</span></label>
-                            <select id="global-inp-flock" required style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; background: var(--surf); color: var(--ink);">
+                            <select id="global-inp-flock" required onchange="handleFlockChange()"
+                                style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; background: var(--surf); color: var(--ink);">
                                 <option value="Semua">Semua Flock</option>
                                 <!-- Injected dynamically by JS -->
                             </select>
@@ -1120,31 +1307,34 @@
 
                 <!-- Modal Tabs -->
                 <div class="tab-nav" style="margin-bottom: 20px;">
-                    <button class="tab-btn active" onclick="switchModalTab('pakan', this)">Pakan</button>
-                    <button class="tab-btn" onclick="switchModalTab('produksi', this)">Produksi</button>
-                    <button class="tab-btn" onclick="switchModalTab('deplesi', this)">Deplesi</button>
-                    <button class="tab-btn" onclick="switchModalTab('catatan', this)">Foto & Catatan</button>
+                    <button id="modal-tab-pakan" class="tab-btn active" onclick="switchModalTab('pakan', this)">Pakan</button>
+                    <button id="modal-tab-produksi" class="tab-btn" onclick="switchModalTab('produksi', this)">Produksi</button>
+                    <button id="modal-tab-deplesi" class="tab-btn" onclick="switchModalTab('deplesi', this)">Deplesi</button>
+                    <button id="modal-tab-catatan" class="tab-btn" onclick="switchModalTab('catatan', this)">Foto & Catatan</button>
                 </div>
 
                 <!-- Form Pakan -->
-                <form id="form-tab-pakan" class="modal-tab-pane active" style="display: block;" onsubmit="submitDailyLog(event, 'pakan')">
+                <form id="form-tab-pakan" class="modal-tab-pane active" style="display: block;"
+                    onsubmit="submitDailyLog(event, 'pakan')">
                     <div class="fsec">
                         <div class="fsec-title">Pakan yang Dihabiskan</div>
                         <div class="frow">
                             <div class="fg">
                                 <label>Pilih Pakan <span class="req">*</span></label>
-                                <select id="inp-pakan-type" required>
+                                <select id="inp-pakan-type" required onchange="handlePakanTypeChange()">
                                     <option value="">-- Pilih Pakan --</option>
                                     <option value="pakan-premix">Pakan Premium Mix</option>
                                     <option value="pakan-standar">Pakan Standar</option>
                                     <option value="pakan-konsentrat">Pakan Konsentrat</option>
                                     <option value="pakan-limbah">Pakan Limbah</option>
                                 </select>
+                                <div id="pakan-stock-info" style="font-size: 11px; color: var(--ink3); margin-top: 4px; display: none; font-weight: 500;"></div>
                             </div>
                             <div class="fg">
                                 <label>Jumlah <span class="req">*</span></label>
                                 <div style="display: flex; gap: 8px; align-items: flex-end;">
-                                    <input type="number" id="inp-pakan-jumlah" required min="0" value="0" style="flex: 1;">
+                                    <input type="number" id="inp-pakan-jumlah" required min="0" value="0"
+                                        style="flex: 1;">
                                     <span style="color: var(--ink2); font-weight: 500; white-space: nowrap;">Kg</span>
                                 </div>
                             </div>
@@ -1154,22 +1344,25 @@
                                 <label>Konsumsi Air (Opsional)</label>
                                 <div style="display: flex; gap: 8px; align-items: flex-end;">
                                     <input type="number" id="inp-air" min="0" value="0" step="0.1" style="flex: 1;">
-                                    <span style="color: var(--ink2); font-weight: 500; white-space: nowrap;">Liter</span>
+                                    <span
+                                        style="color: var(--ink2); font-weight: 500; white-space: nowrap;">Liter</span>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </form>
 
                 <!-- Form Produksi -->
-                <form id="form-tab-produksi" class="modal-tab-pane" style="display: none;" onsubmit="submitDailyLog(event, 'produksi')">
+                <form id="form-tab-produksi" class="modal-tab-pane" style="display: none;"
+                    onsubmit="submitDailyLog(event, 'produksi')">
                     <div class="fsec">
                         <div class="fsec-title">Hasil Produksi</div>
                         <div class="frow">
                             <div class="fg">
                                 <label>Komoditas Hasil</label>
-                                <select id="inp-komoditas" style="padding:8px; border:1px solid var(--bdr); border-radius:6px; background:var(--surf); width:100%;">
+                                <select id="inp-komoditas" onchange="handleKomoditasChange()"
+                                    style="padding:8px; border:1px solid var(--bdr); border-radius:6px; background:var(--surf); width:100%;">
                                     <option value="">Pilih Komoditas</option>
                                     <option value="Telur Ayam Gred A">Telur Ayam Gred A</option>
                                     <option value="Telur pecah">Telur pecah</option>
@@ -1178,9 +1371,10 @@
                             </div>
                             <div class="fg">
                                 <label>Total</label>
-                                <div style="display:flex; gap:8px; align-items:flex-end;">
+                                <div style="display:flex; gap:10px; align-items:center;">
                                     <input type="number" id="inp-total" min="0" value="0" step="0.1" style="flex:1;">
-                                    <input type="text" id="inp-satuan" placeholder="cth. butir / kg / ekor" style="width:110px;">
+                                    <input type="hidden" id="inp-satuan" value="">
+                                    <span id="label-satuan" style="color: var(--ink2); font-weight: 600; font-size: 13.5px; min-width: 45px; display: inline-block;"></span>
                                 </div>
                             </div>
                         </div>
@@ -1194,13 +1388,18 @@
                 </form>
 
                 <!-- Form Deplesi -->
-                <form id="form-tab-deplesi" class="modal-tab-pane" style="display: none;" onsubmit="submitDailyLog(event, 'deplesi')">
+                <form id="form-tab-deplesi" class="modal-tab-pane" style="display: none;"
+                    onsubmit="submitDailyLog(event, 'deplesi')">
                     <div class="fsec">
                         <div class="fsec-title">Pengurangan & Kondisi Hewan</div>
                         <div class="frow">
                             <div class="fg">
                                 <label>Populasi Sakit Update (ekor)</label>
                                 <input type="number" id="inp-sakit" min="0">
+                            </div>
+                            <div class="fg">
+                                <label>Mutasi / Keluar (ekor)</label>
+                                <input type="number" id="inp-mutasi" min="0" value="0">
                             </div>
                         </div>
                         <div class="frow">
@@ -1217,13 +1416,15 @@
                 </form>
 
                 <!-- Form Catatan -->
-                <form id="form-tab-catatan" class="modal-tab-pane" style="display: none;" onsubmit="submitDailyLog(event, 'catatan')">
+                <form id="form-tab-catatan" class="modal-tab-pane" style="display: none;"
+                    onsubmit="submitDailyLog(event, 'catatan')">
                     <div class="fsec">
                         <div class="fsec-title">Foto & Catatan Tambahan</div>
                         <div class="frow" style="grid-template-columns: 1fr;">
                             <div class="fg">
                                 <label>Catatan / Keterangan</label>
-                                <textarea id="inp-notes" rows="3" style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; resize: vertical;"></textarea>
+                                <textarea id="inp-notes" rows="3"
+                                    style="padding: 8px 11px; border: 1px solid var(--bdr); border-radius: 8px; font-family: 'DM Sans', sans-serif; resize: vertical;"></textarea>
                             </div>
                             <div class="fg">
                                 <label>Upload Foto (Opsional)</label>
@@ -1234,7 +1435,8 @@
                 </form>
             </div>
             <div class="mfooter">
-                <button type="button" class="btn btn-ghost" onclick="closeModal('input-log-modal')"><span>✕</span> Batal</button>
+                <button type="button" class="btn btn-ghost" onclick="closeModal('input-log-modal')"><span>✕</span>
+                    Batal</button>
                 <button type="button" class="btn btn-solid" onclick="submitActiveTab()"><span>💾</span> Simpan</button>
             </div>
         </div>
@@ -1242,64 +1444,52 @@
 
     <!-- JAVASCRIPT BINDINGS -->
     <script>
-        // Load dataset from localStorage or fallback
         let coops = [];
         const storedCoops = localStorage.getItem('coops');
+        let needsFallback = false;
         if (storedCoops) {
             coops = JSON.parse(storedCoops);
-            // Inject dummy data for Kandang 1 if history is empty (for demo purposes)
-            let kandang1 = coops.find(c => c.id === 1);
-            if (kandang1 && (!kandang1.history || kandang1.history.length < 5)) {
-                kandang1.history = [
-                    { date: "24/05/2026", type: "pakan", pakan_type: "pakan-premix", pakan: 55, air: 120 },
-                    { date: "23/05/2026", type: "produksi", telur: 18.5, susu: 0, daging: 0 },
-                    { date: "22/05/2026", type: "deplesi", sehat: 3, sakit: 0, mati: 1, afkir: 0 },
-                    { date: "21/05/2026", type: "catatan", notes: "Pengecekan rutin ventilasi berjalan lancar. Hewan terpantau aktif.", photo: "kondisi_pagi.jpg" },
-                    { date: "20/05/2026", type: "pakan", pakan_type: "pakan-standar", pakan: 54, air: 115 },
-                    { date: "20/05/2026", type: "produksi", telur: 17.8, susu: 0, daging: 0 }
-                ];
-                localStorage.setItem('coops', JSON.stringify(coops));
-            }
-        } else {
-            // Initial Coops dataset fallback
+            needsFallback = coops.some(c => c.name === "Kandang ayam ayaman" || c.name === "Kandang pejantan" || c.name === "kandang a");
+        }
+        if (!storedCoops || needsFallback) {
             coops = [
                 {
                     id: 1,
-                    name: "Kandang ayam ayaman",
+                    name: "Kandang Petelur Alpha",
                     status: "Aktif",
-                    loc: "Lokasi tidak ditentukan",
-                    periodName: "sss",
-                    periodDate: "20/5/2026",
-                    sehat: 3,
-                    sakit: 0,
+                    loc: "Sektor Timur - Lantai 1",
+                    periodName: "Periode 1 / BATCH-01",
+                    periodDate: "10/04/2026",
+                    sehat: 18,
+                    sakit: 2,
                     mati: 1,
                     capacity: 200,
                     type: "Battery Cage",
                     species: "Ayam Petelur",
                     history: [
-                        { date: "24/05/2026", type: "pakan", pakan_type: "pakan-premix", pakan: 55, air: 120 },
-                        { date: "23/05/2026", type: "produksi", telur: 18.5, susu: 0, daging: 0 },
-                        { date: "22/05/2026", type: "deplesi", sehat: 3, sakit: 0, mati: 1, afkir: 0 },
-                        { date: "21/05/2026", type: "catatan", notes: "Pengecekan rutin ventilasi berjalan lancar. Hewan terpantau aktif.", photo: "kondisi_pagi.jpg" },
-                        { date: "20/05/2026", type: "pakan", pakan_type: "pakan-standar", pakan: 54, air: 115 },
-                        { date: "20/05/2026", type: "produksi", telur: 17.8, susu: 0, daging: 0 }
+                        { date: "24/05/2026", type: "pakan", pakan_type: "pakan-premix", pakan: 55, air: 120, flock: "Batch Bravo" },
+                        { date: "23/05/2026", type: "produksi", telur: 18.5, susu: 0, daging: 0, flock: "Batch Bravo" },
+                        { date: "22/05/2026", type: "deplesi", sehat: 3, sakit: 0, mati: 1, afkir: 0, flock: "Batch Bravo" },
+                        { date: "21/05/2026", type: "catatan", notes: "Pengecekan rutin ventilasi berjalan lancar. Hewan terpantau aktif.", photo: "kondisi_pagi.jpg", flock: "Batch Bravo" },
+                        { date: "20/05/2026", type: "pakan", pakan_type: "pakan-standar", pakan: 54, air: 115, flock: "Batch Bravo" },
+                        { date: "20/05/2026", type: "produksi", telur: 17.8, susu: 0, daging: 0, flock: "Batch Bravo" }
                     ],
                     occupants: [
                         {
-                            name: "xxxxxx",
+                            name: "Batch Layer A",
                             species: "AYAM PETELUR",
                             hereQty: 2,
                             hereSehat: 2,
                             hereSakit: 0,
                             hereMati: 0,
                             totalQty: 10,
-                            totalSehat: 0,
+                            totalSehat: 10,
                             totalSakit: 0,
                             totalMati: 0,
                             batchMatiCount: 0
                         },
                         {
-                            name: "Test Satu",
+                            name: "Flock Layer B",
                             species: "AYAM PETELUR",
                             hereQty: 1,
                             hereSehat: 1,
@@ -1310,89 +1500,120 @@
                             totalSakit: 5,
                             totalMati: 0,
                             batchMatiCount: 5
+                        },
+                        {
+                            name: "Batch Bravo",
+                            species: "AYAM PETELUR",
+                            hereQty: 5,
+                            hereSehat: 5,
+                            hereSakit: 0,
+                            hereMati: 0,
+                            totalQty: 20,
+                            totalSehat: 20,
+                            totalSakit: 0,
+                            totalMati: 0,
+                            batchMatiCount: 0
+                        },
+                        {
+                            name: "Flock Delta",
+                            species: "AYAM PETELUR",
+                            hereQty: 12,
+                            hereSehat: 10,
+                            hereSakit: 2,
+                            hereMati: 0,
+                            totalQty: 15,
+                            totalSehat: 13,
+                            totalSakit: 2,
+                            totalMati: 0,
+                            batchMatiCount: 0
                         }
                     ]
                 },
                 {
                     id: 2,
-                    name: "Kandang pejantan",
+                    name: "Kandang Petelur Bravo",
                     status: "Aktif",
-                    loc: "Lokasi tidak ditentukan",
-                    periodName: "Test",
-                    periodDate: "1/6/2026",
-                    sehat: 36,
-                    sakit: 0,
-                    mati: 1,
+                    loc: "Sektor Timur - Lantai 2",
+                    periodName: "Periode 2 / BATCH-02",
+                    periodDate: "01/05/2026",
+                    sehat: 392,
+                    sakit: 8,
+                    mati: 3,
                     capacity: 1000,
                     type: "Battery Cage",
                     species: "Ayam Petelur",
-                    history: [],
+                    history: [
+                        { date: "23/05/2026", type: "pakan", pakan_type: "pakan-premix", pakan: 120, air: 350, flock: "Flock Layer B" },
+                        { date: "22/05/2026", type: "deplesi", sehat: 392, sakit: 8, mati: 3, afkir: 0, flock: "Flock Layer B" }
+                    ],
                     occupants: [
                         {
-                            name: "Ayam petanjan",
+                            name: "Flock Layer B",
                             species: "AYAM PETELUR",
-                            hereQty: 76,
-                            hereSehat: 73,
-                            hereSakit: 3,
-                            hereMati: 22,
-                            totalQty: 8029,
-                            totalSehat: 3,
-                            totalSakit: 2,
-                            totalMati: 0,
-                            batchMatiCount: 22
+                            hereQty: 220,
+                            hereSehat: 215,
+                            hereSakit: 5,
+                            hereMati: 2,
+                            totalQty: 300,
+                            totalSehat: 290,
+                            totalSakit: 10,
+                            totalMati: 2,
+                            batchMatiCount: 2
                         },
                         {
-                            name: "cccc",
+                            name: "Batch Layer C",
                             species: "AYAM PETELUR",
-                            hereQty: 197,
-                            hereSehat: 194,
+                            hereQty: 180,
+                            hereSehat: 177,
                             hereSakit: 3,
                             hereMati: 1,
-                            totalQty: 211,
-                            totalSehat: 3,
-                            totalSakit: 1,
-                            totalMati: 0,
+                            totalQty: 200,
+                            totalSehat: 197,
+                            totalSakit: 3,
+                            totalMati: 1,
                             batchMatiCount: 1
                         }
                     ]
                 },
                 {
                     id: 3,
-                    name: "kandang a",
+                    name: "Kandang Petelur Charlie",
                     status: "Aktif",
-                    loc: "kandang a",
-                    periodName: "xxx",
-                    periodDate: "16/3/2026",
+                    loc: "Sektor Barat - Lantai 1",
+                    periodName: "Periode 3 / BATCH-03",
+                    periodDate: "16/03/2026",
                     sehat: 39,
-                    sakit: 0,
-                    mati: 6,
+                    sakit: 1,
+                    mati: 0,
                     capacity: 1000,
                     type: "Battery Cage",
                     species: "Ayam Petelur",
-                    history: [],
+                    history: [
+                        { date: "23/05/2026", type: "pakan", pakan_type: "pakan-standar", pakan: 40, air: 90, flock: "Flock Layer Alpha" }
+                    ],
                     occupants: [
                         {
-                            name: "ayam uye",
+                            name: "Flock Layer Alpha",
                             species: "AYAM PETELUR",
-                            hereQty: 20,
-                            hereSehat: 20,
-                            hereSakit: 0,
+                            hereQty: 25,
+                            hereSehat: 24,
+                            hereSakit: 1,
                             hereMati: 0,
-                            totalQty: 155,
-                            totalSehat: 0,
-                            totalSakit: 0,
+                            totalQty: 100,
+                            totalSehat: 99,
+                            totalSakit: 1,
                             totalMati: 0,
                             batchMatiCount: 0
                         },
                         {
                             name: "DOC Layer Super",
                             species: "AYAM PETELUR",
-                            hereQty: 10,
-                            hereSehat: 10,
+                            hereQty: 15,
+                            hereSehat: 15,
                             hereSakit: 0,
                             hereMati: 0,
-                            totalQty: 551,
-                            totalSehat: 0,
+                            totalQty: 15,
+                            totalSehat: 15,
                             totalSakit: 0,
                             totalMati: 0,
                             batchMatiCount: 0
@@ -1409,6 +1630,70 @@
 
         // Retrieve coop details
         const coop = coops.find(c => c.id === coopId);
+
+        // Auto-inject dummy occupants and metrics if empty (for demo purposes on any loaded coop)
+        if (coop && (!coop.occupants || coop.occupants.length < 4)) {
+            coop.occupants = [
+                {
+                    name: "xxxxxx",
+                    species: coop.species ? coop.species.toUpperCase() : "AYAM PETELUR",
+                    hereQty: 2,
+                    hereSehat: 2,
+                    hereSakit: 0,
+                    hereMati: 0,
+                    totalQty: 10,
+                    totalSehat: 0,
+                    totalSakit: 0,
+                    totalMati: 0,
+                    batchMatiCount: 0
+                },
+                {
+                    name: "Test Satu",
+                    species: coop.species ? coop.species.toUpperCase() : "AYAM PETELUR",
+                    hereQty: 1,
+                    hereSehat: 1,
+                    hereSakit: 0,
+                    hereMati: 0,
+                    totalQty: 10,
+                    totalSehat: 5,
+                    totalSakit: 5,
+                    totalMati: 0,
+                    batchMatiCount: 5
+                },
+                {
+                    name: "Batch Bravo",
+                    species: coop.species ? coop.species.toUpperCase() : "AYAM PETELUR",
+                    hereQty: 5,
+                    hereSehat: 5,
+                    hereSakit: 0,
+                    hereMati: 0,
+                    totalQty: 20,
+                    totalSehat: 20,
+                    totalSakit: 0,
+                    totalMati: 0,
+                    batchMatiCount: 0
+                },
+                {
+                    name: "Flock Delta",
+                    species: coop.species ? coop.species.toUpperCase() : "AYAM PETELUR",
+                    hereQty: 12,
+                    hereSehat: 10,
+                    hereSakit: 2,
+                    hereMati: 0,
+                    totalQty: 15,
+                    totalSehat: 13,
+                    totalSakit: 2,
+                    totalMati: 0,
+                    batchMatiCount: 0
+                }
+            ];
+            // If the coop population is low/default, update it to match the dummy occupants (18 sehat, 2 sakit)
+            if (coop.sehat <= 3 && coop.sakit === 0) {
+                coop.sehat = 18;
+                coop.sakit = 2;
+            }
+            localStorage.setItem('coops', JSON.stringify(coops));
+        }
 
         // State variables
         let initialPop = 3;
@@ -1440,8 +1725,10 @@
             if (initialPop === 0) initialPop = coop.capacity; // Fallback
 
             // Fill prefilled values in the input form based on current coop states
-            document.getElementById('form-sehat').value = coop.sehat;
-            document.getElementById('form-sakit').value = coop.sakit;
+            const inpSakit = document.getElementById('inp-sakit');
+            if (inpSakit) {
+                inpSakit.value = coop.sakit;
+            }
 
             // Render components
             renderMetrics();
@@ -1460,22 +1747,38 @@
             }
 
             coop.occupants.forEach(occ => {
-                const healthy = occ.hereSehat ?? occ.hereQty;
-                const sick = occ.hereSakit ?? 0;
-                const deadCount = occ.batchMatiCount ?? 0;
+                const hereHealthy = occ.hereSehat ?? occ.hereQty;
+                const hereSick = occ.hereSakit ?? 0;
+                const hereDead = occ.hereMati ?? 0;
+
+                const totalQty = occ.totalQty ?? occ.hereQty;
+                const totalHealthy = occ.totalSehat ?? 0;
+                const totalSick = occ.totalSakit ?? 0;
+
                 container.innerHTML += `
                     <div class="lot-c">
                         <div class="lot-c-header">
                             <span class="lot-c-name">${occ.name}</span>
-                            <span class="lot-c-badge">${occ.hereQty} Ekor</span>
+                            <span class="lot-c-species">${occ.species}</span>
                         </div>
-                        <div style="font-size:10px; color:var(--ink3); font-weight:600; text-transform:uppercase;">${occ.species}</div>
-                        <div class="lot-c-details">
-                            <div class="lot-c-dots">
-                                <span class="lot-c-dot-val"><span class="l-dot sehat"></span> ${healthy}</span>
-                                <span class="lot-c-dot-val"><span class="l-dot sakit"></span> ${sick}</span>
+                        <div class="lot-c-body">
+                            <div class="lot-c-col">
+                                <span class="lot-c-col-label">Di Kandang Ini</span>
+                                <div class="lot-c-col-value-row" style="display: flex; gap: 8px; font-weight: 600; font-size: 12px; align-items: center; flex-wrap: wrap;">
+                                    <span class="lot-c-qty-text" style="margin-right: 4px;">${occ.hereQty} ekor</span>
+                                    <span style="color: var(--sage);">${hereHealthy.toLocaleString('id')} sht</span>
+                                    <span style="color: var(--amber);">${hereSick.toLocaleString('id')} skt</span>
+                                    <span style="color: var(--rust);">${hereDead.toLocaleString('id')} mati</span>
+                                </div>
                             </div>
-                            <span class="lot-c-batch-mortality">Batch: ${deadCount} Mati</span>
+                            <div class="lot-c-col">
+                                <span class="lot-c-col-label">Total Batch (Semua)</span>
+                                <div class="lot-c-col-value-row" style="display: flex; gap: 8px; font-weight: 600; font-size: 12px; align-items: center; flex-wrap: wrap;">
+                                    <span class="lot-c-qty-text" style="margin-right: 4px;">${totalQty}</span>
+                                    <span style="color: var(--sage);">${totalHealthy.toLocaleString('id')} sht</span>
+                                    <span style="color: var(--amber);">${totalSick.toLocaleString('id')} skt</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1485,7 +1788,7 @@
         // Calculate and Render Metrics Cards
         function renderMetrics() {
             const totalAlive = coop.sehat + coop.sakit;
-            
+
             // 1. Populasi Card
             document.getElementById('val-pop').textContent = totalAlive.toLocaleString('id');
             document.getElementById('sub-pop').textContent = `Dari awal ${initialPop.toLocaleString('id')} ekor`;
@@ -1520,7 +1823,7 @@
             // Assuming 1 kg of egg = 16 eggs. For the last log:
             let lastHdp = 0;
             let totalEggHistory = totalEgg;
-            
+
             if (coop.history && coop.history.length > 0) {
                 const lastLog = coop.history[0];
                 const eggsCount = (lastLog.telur || 0) * 16;
@@ -1530,10 +1833,6 @@
 
             document.getElementById('val-hdp').textContent = `${lastHdp.toFixed(0)}%`;
             document.getElementById('sub-hdp').textContent = `Total Telur (Kg): ${totalEggHistory.toLocaleString('id')}`;
-
-            // 5. Hasil Lainnya Card
-            document.getElementById('val-susu').textContent = totalSusu.toLocaleString('id');
-            document.getElementById('val-daging').textContent = totalDaging.toLocaleString('id');
         }
 
         // Tab Switchers
@@ -1548,6 +1847,8 @@
         }
 
         function switchModalTab(tabName, btnElement) {
+            if (btnElement && btnElement.classList.contains('disabled')) return;
+
             const btns = btnElement.parentElement.querySelectorAll('.tab-btn');
             btns.forEach(b => b.classList.remove('active'));
             btnElement.classList.add('active');
@@ -1559,6 +1860,71 @@
             panes.forEach(p => { p.style.display = 'none'; p.classList.remove('active'); });
             const target = document.getElementById('form-tab-' + tabName);
             if (target) { target.style.display = 'block'; target.classList.add('active'); }
+        }
+
+        function handleFlockChange() {
+            const flockVal = document.getElementById('global-inp-flock').value;
+            const tabPakan = document.getElementById('modal-tab-pakan');
+            const tabProduksi = document.getElementById('modal-tab-produksi');
+            const tabDeplesi = document.getElementById('modal-tab-deplesi');
+            const tabCatatan = document.getElementById('modal-tab-catatan');
+
+            if (!tabPakan || !tabProduksi || !tabDeplesi || !tabCatatan) return;
+
+            if (flockVal === 'Semua') {
+                // Disable pakan, produksi, deplesi
+                tabPakan.classList.add('disabled');
+                tabProduksi.classList.add('disabled');
+                tabDeplesi.classList.add('disabled');
+
+                // If currently active tab is one of the disabled ones, switch to catatan
+                const modal = document.getElementById('input-log-modal');
+                const activeTab = modal ? modal.dataset.activeTab : '';
+                if (activeTab === 'pakan' || activeTab === 'produksi' || activeTab === 'deplesi') {
+                    switchModalTab('catatan', tabCatatan);
+                }
+            } else {
+                // Enable all
+                tabPakan.classList.remove('disabled');
+                tabProduksi.classList.remove('disabled');
+                tabDeplesi.classList.remove('disabled');
+            }
+        }
+
+        function handleKomoditasChange() {
+            const komoditas = document.getElementById('inp-komoditas').value;
+            const satuanInput = document.getElementById('inp-satuan');
+            const labelSatuan = document.getElementById('label-satuan');
+            if (!satuanInput) return;
+
+            if (komoditas === "") {
+                satuanInput.value = "";
+                if (labelSatuan) labelSatuan.textContent = "";
+            } else {
+                // Since the available commodities are all eggs, we autofill 'butir'
+                satuanInput.value = "butir";
+                if (labelSatuan) labelSatuan.textContent = "butir";
+            }
+        }
+
+        function handlePakanTypeChange() {
+            const pakanType = document.getElementById('inp-pakan-type').value;
+            const stockInfoEl = document.getElementById('pakan-stock-info');
+            if (!stockInfoEl) return;
+
+            const stocks = {
+                'pakan-premix': '1.250 Kg',
+                'pakan-standar': '850 Kg',
+                'pakan-konsentrat': '420 Kg',
+                'pakan-limbah': '150 Kg'
+            };
+
+            if (pakanType && stocks[pakanType]) {
+                stockInfoEl.textContent = `Sisa Stok Pakan: ${stocks[pakanType]}`;
+                stockInfoEl.style.display = 'block';
+            } else {
+                stockInfoEl.style.display = 'none';
+            }
         }
 
         // Set modal UI mode: 'create' shows tabs; 'edit' hides tabs and only shows specific form
@@ -1594,7 +1960,7 @@
             const activeTab = modal && modal.dataset.activeTab ? modal.dataset.activeTab : 'pakan';
             const form = document.getElementById('form-tab-' + activeTab);
             if (!form) return;
-            const fakeEvent = { preventDefault: function(){}, target: form };
+            const fakeEvent = { preventDefault: function () { }, target: form };
             submitDailyLog(fakeEvent, activeTab);
         }
 
@@ -1604,17 +1970,27 @@
             const tableBlock = document.getElementById('records-table-block');
 
             // Apply filter date
-            const filterDateEl = document.getElementById('filter-date');
-            const filterDateVal = filterDateEl ? filterDateEl.value : '';
-            let filterDateStr = '';
-            if (filterDateVal) {
-                const parts = filterDateVal.split('-');
-                filterDateStr = `${parseInt(parts[2], 10)}/${parseInt(parts[1], 10)}/${parts[0]}`;
-            }
+            const filterDateFromEl = document.getElementById('filter-date-from');
+            const filterDateToEl = document.getElementById('filter-date-to');
+            const dateFromStr = filterDateFromEl ? filterDateFromEl.value : '';
+            const dateToStr = filterDateToEl ? filterDateToEl.value : '';
 
             let displayHistory = coop.history || [];
-            if (filterDateStr) {
-                displayHistory = displayHistory.filter(log => log.date === filterDateStr);
+
+            if (dateFromStr || dateToStr) {
+                displayHistory = displayHistory.filter(log => {
+                    if (!log.date) return false;
+                    const parts = log.date.split('/');
+                    if (parts.length !== 3) return true;
+                    const year = parts[2];
+                    const month = parts[1].padStart(2, '0');
+                    const day = parts[0].padStart(2, '0');
+                    const logDateStr = `${year}-${month}-${day}`; // "YYYY-MM-DD"
+
+                    if (dateFromStr && logDateStr < dateFromStr) return false;
+                    if (dateToStr && logDateStr > dateToStr) return false;
+                    return true;
+                });
             }
 
             if (!displayHistory || displayHistory.length === 0) {
@@ -1704,6 +2080,7 @@
                             <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
                             <td style="color: var(--rust); font-weight: 600;">${log.mati || 0} ekor</td>
                             <td style="color: var(--rust); font-weight: 600;">${log.afkir || 0} ekor</td>
+                            <td style="color: var(--sky); font-weight: 600;">${log.mutasi || 0} ekor</td>
                             <td style="color: var(--amber); font-weight: 600;">${log.sakit || 0} ekor</td>
                             ${aksiHtml}
                         </tr>
@@ -1714,7 +2091,8 @@
                 if (!log.type || log.type === 'catatan') {
                     tbodyCatatan.innerHTML += `
                         <tr>
-                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}<br><span style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</span></td>
+                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
+                            <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
                             <td style="font-weight: 500;">${log.notes || '—'}</td>
                             <td style="font-weight: 500;">${log.photo ? '📷 Terlampir' : '—'}</td>
                             ${aksiHtml}
@@ -1734,19 +2112,37 @@
                 document.getElementById('global-inp-date').value = `${yyyy}-${mm}-${dd}`;
 
                 const flockSelect = document.getElementById('global-inp-flock');
-                flockSelect.innerHTML = '<option value="Semua">Semua Flock</option>';
+                flockSelect.innerHTML = '<option value="" disabled selected>Pilih Flock / Batch</option><option value="Semua">Semua Flock</option>';
                 if (coop && coop.occupants) {
                     coop.occupants.forEach(occ => {
                         flockSelect.innerHTML += `<option value="${occ.name}">${occ.name}</option>`;
                     });
                 }
+                flockSelect.value = '';
                 // default the active tab to pakan and update UI
                 const modal = document.getElementById('input-log-modal');
                 if (modal) {
                     setModalMode('create');
+                    
+                    // Reset all form elements inside the modal so old data is not shown
+                    ['pakan', 'produksi', 'deplesi', 'catatan'].forEach(tab => {
+                        const form = document.getElementById(`form-tab-${tab}`);
+                        if (form) form.reset();
+                    });
+                    
+                    const labelSatuan = document.getElementById('label-satuan');
+                    if (labelSatuan) labelSatuan.textContent = '';
+                    
                     modal.dataset.activeTab = 'pakan';
                     const firstBtn = modal.querySelector('.tab-nav .tab-btn');
                     if (firstBtn) switchModalTab('pakan', firstBtn);
+                    
+                    // Correctly initialize tab states based on the selected flock (Semua Flock)
+                    handleFlockChange();
+
+                    // Reset stock info display
+                    const stockInfoEl = document.getElementById('pakan-stock-info');
+                    if (stockInfoEl) stockInfoEl.style.display = 'none';
                 }
             }
             document.getElementById(id).classList.add('open');
@@ -1780,7 +2176,7 @@
             currentEditIndex = index;
             const log = coop.history[index];
             const type = log.type || 'pakan';
-            
+
             if (log.date) {
                 const parts = log.date.split('/');
                 if (parts.length === 3) {
@@ -1790,9 +2186,9 @@
                     document.getElementById('global-inp-date').value = `${yyyy}-${mm}-${dd}`;
                 }
             }
-            
+
             const flockSelect = document.getElementById('global-inp-flock');
-            flockSelect.innerHTML = '<option value="Semua">Semua Flock</option>';
+            flockSelect.innerHTML = '<option value="" disabled>Pilih Flock / Batch</option><option value="Semua">Semua Flock</option>';
             if (coop && coop.occupants) {
                 coop.occupants.forEach(occ => {
                     flockSelect.innerHTML += `<option value="${occ.name}">${occ.name}</option>`;
@@ -1804,16 +2200,21 @@
                 document.getElementById('inp-pakan-type').value = log.pakan_type || '';
                 document.getElementById('inp-pakan-jumlah').value = log.pakan || 0;
                 document.getElementById('inp-air').value = log.air || 0;
+                handlePakanTypeChange();
             } else if (type === 'produksi') {
                 document.getElementById('inp-komoditas').value = log.komoditas || '';
                 document.getElementById('inp-total').value = log.total || 0;
                 document.getElementById('inp-satuan').value = log.satuan || '';
+                const labelSatuan = document.getElementById('label-satuan');
+                if (labelSatuan) labelSatuan.textContent = log.satuan || '';
                 document.getElementById('inp-total-kg').value = log.total_kg || 0;
             } else if (type === 'deplesi') {
                 const inpSakitEl = document.getElementById('inp-sakit');
                 if (inpSakitEl) inpSakitEl.value = log.sakit || '';
                 document.getElementById('inp-mati').value = log.mati || 0;
                 document.getElementById('inp-afkir').value = log.afkir || 0;
+                const inpMutasiEl = document.getElementById('inp-mutasi');
+                if (inpMutasiEl) inpMutasiEl.value = log.mutasi || 0;
             } else if (type === 'catatan') {
                 document.getElementById('inp-notes').value = log.notes || '';
             }
@@ -1870,18 +2271,25 @@
                 newLog.sakit = inpSakitEl ? parseInt(inpSakitEl.value) || 0 : 0;
                 newLog.mati = parseInt(document.getElementById('inp-mati').value) || 0;
                 newLog.afkir = parseInt(document.getElementById('inp-afkir').value) || 0;
-                
+                newLog.mutasi = parseInt(document.getElementById('inp-mutasi').value) || 0;
+
                 // Update cumulative status in coop
                 if (inpSakitEl && inpSakitEl.value !== "") {
                     coop.sakit = newLog.sakit;
                 }
                 coop.mati += newLog.mati;
 
+                // Safely reduce coop healthy population based on death, afkir, and mutasi
+                const totalDeplesi = newLog.mati + newLog.afkir + newLog.mutasi;
+                if (totalDeplesi > 0) {
+                    coop.sehat = Math.max(0, coop.sehat - totalDeplesi);
+                }
+
                 // Also reduce one of the lot quantities dynamically for fidelity simulation
-                if (coop.occupants && coop.occupants.length > 0 && newLog.mati > 0) {
+                if (coop.occupants && coop.occupants.length > 0 && totalDeplesi > 0) {
                     const primaryLot = coop.occupants[0];
-                    primaryLot.hereQty = Math.max(0, primaryLot.hereQty - newLog.mati);
-                    primaryLot.hereSehat = Math.max(0, primaryLot.hereSehat - newLog.mati);
+                    primaryLot.hereQty = Math.max(0, primaryLot.hereQty - totalDeplesi);
+                    primaryLot.hereSehat = Math.max(0, primaryLot.hereSehat - totalDeplesi);
                     primaryLot.batchMatiCount += newLog.mati;
                 }
             } else if (type === 'catatan') {
@@ -1901,12 +2309,12 @@
             // Save state & re-render
             saveState();
             closeModal('input-log-modal');
-            
+
             // Re-render components
             renderMetrics();
             renderOccupants();
             renderDailyLogsTable();
-            
+
             // Clear the form
             event.target.reset();
         }
