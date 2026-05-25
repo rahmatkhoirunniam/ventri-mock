@@ -1442,14 +1442,48 @@
         </div>
     </div>
 
+    <!-- DEBUG CONSOLE FOR RUNTIME ERRORS -->
+    <div id="debug-log-console" style="background:#1e1e1e; color:#00ff00; font-family:monospace; padding:15px; margin:20px; border-radius:8px; display:none; font-size:12px; max-height:200px; overflow-y:auto; border:2px solid red; text-align:left; z-index:9999; position:relative;">
+        <h4 style="color:#ff6b6b; margin-bottom:5px;">⚠️ JavaScript Debug Console:</h4>
+        <div id="debug-log-output"></div>
+    </div>
+
     <!-- JAVASCRIPT BINDINGS -->
     <script>
+        // Intercept global runtime errors and display them on-screen for diagnostic purposes
+        window.onerror = function(message, source, lineno, colno, error) {
+            const consoleDiv = document.getElementById('debug-log-console');
+            const outputDiv = document.getElementById('debug-log-output');
+            if (consoleDiv && outputDiv) {
+                consoleDiv.style.display = 'block';
+                outputDiv.innerHTML += `<div style="color:#ff6b6b; margin-bottom:6px;">[ERROR] ${message} (Line ${lineno}:${colno})</div>`;
+            }
+            return false;
+        };
+        console.error = function(...args) {
+            const consoleDiv = document.getElementById('debug-log-console');
+            const outputDiv = document.getElementById('debug-log-output');
+            if (consoleDiv && outputDiv) {
+                consoleDiv.style.display = 'block';
+                outputDiv.innerHTML += `<div style="color:#ffb900; margin-bottom:6px;">[CONSOLE.ERROR] ${args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ')}</div>`;
+            }
+        };
         let coops = [];
         const storedCoops = localStorage.getItem('coops');
         let needsFallback = false;
-        if (storedCoops) {
-            coops = JSON.parse(storedCoops);
-            needsFallback = coops.some(c => c.name === "Kandang ayam ayaman" || c.name === "Kandang pejantan" || c.name === "kandang a");
+        try {
+            if (storedCoops) {
+                coops = JSON.parse(storedCoops);
+                if (!Array.isArray(coops) || coops.length === 0) {
+                    needsFallback = true;
+                } else {
+                    needsFallback = coops.some(c => !c || c.name === "Kandang ayam ayaman" || c.name === "Kandang pejantan" || c.name === "kandang a");
+                }
+            } else {
+                needsFallback = true;
+            }
+        } catch (e) {
+            needsFallback = true;
         }
         if (!storedCoops || needsFallback) {
             coops = [
@@ -1624,15 +1658,62 @@
             localStorage.setItem('coops', JSON.stringify(coops));
         }
 
+        // Migrate old/legacy data formats in localStorage if they exist
+        function migrateStoredData() {
+            try {
+                let modified = false;
+                if (Array.isArray(coops)) {
+                    coops.forEach(c => {
+                        if (c && Array.isArray(c.history)) {
+                            c.history.forEach(log => {
+                                if (log) {
+                                    // 1. Infer log type if missing
+                                    if (!log.type) {
+                                        if (log.pakan || log.pakan_type || log.air) {
+                                            log.type = 'pakan';
+                                        } else if (log.telur || log.komoditas || typeof log.total !== 'undefined' || log.total_kg) {
+                                            log.type = 'produksi';
+                                        } else if (log.mati || log.afkir || log.mutasi || log.sakit) {
+                                            log.type = 'deplesi';
+                                        } else {
+                                            log.type = 'catatan';
+                                        }
+                                        modified = true;
+                                    }
+
+                                    // 2. Fill flock if missing or if it has generic "Semua" value
+                                    if (!log.flock || log.flock === 'Semua') {
+                                        if (c.occupants && Array.isArray(c.occupants) && c.occupants.length > 0) {
+                                            if (c.occupants[0] && c.occupants[0].name) {
+                                                log.flock = c.occupants[0].name;
+                                                modified = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
+                if (modified) {
+                    localStorage.setItem('coops', JSON.stringify(coops));
+                }
+            } catch (err) {
+                console.error("Error migrating stored coops data:", err);
+            }
+        }
+        migrateStoredData();
+
         // Parse query string for ?id=X
         const urlParams = new URLSearchParams(window.location.search);
         const coopId = parseInt(urlParams.get('id')) || 1;
 
         // Retrieve coop details
-        const coop = coops.find(c => c.id === coopId);
+        const coop = coops.find(c => c.id == coopId);
 
         // Auto-inject dummy occupants and metrics if empty (for demo purposes on any loaded coop)
-        if (coop && (!coop.occupants || coop.occupants.length < 4)) {
+        if (coop && (!coop.occupants || coop.occupants.length === 0)) {
             coop.occupants = [
                 {
                     name: "xxxxxx",
@@ -1705,35 +1786,53 @@
 
         // Initialize Page Information
         function initPage() {
-            if (!coop) {
-                document.getElementById('coop-name-title').textContent = "Kandang Tidak Ditemukan";
-                return;
+            try {
+                if (!coop) {
+                    document.getElementById('coop-name-title').textContent = "Kandang Tidak Ditemukan";
+                    return;
+                }
+
+                // Header info
+                document.getElementById('coop-name-title').textContent = coop.name || '—';
+                document.getElementById('coop-meta-sub').textContent = `Kapasitas: ${(coop.capacity || 0).toLocaleString('id')} ekor | Lokasi: ${coop.loc || '—'}`;
+
+                // Banner Period
+                document.getElementById('period-name-display').textContent = `Periode Aktif: ${coop.periodName || '—'}`;
+                document.getElementById('period-start-date').textContent = `Mulai: ${coop.periodDate || '—'}`;
+
+                // Calculate Initial Population based on sum of occupants hereQty + mati
+                const sumOccupantsQty = (coop.occupants && Array.isArray(coop.occupants)) ? coop.occupants.reduce((s, o) => s + (o ? o.hereQty || 0 : 0), 0) : 0;
+                // Let initial pop be sumOccupantsQty + coop.mati
+                initialPop = sumOccupantsQty + (coop.mati || 0);
+                if (initialPop === 0) initialPop = coop.capacity || 100; // Fallback
+
+                // Fill prefilled values in the input form based on current coop states
+                const inpSakit = document.getElementById('inp-sakit');
+                if (inpSakit) {
+                    inpSakit.value = coop.sakit || 0;
+                }
+            } catch (e) {
+                console.error("Error in initPage header setup:", e);
             }
 
-            // Header info
-            document.getElementById('coop-name-title').textContent = coop.name;
-            document.getElementById('coop-meta-sub').textContent = `Kapasitas: ${coop.capacity.toLocaleString('id')} ekor | Lokasi: ${coop.loc}`;
-
-            // Banner Period
-            document.getElementById('period-name-display').textContent = `Periode Aktif: ${coop.periodName}`;
-            document.getElementById('period-start-date').textContent = `Mulai: ${coop.periodDate}`;
-
-            // Calculate Initial Population based on sum of occupants hereQty + mati
-            const sumOccupantsQty = coop.occupants ? coop.occupants.reduce((s, o) => s + o.hereQty, 0) : 0;
-            // Let initial pop be sumOccupantsQty + coop.mati
-            initialPop = sumOccupantsQty + coop.mati;
-            if (initialPop === 0) initialPop = coop.capacity; // Fallback
-
-            // Fill prefilled values in the input form based on current coop states
-            const inpSakit = document.getElementById('inp-sakit');
-            if (inpSakit) {
-                inpSakit.value = coop.sakit;
+            // Render components with safety guards
+            try {
+                renderMetrics();
+            } catch (e) {
+                console.error("Error in renderMetrics:", e);
             }
 
-            // Render components
-            renderMetrics();
-            renderOccupants();
-            renderDailyLogsTable();
+            try {
+                renderOccupants();
+            } catch (e) {
+                console.error("Error in renderOccupants:", e);
+            }
+
+            try {
+                renderDailyLogsTable();
+            } catch (e) {
+                console.error("Error in renderDailyLogsTable:", e);
+            }
         }
 
         // Render Occupants grid
@@ -1741,77 +1840,80 @@
             const container = document.getElementById('lots-grid-container');
             container.innerHTML = '';
 
-            if (!coop.occupants || coop.occupants.length === 0) {
+            if (!coop.occupants || !Array.isArray(coop.occupants) || coop.occupants.length === 0) {
                 container.innerHTML = `<div class="empty-grid-col">Tidak ada batch penghuni di kandang ini saat ini.</div>`;
                 return;
             }
 
             coop.occupants.forEach(occ => {
-                const hereHealthy = occ.hereSehat ?? occ.hereQty;
-                const hereSick = occ.hereSakit ?? 0;
-                const hereDead = occ.hereMati ?? 0;
+                if (occ) {
+                    const hereHealthy = occ.hereSehat ?? occ.hereQty ?? 0;
+                    const hereSick = occ.hereSakit ?? 0;
+                    const hereDead = occ.hereMati ?? 0;
 
-                const totalQty = occ.totalQty ?? occ.hereQty;
-                const totalHealthy = occ.totalSehat ?? 0;
-                const totalSick = occ.totalSakit ?? 0;
-                const totalDead = occ.totalMati ?? 0;
+                    const totalQty = occ.totalQty ?? occ.hereQty ?? 0;
+                    const totalHealthy = occ.totalSehat ?? 0;
+                    const totalSick = occ.totalSakit ?? 0;
+                    const totalDead = occ.totalMati ?? 0;
 
-                container.innerHTML += `
-                    <div class="lot-c">
-                        <div class="lot-c-header">
-                            <span class="lot-c-name">${occ.name}</span>
-                            <span class="lot-c-species">${occ.species}</span>
-                        </div>
-                        <div class="lot-c-body">
-                            <div class="lot-c-col">
-                                <span class="lot-c-col-label">Di Kandang Ini</span>
-                                <div class="lot-c-col-value-row" style="display: flex; gap: 8px; font-weight: 600; font-size: 12px; align-items: center; flex-wrap: wrap;">
-                                    <span class="lot-c-qty-text" style="margin-right: 4px;">${occ.hereQty} ekor</span>
-                                    <span style="color: var(--sage);">${hereHealthy.toLocaleString('id')} sht</span>
-                                    <span style="color: var(--amber);">${hereSick.toLocaleString('id')} skt</span>
-                                    <span style="color: var(--rust);">${hereDead.toLocaleString('id')} mati</span>
+                    container.innerHTML += `
+                        <div class="lot-c">
+                            <div class="lot-c-header">
+                                <span class="lot-c-name">${occ.name || '—'}</span>
+                                <span class="lot-c-species">${occ.species || '—'}</span>
+                            </div>
+                            <div class="lot-c-body">
+                                <div class="lot-c-col">
+                                    <span class="lot-c-col-label">Di Kandang Ini</span>
+                                    <div class="lot-c-col-value-row" style="display: flex; gap: 8px; font-weight: 600; font-size: 12px; align-items: center; flex-wrap: wrap;">
+                                        <span class="lot-c-qty-text" style="margin-right: 4px;">${occ.hereQty || 0} ekor</span>
+                                        <span style="color: var(--sage);">${hereHealthy.toLocaleString('id')} sht</span>
+                                        <span style="color: var(--amber);">${hereSick.toLocaleString('id')} skt</span>
+                                        <span style="color: var(--rust);">${hereDead.toLocaleString('id')} mati</span>
+                                    </div>
+                                </div>
+                                <div class="lot-c-col">
+                                    <span class="lot-c-col-label">Total Batch (Semua)</span>
+                                    <div class="lot-c-col-value-row" style="display: flex; gap: 8px; font-weight: 600; font-size: 12px; align-items: center; flex-wrap: wrap;">
+                                        <span style="color: var(--sage);">${totalHealthy.toLocaleString('id')} sht</span>
+                                        <span style="color: var(--amber);">${totalSick.toLocaleString('id')} skt</span>
+                                        <span style="color: var(--rust);">${totalDead.toLocaleString('id')} mati</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="lot-c-col">
-                                <span class="lot-c-col-label">Total Batch (Semua)</span>
-                                <div class="lot-c-col-value-row" style="display: flex; gap: 8px; font-weight: 600; font-size: 12px; align-items: center; flex-wrap: wrap;">
-                                    <span style="color: var(--sage);">${totalHealthy.toLocaleString('id')} sht</span>
-                                    <span style="color: var(--amber);">${totalSick.toLocaleString('id')} skt</span>
-                                    <span style="color: var(--rust);">${totalDead.toLocaleString('id')} mati</span>
-                                </div>
-                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
             });
         }
 
         // Calculate and Render Metrics Cards
         function renderMetrics() {
-            const totalAlive = coop.sehat + coop.sakit;
+            const totalAlive = (coop.sehat || 0) + (coop.sakit || 0);
 
             // 1. Populasi Card
             document.getElementById('val-pop').textContent = totalAlive.toLocaleString('id');
-            document.getElementById('sub-pop').textContent = `Dari awal ${initialPop.toLocaleString('id')} ekor`;
+            document.getElementById('sub-pop').textContent = `Dari awal ${(initialPop || 0).toLocaleString('id')} ekor`;
 
             // 2. Persentase Deplesi Card
-            const deplesiPct = initialPop > 0 ? ((coop.mati / initialPop) * 100) : 0;
+            const deplesiPct = initialPop > 0 ? (((coop.mati || 0) / initialPop) * 100) : 0;
             document.getElementById('val-dep').textContent = `${deplesiPct.toFixed(0)}%`;
-            document.getElementById('sub-dep').textContent = `Mati: ${coop.mati} | Afkir: 0`;
+            document.getElementById('sub-dep').textContent = `Mati: ${coop.mati || 0} | Afkir: 0`;
 
             // 3. FCR Cumulative Card
-            // Calculate total feed and egg weight from history
             let totalFeed = 0;
             let totalEgg = 0;
             let totalSusu = 0;
             let totalDaging = 0;
 
-            if (coop.history) {
+            if (coop.history && Array.isArray(coop.history)) {
                 coop.history.forEach(log => {
-                    totalFeed += log.pakan || 0;
-                    totalEgg += log.telur || 0;
-                    totalSusu += log.susu || 0;
-                    totalDaging += log.daging || 0;
+                    if (log) {
+                        totalFeed += log.pakan || 0;
+                        totalEgg += log.telur || 0;
+                        totalSusu += log.susu || 0;
+                        totalDaging += log.daging || 0;
+                    }
                 });
             }
 
@@ -1820,16 +1922,16 @@
             document.getElementById('sub-fcr').textContent = `Total Pakan: ${totalFeed.toLocaleString('id')} kg`;
 
             // 4. HDP Terakhir Card (Hen Day Production)
-            // HDP = (Eggs produced (butir) / laying hens population) * 100
-            // Assuming 1 kg of egg = 16 eggs. For the last log:
             let lastHdp = 0;
             let totalEggHistory = totalEgg;
 
-            if (coop.history && coop.history.length > 0) {
+            if (coop.history && Array.isArray(coop.history) && coop.history.length > 0) {
                 const lastLog = coop.history[0];
-                const eggsCount = (lastLog.telur || 0) * 16;
-                const layingPop = lastLog.sehat + lastLog.sakit;
-                lastHdp = layingPop > 0 ? ((eggsCount / layingPop) * 100) : 0;
+                if (lastLog) {
+                    const eggsCount = (lastLog.telur || 0) * 16;
+                    const layingPop = (lastLog.sehat || 0) + (lastLog.sakit || 0);
+                    lastHdp = layingPop > 0 ? ((eggsCount / layingPop) * 100) : 0;
+                }
             }
 
             document.getElementById('val-hdp').textContent = `${lastHdp.toFixed(0)}%`;
@@ -1965,6 +2067,14 @@
             submitDailyLog(fakeEvent, activeTab);
         }
 
+        // Reset simulation database manually to factory defaults
+        function resetAllData() {
+            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik? Tindakan ini akan menghapus semua riwayat input buatan Anda.")) {
+                localStorage.removeItem('coops');
+                location.reload();
+            }
+        }
+
         // Render Daily Logs table / switch empty state
         function renderDailyLogsTable() {
             const emptyBlock = document.getElementById('empty-records-block');
@@ -1976,11 +2086,11 @@
             const dateFromStr = filterDateFromEl ? filterDateFromEl.value : '';
             const dateToStr = filterDateToEl ? filterDateToEl.value : '';
 
-            let displayHistory = coop.history || [];
+            let displayHistory = (coop && Array.isArray(coop.history)) ? coop.history : [];
 
             if (dateFromStr || dateToStr) {
                 displayHistory = displayHistory.filter(log => {
-                    if (!log.date) return false;
+                    if (!log || !log.date) return false;
                     const parts = log.date.split('/');
                     if (parts.length !== 3) return true;
                     const year = parts[2];
@@ -2014,91 +2124,92 @@
             tbodyCatatan.innerHTML = '';
 
             displayHistory.forEach(log => {
-                const originalIndex = coop.history.indexOf(log);
-                const eggsCount = (log.telur || 0) * 16;
-                const pop = (log.sehat || 0) + (log.sakit || 0);
-                const hdp = pop > 0 ? ((eggsCount / pop) * 100) : 0;
-                const fcr = log.telur > 0 ? ((log.pakan || 0) / log.telur) : 0;
+                if (log) {
+                    const originalIndex = coop.history.indexOf(log);
+                    const eggsCount = (log.telur || 0) * 16;
+                    const pop = (log.sehat || 0) + (log.sakit || 0);
+                    const hdp = pop > 0 ? ((eggsCount / pop) * 100) : 0;
+                    const fcr = log.telur > 0 ? ((log.pakan || 0) / log.telur) : 0;
 
-                const aksiHtml = `<td style="white-space:nowrap;">
-                    <button style="border:none; background:none; cursor:pointer; font-size:14px; margin-right:6px;" onclick="editLog(${originalIndex})" title="Edit">✏️</button>
-                    <button style="border:none; background:none; cursor:pointer; font-size:14px;" onclick="deleteLog(${originalIndex})" title="Hapus">🗑️</button>
-                </td>`;
+                    const aksiHtml = `<td style="white-space:nowrap;">
+                        <button style="border:none; background:none; cursor:pointer; font-size:14px; margin-right:6px;" onclick="editLog(${originalIndex})" title="Edit">✏️</button>
+                        <button style="border:none; background:none; cursor:pointer; font-size:14px;" onclick="deleteLog(${originalIndex})" title="Hapus">🗑️</button>
+                    </td>`;
 
-                // Render Pakan
-                if (!log.type || log.type === 'pakan') {
-                    const pakanTypeLabel = {
-                        'pakan-premix': 'Premium Mix',
-                        'pakan-standar': 'Standar',
-                        'pakan-konsentrat': 'Konsentrat',
-                        'pakan-limbah': 'Limbah'
-                    }[log.pakan_type] || log.pakan_type || '—';
-                    tbodyPakan.innerHTML += `
-                        <tr>
-                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
-                            <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
-                            <td style="font-weight: 500;">${pakanTypeLabel}</td>
-                            <td style="font-weight: 500;">${log.pakan || 0} kg</td>
-                            <td style="font-weight: 500; color: var(--sky);">${log.air || 0} L</td>
-                            ${aksiHtml}
-                        </tr>
-                    `;
-                }
-
-                // Render Produksi
-                if (!log.type || log.type === 'produksi') {
-                    // compute HDP only for egg commodities
-                    let prodLabel = log.komoditas || (log.telur ? 'Telur' : '—');
-                    let totalLabel = (typeof log.total !== 'undefined') ? `${log.total} ${log.satuan || ''}` : (log.telur ? `${log.telur} kg` : '—');
-                    const totalKg = log.total_kg || log.telur || 0;
-                    const fcrVal = totalKg > 0 ? ((log.pakan || 0) / totalKg) : 0;
-                    let lastHdpCell = '—';
-                    if ((log.komoditas && log.komoditas.toLowerCase().includes('telur')) || log.telur) {
-                        const eggsCount = (typeof log.total === 'number' && log.total > 0) ? log.total : (log.total_kg ? log.total_kg * 16 : (log.telur || 0) * 16);
-                        const layingPop = (log.sehat || 0) + (log.sakit || 0);
-                        const hdpCalc = layingPop > 0 ? ((eggsCount / layingPop) * 100) : 0;
-                        lastHdpCell = hdpCalc > 0 ? hdpCalc.toFixed(0) + '%' : '—';
+                    // Render Pakan
+                    if (!log.type || log.type === 'pakan') {
+                        const pakanTypeLabel = {
+                            'pakan-premix': 'Premium Mix',
+                            'pakan-standar': 'Standar',
+                            'pakan-konsentrat': 'Konsentrat',
+                            'pakan-limbah': 'Limbah'
+                        }[log.pakan_type] || log.pakan_type || '—';
+                        tbodyPakan.innerHTML += `
+                            <tr>
+                                <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
+                                <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
+                                <td style="font-weight: 500;">${pakanTypeLabel}</td>
+                                <td style="font-weight: 500;">${log.pakan || 0} kg</td>
+                                <td style="font-weight: 500; color: var(--sky);">${log.air || 0} L</td>
+                                ${aksiHtml}
+                            </tr>
+                        `;
                     }
-                    tbodyProduksi.innerHTML += `
-                        <tr>
-                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
-                            <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
-                            <td style="font-weight: 500;">${prodLabel}</td>
-                            <td style="font-weight: 500;">${totalLabel}</td>
-                            <td style="font-weight: 500;">${totalKg ? totalKg + ' kg' : '—'}</td>
-                            <td style="font-family:'DM Mono', monospace; font-weight:600; color:var(--sage);">${lastHdpCell}</td>
-                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${fcrVal > 0 ? fcrVal.toFixed(1) : '—'}</td>
-                            ${aksiHtml}
-                        </tr>
-                    `;
-                }
 
-                // Render Deplesi
-                if (!log.type || log.type === 'deplesi') {
-                    tbodyDeplesi.innerHTML += `
-                        <tr>
-                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
-                            <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
-                            <td style="color: var(--rust); font-weight: 600;">${log.mati || 0} ekor</td>
-                            <td style="color: var(--rust); font-weight: 600;">${log.afkir || 0} ekor</td>
-                            <td style="color: var(--sky); font-weight: 600;">${log.mutasi || 0} ekor</td>
-                            <td style="color: var(--amber); font-weight: 600;">${log.sakit || 0} ekor</td>
-                            ${aksiHtml}
-                        </tr>
-                    `;
-                }
+                    // Render Produksi
+                    if (!log.type || log.type === 'produksi') {
+                        let prodLabel = log.komoditas || (log.telur ? 'Telur' : '—');
+                        let totalLabel = (typeof log.total !== 'undefined') ? `${log.total} ${log.satuan || ''}` : (log.telur ? `${log.telur} kg` : '—');
+                        const totalKg = log.total_kg || log.telur || 0;
+                        const fcrVal = totalKg > 0 ? ((log.pakan || 0) / totalKg) : 0;
+                        let lastHdpCell = '—';
+                        if ((log.komoditas && typeof log.komoditas === 'string' && log.komoditas.toLowerCase().includes('telur')) || log.telur) {
+                            const eggsCount = (typeof log.total === 'number' && log.total > 0) ? log.total : (log.total_kg ? log.total_kg * 16 : (log.telur || 0) * 16);
+                            const layingPop = (log.sehat || 0) + (log.sakit || 0);
+                            const hdpCalc = layingPop > 0 ? ((eggsCount / layingPop) * 100) : 0;
+                            lastHdpCell = hdpCalc > 0 ? hdpCalc.toFixed(0) + '%' : '—';
+                        }
+                        tbodyProduksi.innerHTML += `
+                            <tr>
+                                <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
+                                <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
+                                <td style="font-weight: 500;">${prodLabel}</td>
+                                <td style="font-weight: 500;">${totalLabel}</td>
+                                <td style="font-weight: 500;">${totalKg ? totalKg + ' kg' : '—'}</td>
+                                <td style="font-family:'DM Mono', monospace; font-weight:600; color:var(--sage);">${lastHdpCell}</td>
+                                <td style="font-family:'DM Mono', monospace; font-weight:600;">${fcrVal > 0 ? fcrVal.toFixed(1) : '—'}</td>
+                                ${aksiHtml}
+                            </tr>
+                        `;
+                    }
 
-                // Render Catatan
-                if (!log.type || log.type === 'catatan') {
-                    tbodyCatatan.innerHTML += `
-                        <tr>
-                            <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
-                            <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
-                            <td style="font-weight: 500;">${log.notes || '—'}</td>
-                            <td style="font-weight: 500;">${log.photo ? '📷 Terlampir' : '—'}</td>
-                            ${aksiHtml}
-                        </tr>
-                    `;
+                    // Render Deplesi
+                    if (!log.type || log.type === 'deplesi') {
+                        tbodyDeplesi.innerHTML += `
+                            <tr>
+                                <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
+                                <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
+                                <td style="color: var(--rust); font-weight: 600;">${log.mati || 0} ekor</td>
+                                <td style="color: var(--rust); font-weight: 600;">${log.afkir || 0} ekor</td>
+                                <td style="color: var(--sky); font-weight: 600;">${log.mutasi || 0} ekor</td>
+                                <td style="color: var(--amber); font-weight: 600;">${log.sakit || 0} ekor</td>
+                                ${aksiHtml}
+                            </tr>
+                        `;
+                    }
+
+                    // Render Catatan
+                    if (!log.type || log.type === 'catatan') {
+                        tbodyCatatan.innerHTML += `
+                            <tr>
+                                <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
+                                <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
+                                <td style="font-weight: 500;">${log.notes || '—'}</td>
+                                <td style="font-weight: 500;">${log.photo ? '📷 Terlampir' : '—'}</td>
+                                ${aksiHtml}
+                            </tr>
+                        `;
+                    }
                 }
             });
         }
@@ -2204,12 +2315,12 @@
                 document.getElementById('inp-air').value = log.air || 0;
                 handlePakanTypeChange();
             } else if (type === 'produksi') {
-                document.getElementById('inp-komoditas').value = log.komoditas || '';
-                document.getElementById('inp-total').value = log.total || 0;
-                document.getElementById('inp-satuan').value = log.satuan || '';
+                document.getElementById('inp-komoditas').value = log.komoditas || (log.telur ? 'Telur Ayam Gred A' : '');
+                document.getElementById('inp-total').value = typeof log.total !== 'undefined' ? log.total : (log.telur ? log.telur * 16 : 0);
+                document.getElementById('inp-satuan').value = log.satuan || (log.telur ? 'butir' : '');
                 const labelSatuan = document.getElementById('label-satuan');
-                if (labelSatuan) labelSatuan.textContent = log.satuan || '';
-                document.getElementById('inp-total-kg').value = log.total_kg || 0;
+                if (labelSatuan) labelSatuan.textContent = log.satuan || (log.telur ? 'butir' : '');
+                document.getElementById('inp-total-kg').value = log.total_kg || log.telur || 0;
             } else if (type === 'deplesi') {
                 const inpSakitEl = document.getElementById('inp-sakit');
                 if (inpSakitEl) inpSakitEl.value = log.sakit || '';
