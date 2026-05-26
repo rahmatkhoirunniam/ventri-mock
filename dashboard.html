@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Ringkasan — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Load Chart.js CDN for interactive charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+
+            /* High fidelity colors for additional mockup icons */
+            --purple: #7c3aed;
+            --purple-l: #f5f3ff;
+
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* sidebar styling matching index.html */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            cursor: pointer;
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        .nav .bdg {
+            background: var(--rust);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* main content layout */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tb-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .tb-sub {
+            font-size: 12px;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            margin-top: 1px;
+        }
+
+        .tb-right {
+            display: flex;
+            gap: 9px;
+        }
+
+        /* buttons style matching index.html */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: .13s;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--bdr2);
+            color: var(--ink);
+            background: var(--surf);
+        }
+
+        .btn-solid {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .btn-solid:hover {
+            background: #2e5640;
+        }
+
+        /* content padding */
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 4 TOP STATUS CARDS GRID */
+        .dashboard-grid-top {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid-top {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-grid-top {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dc-card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 125px;
+            position: relative;
+            transition: .15s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .02);
+            cursor: default;
+        }
+
+        .dc-card:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .07);
+            transform: translateY(-2px);
+            border-color: var(--bdr2);
+        }
+
+        .dc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .dc-title {
+            font-size: 12px;
+            color: var(--ink2);
+            font-weight: 500;
+            letter-spacing: 0.1px;
+        }
+
+        .dc-icon-container {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .dc-icon-container.green {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .dc-icon-container.blue {
+            background: var(--sky-l);
+            color: var(--sky);
+        }
+
+        .dc-icon-container.purple {
+            background: var(--purple-l);
+            color: var(--purple);
+        }
+
+        .dc-icon-container.orange {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+
+        .dc-val {
+            font-family: 'Fraunces', serif;
+            font-size: 25px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.1;
+            margin-top: 10px;
+        }
+
+        .dc-unit {
+            font-size: 13.5px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            color: var(--ink2);
+        }
+
+        .dc-footer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            margin-top: 10px;
+            color: var(--ink2);
+        }
+
+        .dc-trend {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .dc-trend.pos {
+            color: var(--sage);
+            background: var(--sage-l);
+        }
+
+        .dc-trend.neg {
+            color: var(--rust);
+            background: var(--rust-l);
+        }
+
+        .dc-trend.neut {
+            color: var(--ink2);
+            background: var(--surf2);
+        }
+
+        .dc-meta {
+            color: var(--ink3);
+        }
+
+        /* PRIMARY ROW: CHART (LEFT) & TIMELINE (RIGHT) */
+        .dashboard-row-primary {
+            display: grid;
+            grid-template-columns: 2fr 1.1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-row-primary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .widget-box {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 22px 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .03);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .widget-title-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .widget-title {
+            font-family: 'Fraunces', serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .widget-sub {
+            font-size: 11.5px;
+            color: var(--ink2);
+            margin-top: 2px;
+        }
+
+        .widget-action {
+            color: var(--sage);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .12s;
+            cursor: pointer;
+        }
+
+        .widget-action:hover {
+            color: #2e5640;
+            text-decoration: underline;
+        }
+
+        /* Chart Canvas wrapper */
+        .chart-wrap {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* TIMELINE - RECENT ACTIVITIES LOG */
+        .activity-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            list-style: none;
+            position: relative;
+            padding-left: 12px;
+            margin-top: 4px;
+        }
+
+        .activity-timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 10px;
+            bottom: 10px;
+            width: 1.5px;
+            background: var(--bdr);
+            z-index: 1;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .activity-icon-node {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--surf);
+            border: 2px solid var(--sage);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            flex-shrink: 0;
+            margin-top: 3px;
+            transition: .15s;
+        }
+
+        .activity-item:hover .activity-icon-node {
+            transform: scale(1.15);
+            background: var(--sage-l);
+        }
+
+        .activity-item.pakan .activity-icon-node {
+            border-color: var(--amber);
+        }
+
+        .activity-item.produksi .activity-icon-node {
+            border-color: var(--sage);
+        }
+
+        .activity-item.vaksin .activity-icon-node {
+            border-color: var(--sky);
+        }
+
+        .activity-item.transfer .activity-icon-node {
+            border-color: var(--purple);
+        }
+
+        .activity-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .activity-desc {
+            font-weight: 500;
+            color: var(--ink);
+            line-height: 1.35;
+        }
+
+        .activity-meta {
+            font-size: 11px;
+            color: var(--ink2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1px;
+        }
+
+        .activity-user {
+            font-style: italic;
+        }
+
+        .activity-time {
+            font-family: 'DM Mono', monospace;
+            color: var(--ink3);
+            font-size: 10px;
+        }
+
+        /* BOTTOM ROW: LOW STOCK ALERT (LEFT) & GRADE COMPOSITION (RIGHT) */
+        .dashboard-row-secondary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-row-secondary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Low Stock list alerts style */
+        .stock-alerts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stock-alert-card {
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 12px 14px;
+            background: var(--surf);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.15s;
+        }
+
+        .stock-alert-card:hover {
+            transform: translateX(3px);
+        }
+
+        .stock-alert-card.kritis {
+            border-color: #fca5a5;
+            background: #fff8f8;
+        }
+
+        .stock-alert-card.peringatan {
+            border-color: #fde047;
+            background: #fffdf0;
+        }
+
+        .stock-alert-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .stock-alert-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .stock-alert-name {
+            font-weight: 600;
+            font-size: 13.5px;
+            color: var(--ink);
+        }
+
+        .stock-alert-desc {
+            font-size: 12px;
+            color: var(--ink2);
+        }
+
+        .stock-alert-badge {
+            font-size: 9.5px;
+            font-weight: 600;
+            padding: 2.5px 7px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .stock-alert-badge.crit {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+
+        .stock-alert-badge.warn {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+
+        /* Grade composition bars styling */
+        .grade-bars-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 6px;
+        }
+
+        .grade-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .grade-labels {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .grade-name-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grade-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--ink);
+        }
+
+        .grade-desc {
+            font-size: 10px;
+            color: var(--ink3);
+            margin-top: 1px;
+        }
+
+        .grade-stat {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .grade-pct {
+            font-size: 11px;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink2);
+            font-weight: 500;
+            margin-left: 4px;
+        }
+
+        .grade-bar-track {
+            height: 8px;
+            background: var(--surf3);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, .02);
+        }
+
+        .grade-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width .5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .grade-bar-fill.sage {
+            background: var(--sage);
+        }
+
+        .grade-bar-fill.amber {
+            background: var(--amber);
+        }
+
+        .grade-bar-fill.rust {
+            background: var(--rust);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo" onclick="location.href='dashboard.html'">
+            <div class="sb-mark">🐓 RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav active" onclick="location.href='dashboard.html'"><span class="ico">📊</span><span
+                    class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock /
+                    Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span
+                    class="lbl">Monitoring Kandang</span></div>
+            <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span
+                    class="bdg">3</span></div>
+            <div class="nav"><span class="ico">🏭</span><span class="lbl">Stok per Gudang</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Dashboard Utama</div>
+                <div class="tb-sub">Ringkasan operasional harian · performa HDP & mortalitas RayFarm</div>
+            </div>
+            <div class="tb-right">
+                <button class="btn btn-ghost" onclick="location.href='monitoring-kandang.html'">🏠 Monitoring
+                    Kandang</button>
+                <button class="btn btn-solid" onclick="location.href='index.html'">🐔 Kelola Flock</button>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- 4 STATUS CARDS -->
+            <div class="dashboard-grid-top">
+
+                <!-- Card 1: Egg Production Today -->
+                <div class="dc-card">
+                    <div class="dc-header">
+                        <span class="dc-title">Produksi Telur Hari Ini</span>
+                        <div class="dc-icon-container green">🥚</div>
+                    </div>
+                    <div>
+                        <div class="dc-val">1,250 <span class="dc-unit">Butir</span> <span
+                                style="font-size:16px;color:var(--bdr2);">/</span> 75 <span class="dc-unit">Kg</span>
+                        </div>
+                        <div class="dc-footer">
+                            <span class="dc-trend pos">↑ 4.2%</span>
+                            <span class="dc-meta">vs kemarin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Average HDP Week -->
+                <div class="dc-card">
+                    <div class="dc-header">
+                        <span class="dc-title">Rata-rata HDP Minggu Ini</span>
+                        <div class="dc-icon-container blue">📊</div>
+                    </div>
+                    <div>
+                        <div class="dc-val" style="color: var(--sky);">85.4%</div>
+                        <div class="dc-footer">
+                            <span class="dc-trend pos">↑ 2.1%</span>
+                            <span class="dc-meta">vs minggu lalu</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Active Chicken Population -->
+                <div class="dc-card">
+                    <div class="dc-header">
+                        <span class="dc-title">Total Populasi Ayam Aktif</span>
+                        <div class="dc-icon-container purple">🐔</div>
+                    </div>
+                    <div>
+                        <div class="dc-val" style="color: var(--purple);">5,000 <span class="dc-unit">Ekor</span></div>
+                        <div class="dc-footer">
+                            <span class="dc-trend neut">4,850 sht</span>
+                            <span class="dc-meta">150 skt / isolasi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Active Coops -->
+                <div class="dc-card">
+                    <div class="dc-header">
+                        <span class="dc-title">Total Kandang / Blok</span>
+                        <div class="dc-icon-container orange">🏠</div>
+                    </div>
+                    <div>
+                        <div class="dc-val" style="color: var(--amber);">6 <span class="dc-unit">Kandang Aktif</span>
+                        </div>
+                        <div class="dc-footer">
+                            <span class="dc-trend neut"></span>
+                            <span class="dc-meta"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PRIMARY ROW: CHART & TIMELINE -->
+            <div class="dashboard-row-primary">
+
+                <!-- Left: Line Chart -->
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <div class="widget-title-block">
+                            <span class="widget-title">Grafik Tren Produksi Telur (HDP) vs Angka Kematian
+                                (Mortalitas)</span>
+                            <span class="widget-sub">Data operasional gabungan kandang selama 7 hari terakhir</span>
+                        </div>
+                    </div>
+                    <div class="chart-wrap">
+                        <canvas id="hdpMortalityChart" style="width: 100%; height: 290px;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Right: Recent Activity Log -->
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <div class="widget-title-block">
+                            <span class="widget-title">Aktivitas Kandang Terbaru</span>
+                            <span class="widget-sub">Pencatatan log terupdate oleh petugas lapangan</span>
+                        </div>
+                        <a class="widget-action" onclick="location.href='monitoring-kandang.html'">Lihat Semua ›</a>
+                    </div>
+                    <ul class="activity-timeline">
+                        <li class="activity-item produksi">
+                            <span class="activity-icon-node" title="Produksi">🥚</span>
+                            <div class="activity-content">
+                                <span class="activity-desc"><strong>Kandang A</strong> - Input Produksi: 420
+                                    Butir / 26,25 Kg</span>
+                                <div class="activity-meta">
+                                    <span class="activity-user">Petugas: Joko</span>
+                                    <span class="activity-time">09:19</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="activity-item pakan">
+                            <span class="activity-icon-node" title="Pakan">🌾</span>
+                            <div class="activity-content">
+                                <span class="activity-desc"><strong>Kandang B</strong> - Input Pakan: 50 Kg (Pakan Layer
+                                    2)</span>
+                                <div class="activity-meta">
+                                    <span class="activity-user">Petugas: Budi</span>
+                                    <span class="activity-time">08:59</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="activity-item vaksin">
+                            <span class="activity-icon-node" title="Vaksinasi">💉</span>
+                            <div class="activity-content">
+                                <span class="activity-desc"><strong>Kandang C</strong> - Input Produksi: 200 Butir /
+                                    12,5 Kg </span>
+                                <div class="activity-meta">
+                                    <span class="activity-user">Petugas: drh. Ani</span>
+                                    <span class="activity-time">Kemarin • 15:45</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="activity-item pakan">
+                            <span class="activity-icon-node" title="Pakan">🌾</span>
+                            <div class="activity-content">
+                                <span class="activity-desc"><strong>Kandang A</strong> - Input Pakan: 120 Kg (Pakan
+                                    Layer Super)</span>
+                                <div class="activity-meta">
+                                    <span class="activity-user">Petugas: Joko</span>
+                                    <span class="activity-time">Kemarin • 07:30</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="activity-item transfer">
+                            <span class="activity-icon-node" title="Mutasi Flock">🐔</span>
+                            <div class="activity-content">
+                                <span class="activity-desc"><strong>Kandang C</strong> - Input Pakan: 120 Kg (Pakan
+                                    Layer Super)</span>
+                                <div class="activity-meta">
+                                    <span class="activity-user">Petugas: Koko</span>
+                                    <span class="activity-time">3 hari lalu • 10:00</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- SECONDARY ROW: STOCK ALERT & GRADE QUALITY -->
+            <div class="dashboard-row-secondary">
+
+                <!-- Left: Low Stock Prediction -->
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <div class="widget-title-block">
+                            <span class="widget-title">🚨 Prediksi Stok Menipis</span>
+                            <span class="widget-sub">Peringatan otomatis berdasarkan estimasi konsumsi pakan &
+                                operasional</span>
+                        </div>
+                        <span class="widget-action">Detail ›</span>
+                    </div>
+                    <div class="stock-alerts-list">
+
+                        <!-- Alert Item 1: Pakan Layer Ultra-3 -->
+                        <div class="stock-alert-card kritis">
+                            <span class="stock-alert-icon">🌾</span>
+                            <div class="stock-alert-info">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span class="stock-alert-name">Pakan Layer Ultra-3</span>
+                                    <span class="stock-alert-badge crit">Kritis (2 hari)</span>
+                                </div>
+                                <span class="stock-alert-desc">Tersisa 2 karung. </span>
+                            </div>
+                        </div>
+
+                        <!-- Alert Item 2: Vaksin Gumboro L -->
+                        <div class="stock-alert-card peringatan">
+                            <span class="stock-alert-icon">💉</span>
+                            <div class="stock-alert-info">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span class="stock-alert-name">Vaksin Gumboro L</span>
+                                    <span class="stock-alert-badge warn">Peringatan (1 batch)</span>
+                                </div>
+                                <span class="stock-alert-desc">Tersisa 1 vial.</span>
+                            </div>
+                        </div>
+
+                        <!-- Alert Item 3: Egg Tray Plastik -->
+                        <div class="stock-alert-card peringatan">
+                            <span class="stock-alert-icon">📦</span>
+                            <div class="stock-alert-info">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span class="stock-alert-name">Egg Tray / Peti Kosong</span>
+                                    <span class="stock-alert-badge warn">Peringatan (3 hari)</span>
+                                </div>
+                                <span class="stock-alert-desc">Tersisa 15 pcs. </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right: Harvest Grade Quality -->
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <div class="widget-title-block">
+                            <span class="widget-title">📦 Komposisi Grade Hasil Panen</span>
+                            <span class="widget-sub">Persentase kualitas telur yang dipanen selama bulan berjalan</span>
+                        </div>
+                    </div>
+
+                    <div class="grade-bars-container">
+
+                        <!-- Grade A -->
+                        <div class="grade-item">
+                            <div class="grade-labels">
+                                <div class="grade-name-block">
+                                    <span class="grade-name">Telur Grade A (Utuh/Normal)</span>
+                                    <span class="grade-desc">Kulit tebal, bentuk simetris, ukuran standar
+                                        (55-65g)</span>
+                                </div>
+                                <span class="grade-stat">88% <span class="grade-pct">(31,500 btr)</span></span>
+                            </div>
+                            <div class="grade-bar-track">
+                                <div class="grade-bar-fill sage" style="width: 88%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Retak/Pecah -->
+                        <div class="grade-item">
+                            <div class="grade-labels">
+                                <div class="grade-name-block">
+                                    <span class="grade-name">Telur Retak / Pecah</span>
+                                    <span class="grade-desc">Retak rambut akibat benturan kandang atau kulit cangkang
+                                        tipis</span>
+                                </div>
+                                <span class="grade-stat" style="color: var(--amber);">7% <span class="grade-pct">(2,500
+                                        btr)</span></span>
+                            </div>
+                            <div class="grade-bar-track">
+                                <div class="grade-bar-fill amber" style="width: 7%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Kerdil (Abnormal) -->
+                        <div class="grade-item">
+                            <div class="grade-labels">
+                                <div class="grade-name-block">
+                                    <span class="grade-name">Telur Kerdil (Abnormal)</span>
+                                    <span class="grade-desc">Telur sangat kecil (yolkless) dari ayam muda di awal
+                                        produksi</span>
+                                </div>
+                                <span class="grade-stat" style="color: var(--rust);">5% <span class="grade-pct">(1,800
+                                        btr)</span></span>
+                            </div>
+                            <div class="grade-bar-track">
+                                <div class="grade-bar-fill rust" style="width: 5%"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Chart Configuration Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('hdpMortalityChart').getContext('2d');
+
+            // Warm aesthetic colors to match system theme
+            const colorSage = '#3a6b50';
+            const colorSageL = 'rgba(58, 107, 80, 0.08)';
+            const colorRust = '#b02b1e';
+            const colorRustL = 'rgba(176, 43, 30, 0.15)';
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['20 May', '21 May', '22 May', '23 May', '24 May', '25 May', '26 May'],
+                    datasets: [
+                        {
+                            label: 'Tren Produksi Telur (HDP %)',
+                            data: [82.5, 83.1, 84.8, 85.0, 83.9, 86.2, 85.4],
+                            borderColor: colorSage,
+                            backgroundColor: colorSageL,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.35,
+                            yAxisID: 'yHdp',
+                            pointBackgroundColor: colorSage,
+                            pointHoverRadius: 7,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Angka Kematian (Mortalitas Ekor)',
+                            data: [3, 1, 0, 4, 1, 2, 0],
+                            borderColor: colorRust,
+                            backgroundColor: colorRustL,
+                            borderWidth: 2.5,
+                            fill: true,
+                            tension: 0.3,
+                            yAxisID: 'yMortality',
+                            pointBackgroundColor: colorRust,
+                            pointHoverRadius: 6,
+                            pointRadius: 3.5,
+                            borderDash: [5, 5]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 15,
+                                font: {
+                                    family: "'DM Sans', sans-serif",
+                                    size: 11.5,
+                                    weight: '500'
+                                },
+                                color: '#1b1813'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1b1813',
+                            titleFont: { family: "'DM Sans', sans-serif", weight: '600' },
+                            bodyFont: { family: "'DM Sans', sans-serif" },
+                            padding: 10,
+                            cornerRadius: 6,
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.datasetIndex === 0) {
+                                        label += context.raw.toFixed(1) + '%';
+                                    } else {
+                                        label += context.raw + ' Ekor';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: "'DM Sans', sans-serif",
+                                    size: 11
+                                },
+                                color: '#706960'
+                            }
+                        },
+                        yHdp: {
+                            type: 'linear',
+                            position: 'left',
+                            min: 75,
+                            max: 95,
+                            ticks: {
+                                stepSize: 5,
+                                callback: function (value) {
+                                    return value + '%';
+                                },
+                                font: {
+                                    family: "'DM Mono', monospace",
+                                    size: 10.5
+                                },
+                                color: colorSage
+                            },
+                            grid: {
+                                borderDash: [4, 4],
+                                color: '#dbd7cb'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Hen Day Production (HDP)',
+                                color: colorSage,
+                                font: {
+                                    family: "'DM Sans', sans-serif",
+                                    size: 11,
+                                    weight: '600'
+                                }
+                            }
+                        },
+                        yMortality: {
+                            type: 'linear',
+                            position: 'right',
+                            min: 0,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2,
+                                callback: function (value) {
+                                    return value + ' ekor';
+                                },
+                                font: {
+                                    family: "'DM Mono', monospace",
+                                    size: 10.5
+                                },
+                                color: colorRust
+                            },
+                            grid: {
+                                drawOnChartArea: false // prevent overlapping grid lines
+                            },
+                            title: {
+                                display: true,
+                                text: 'Kematian Harian',
+                                color: colorRust,
+                                font: {
+                                    family: "'DM Sans', sans-serif",
+                                    size: 11,
+                                    weight: '600'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
