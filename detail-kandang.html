@@ -971,6 +971,102 @@
                 transform: translateY(0);
             }
         }
+
+        .pakan-row {
+            display: grid;
+            grid-template-columns: 1.8fr 1.6fr 1fr 1fr auto;
+            gap: 6px;
+            align-items: flex-end;
+            background: #faf9f5;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            position: relative;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        
+        .pakan-row-col {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .pakan-row-col label {
+            font-size: 9.5px;
+            font-weight: 600;
+            color: var(--ink2);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pakan-row select,
+        .pakan-row input {
+            width: 100% !important;
+            box-sizing: border-box !important;
+            border: 1px solid var(--bdr) !important;
+            border-radius: 6px !important;
+            padding: 4px 6px !important;
+            font-size: 12px !important;
+            font-family: 'DM Sans', sans-serif !important;
+            outline: none !important;
+            background: var(--surf) !important;
+            color: var(--ink) !important;
+            height: 30px !important;
+        }
+
+        .pakan-row select:focus,
+        .pakan-row input:focus {
+            border-color: var(--sage) !important;
+        }
+
+        .pakan-row .abt.del {
+            height: 30px;
+            width: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border: 1px solid transparent;
+        }
+
+        .btn-add-pakan {
+            background: transparent;
+            border: 1px dashed var(--sage);
+            color: var(--sage);
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.12s;
+            text-align: center;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-add-pakan:hover {
+            background: var(--sage-l);
+        }
+
+        .total-pakan-box {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--sky);
+            margin: 12px 0;
+            padding-right: 4px;
+        }
     </style>
 </head>
 
@@ -979,7 +1075,7 @@
     <!-- SIDEBAR -->
     <aside class="sb">
         <div class="sb-logo">
-            <div class="sb-mark">🐓 RayFarm</div>
+            <div class="sb-mark"><span style="cursor: pointer; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2) rotate(-10deg)'" onmouseout="this.style.transform='scale(1)'" onclick="resetAllData(event)" title="Klik untuk Reset Data">🐓</span> RayFarm</div>
             <div class="sb-sub">Sistem Inventaris</div>
         </div>
         <div class="sb-sec">
@@ -1318,37 +1414,25 @@
                     onsubmit="submitDailyLog(event, 'pakan')">
                     <div class="fsec">
                         <div class="fsec-title">Pakan yang Dihabiskan</div>
-                        <div class="frow">
-                            <div class="fg">
-                                <label>Pilih Pakan <span class="req">*</span></label>
-                                <select id="inp-pakan-type" required onchange="handlePakanTypeChange()">
-                                    <option value="">-- Pilih Pakan --</option>
-                                    <option value="pakan-premix">Pakan Premium Mix</option>
-                                    <option value="pakan-standar">Pakan Standar</option>
-                                    <option value="pakan-konsentrat">Pakan Konsentrat</option>
-                                    <option value="pakan-limbah">Pakan Limbah</option>
-                                </select>
-                                <div id="pakan-stock-info" style="font-size: 11px; color: var(--ink3); margin-top: 4px; display: none; font-weight: 500;"></div>
-                            </div>
-                            <div class="fg">
-                                <label>Jumlah <span class="req">*</span></label>
-                                <div style="display: flex; gap: 8px; align-items: flex-end;">
-                                    <input type="number" id="inp-pakan-jumlah" required min="0" value="0"
-                                        style="flex: 1;">
-                                    <span style="color: var(--ink2); font-weight: 500; white-space: nowrap;">Kg</span>
-                                </div>
-                            </div>
+                        
+                        <div id="pakan-rows-container" style="display: flex; flex-direction: column; gap: 4px;">
+                            <!-- Injected dynamically by JS -->
                         </div>
-                        <div class="frow">
-                            <div class="fg">
-                                <label>Konsumsi Air (Opsional)</label>
-                                <div style="display: flex; gap: 8px; align-items: flex-end;">
-                                    <input type="number" id="inp-air" min="0" value="0" step="0.1" style="flex: 1;">
-                                    <span
-                                        style="color: var(--ink2); font-weight: 500; white-space: nowrap;">Liter</span>
-                                </div>
-                            </div>
 
+                        <button type="button" class="btn-add-pakan" id="btn-add-pakan-row" onclick="addPakanRow()">
+                            <span>＋</span> Tambah Batch Pakan
+                        </button>
+
+                        <div class="total-pakan-box">
+                            Total Pakan: <span id="label-total-pakan-kg" style="margin: 0 4px; font-size: 16px; font-family: 'Fraunces', serif;">0</span> kg
+                        </div>
+
+                        <div class="fg">
+                            <label>Konsumsi Air (Opsional)</label>
+                            <div style="display: flex; gap: 8px; align-items: flex-end;">
+                                <input type="number" id="inp-air" min="0" value="0" step="0.1" style="flex: 1;">
+                                <span style="color: var(--ink2); font-weight: 500; white-space: nowrap;">Liter</span>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -1501,11 +1585,11 @@
                     type: "Battery Cage",
                     species: "Ayam Petelur",
                     history: [
-                        { date: "24/05/2026", type: "pakan", pakan_type: "pakan-premix", pakan: 55, air: 120, flock: "Batch Bravo" },
+                        { date: "24/05/2026", type: "pakan", pakan_type: "Pakan DOC Starter BR-1 (Japfa Comfeed) (Lot: PKN-202606-0001)", pakan: 55, air: 120, flock: "Batch Bravo" },
                         { date: "23/05/2026", type: "produksi", telur: 18.5, susu: 0, daging: 0, flock: "Batch Bravo" },
                         { date: "22/05/2026", type: "deplesi", sehat: 3, sakit: 0, mati: 1, afkir: 0, flock: "Batch Bravo" },
                         { date: "21/05/2026", type: "catatan", notes: "Pengecekan rutin ventilasi berjalan lancar. Hewan terpantau aktif.", photo: "kondisi_pagi.jpg", flock: "Batch Bravo" },
-                        { date: "20/05/2026", type: "pakan", pakan_type: "pakan-standar", pakan: 54, air: 115, flock: "Batch Bravo" },
+                        { date: "20/05/2026", type: "pakan", pakan_type: "Pakan DOC Starter BR-1 (Japfa Comfeed) (Lot: PKN-202606-0001)", pakan: 54, air: 115, flock: "Batch Bravo" },
                         { date: "20/05/2026", type: "produksi", telur: 17.8, susu: 0, daging: 0, flock: "Batch Bravo" }
                     ],
                     occupants: [
@@ -1577,7 +1661,7 @@
                     type: "Battery Cage",
                     species: "Ayam Petelur",
                     history: [
-                        { date: "23/05/2026", type: "pakan", pakan_type: "pakan-premix", pakan: 120, air: 350, flock: "Flock Layer B" },
+                        { date: "23/05/2026", type: "pakan", pakan_type: "Pakan DOC Starter BR-1 (Japfa Comfeed) (Lot: PKN-202606-0001)", pakan: 120, air: 350, flock: "Flock Layer B" },
                         { date: "22/05/2026", type: "deplesi", sehat: 392, sakit: 8, mati: 3, afkir: 0, flock: "Flock Layer B" }
                     ],
                     occupants: [
@@ -1623,7 +1707,7 @@
                     type: "Battery Cage",
                     species: "Ayam Petelur",
                     history: [
-                        { date: "23/05/2026", type: "pakan", pakan_type: "pakan-standar", pakan: 40, air: 90, flock: "Flock Layer Alpha" }
+                        { date: "23/05/2026", type: "pakan", pakan_type: "Pakan DOC Starter BR-1 (Japfa Comfeed) (Lot: PKN-202606-0001)", pakan: 40, air: 90, flock: "Flock Layer Alpha" }
                     ],
                     occupants: [
                         {
@@ -1688,6 +1772,14 @@
                                                 log.flock = c.occupants[0].name;
                                                 modified = true;
                                             }
+                                        }
+                                    }
+
+                                    // 3. Migrate legacy feed types to catalog formats
+                                    if (log.type === 'pakan') {
+                                        if (log.pakan_type === 'pakan-premix' || log.pakan_type === 'pakan-standar' || log.pakan_type === 'pakan-konsentrat') {
+                                            log.pakan_type = 'Pakan DOC Starter BR-1 (Japfa Comfeed) (Lot: PKN-202606-0001)';
+                                            modified = true;
                                         }
                                     }
                                 }
@@ -2010,23 +2102,267 @@
             }
         }
 
-        function handlePakanTypeChange() {
-            const pakanType = document.getElementById('inp-pakan-type').value;
-            const stockInfoEl = document.getElementById('pakan-stock-info');
-            if (!stockInfoEl) return;
+        let commodities = [];
 
-            const stocks = {
-                'pakan-premix': '1.250 Kg',
-                'pakan-standar': '850 Kg',
-                'pakan-konsentrat': '420 Kg',
-                'pakan-limbah': '150 Kg'
-            };
-
-            if (pakanType && stocks[pakanType]) {
-                stockInfoEl.textContent = `Sisa Stok Pakan: ${stocks[pakanType]}`;
-                stockInfoEl.style.display = 'block';
+        function loadCommoditiesForDailyLog() {
+            const stored = localStorage.getItem('rayfarm_commodities');
+            if (stored) {
+                try {
+                    commodities = JSON.parse(stored);
+                } catch(e) {
+                    commodities = [];
+                }
             } else {
-                stockInfoEl.style.display = 'none';
+                commodities = [];
+            }
+        }
+
+        function formatStock(qtyKg, weightPerUnit, unitName) {
+            const bags = Math.floor(qtyKg / weightPerUnit);
+            const rem = (qtyKg % weightPerUnit).toFixed(1) * 1;
+            if (bags === 0 && rem === 0) return `0 ${unitName}`;
+            if (rem === 0) return `${bags} ${unitName}`;
+            if (bags === 0) return `${rem} kg`;
+            return `${bags} ${unitName} + ${rem} kg`;
+        }
+
+        // Dynamic feed rows
+        function addPakanRow(productVal = '', batchVal = '', qtyVal = '', unitVal = 'Kg') {
+            loadCommoditiesForDailyLog();
+            
+            const container = document.getElementById('pakan-rows-container');
+            if (!container) return;
+
+            const rowIndex = container.children.length;
+            const rowId = `pakan-row-${rowIndex}-${Date.now()}`;
+            
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'pakan-row';
+            rowDiv.id = rowId;
+            
+            let productOptions = '<option value="">-- Pilih Produk --</option>';
+            commodities.forEach(c => {
+                productOptions += `<option value="${c.id}">${c.name}</option>`;
+            });
+
+            rowDiv.innerHTML = `
+                <div class="pakan-row-col">
+                    <label>Produk Pakan <span class="req">*</span></label>
+                    <select class="inp-row-product" required onchange="handleRowProductChange('${rowId}')" style="padding: 6px 8px; font-size: 12.5px;">
+                        ${productOptions}
+                    </select>
+                </div>
+                <div class="pakan-row-col">
+                    <label>Batch / Lot <span class="req">*</span></label>
+                    <select class="inp-row-batch" required disabled onchange="handleRowBatchChange('${rowId}')" style="padding: 6px 8px; font-size: 12.5px;">
+                        <option value="">-- Pilih Batch --</option>
+                    </select>
+                </div>
+                <div class="pakan-row-col">
+                    <label class="lbl-row-qty-max">Jumlah <span class="req">*</span></label>
+                    <input type="number" class="inp-row-qty" required min="0.1" step="0.1" value="${qtyVal || ''}" disabled oninput="calculateTotalPakanKg()" style="padding: 6px 8px; font-size: 12.5px;">
+                </div>
+                <div class="pakan-row-col">
+                    <label>Satuan</label>
+                    <select class="inp-row-unit" onchange="handleRowUnitChange('${rowId}')" style="padding: 6px 8px; font-size: 12.5px;">
+                        <option value="Kg">Kg</option>
+                        <option value="Zak">Zak</option>
+                    </select>
+                </div>
+                <div class="pakan-row-col" style="justify-content: flex-end; padding-bottom: 2px;">
+                    <button type="button" class="abt del" onclick="removePakanRow('${rowId}')" title="Hapus Baris" style="font-size: 14px; padding: 4px;">🗑</button>
+                </div>
+                <div class="hint-row-stock" style="grid-column: 1 / span 5; font-size: 10.5px; color: var(--ink3); margin-top: -6px; display: none; font-weight: 500; padding-left: 2px;"></div>
+            `;
+            
+            container.appendChild(rowDiv);
+
+            if (productVal) {
+                const productSelect = rowDiv.querySelector('.inp-row-product');
+                productSelect.value = productVal;
+                handleRowProductChange(rowId, batchVal, qtyVal, unitVal);
+            }
+            
+            calculateTotalPakanKg();
+        }
+
+        function removePakanRow(rowId) {
+            const row = document.getElementById(rowId);
+            if (row) row.remove();
+            calculateTotalPakanKg();
+        }
+
+        function handleRowProductChange(rowId, prefilledBatch = '', prefilledQty = '', prefilledUnit = 'Kg') {
+            const row = document.getElementById(rowId);
+            if (!row) return;
+
+            const productSelect = row.querySelector('.inp-row-product');
+            const batchSelect = row.querySelector('.inp-row-batch');
+            const qtyInput = row.querySelector('.inp-row-qty');
+            const hintDiv = row.querySelector('.hint-row-stock');
+
+            const prodId = productSelect.value;
+            if (!prodId) {
+                batchSelect.innerHTML = '<option value="">-- Pilih Batch --</option>';
+                batchSelect.disabled = true;
+                qtyInput.disabled = true;
+                hintDiv.style.display = 'none';
+                calculateTotalPakanKg();
+                return;
+            }
+
+            const c = commodities.find(item => item.id === prodId);
+            if (!c) return;
+
+            batchSelect.innerHTML = '<option value="">-- Pilih Batch --</option>';
+            c.batches.forEach(b => {
+                if (b.qtyKg > 0 || b.lot === prefilledBatch) {
+                    const bagDisp = formatStock(b.qtyKg, c.weightPerUnit, c.unitName);
+                    batchSelect.innerHTML += `<option value="${b.lot}">${b.lot} (Tersedia: ${bagDisp})</option>`;
+                }
+            });
+
+            batchSelect.disabled = false;
+            if (prefilledBatch) {
+                batchSelect.value = prefilledBatch;
+                handleRowBatchChange(rowId, prefilledQty, prefilledUnit);
+            } else {
+                qtyInput.disabled = true;
+                hintDiv.style.display = 'none';
+            }
+            calculateTotalPakanKg();
+        }
+
+        function handleRowBatchChange(rowId, prefilledQty = '', prefilledUnit = 'Kg') {
+            const row = document.getElementById(rowId);
+            if (!row) return;
+
+            const productSelect = row.querySelector('.inp-row-product');
+            const batchSelect = row.querySelector('.inp-row-batch');
+            const qtyInput = row.querySelector('.inp-row-qty');
+            const unitSelect = row.querySelector('.inp-row-unit');
+            const hintDiv = row.querySelector('.hint-row-stock');
+            const qtyLabel = row.querySelector('.lbl-row-qty-max');
+
+            const prodId = productSelect.value;
+            const lotId = batchSelect.value;
+
+            if (!prodId || !lotId) {
+                qtyInput.disabled = true;
+                hintDiv.style.display = 'none';
+                calculateTotalPakanKg();
+                return;
+            }
+
+            const c = commodities.find(item => item.id === prodId);
+            const b = c.batches.find(item => item.lot === lotId);
+
+            if (c && b) {
+                qtyInput.disabled = false;
+                const bagDisp = formatStock(b.qtyKg, c.weightPerUnit, c.unitName);
+                hintDiv.textContent = `Tersedia: ${bagDisp} (${b.qtyKg.toLocaleString('id')} kg total)`;
+                hintDiv.style.display = 'block';
+
+                if (prefilledUnit) {
+                    unitSelect.value = prefilledUnit;
+                }
+
+                const unit = unitSelect.value;
+                if (unit === 'Zak') {
+                    const maxBags = Math.floor(b.qtyKg / c.weightPerUnit);
+                    qtyInput.max = maxBags;
+                    qtyLabel.innerHTML = `Jumlah (Max: ${maxBags}) <span class="req">*</span>`;
+                } else {
+                    qtyInput.max = b.qtyKg;
+                    qtyLabel.innerHTML = `Jumlah (Max: ${b.qtyKg}) <span class="req">*</span>`;
+                }
+
+                if (prefilledQty) {
+                    qtyInput.value = prefilledQty;
+                }
+            }
+            calculateTotalPakanKg();
+        }
+
+        function handleRowUnitChange(rowId) {
+            const row = document.getElementById(rowId);
+            if (!row) return;
+
+            const productSelect = row.querySelector('.inp-row-product');
+            const batchSelect = row.querySelector('.inp-row-batch');
+            const qtyInput = row.querySelector('.inp-row-qty');
+            const unitSelect = row.querySelector('.inp-row-unit');
+            const qtyLabel = row.querySelector('.lbl-row-qty-max');
+
+            const prodId = productSelect.value;
+            const lotId = batchSelect.value;
+
+            if (!prodId || !lotId) return;
+
+            const c = commodities.find(item => item.id === prodId);
+            const b = c.batches.find(item => item.lot === lotId);
+
+            if (c && b) {
+                const unit = unitSelect.value;
+                if (unit === 'Zak') {
+                    const maxBags = Math.floor(b.qtyKg / c.weightPerUnit);
+                    qtyInput.max = maxBags;
+                    qtyLabel.innerHTML = `Jumlah (Max: ${maxBags}) <span class="req">*</span>`;
+                    if (parseFloat(qtyInput.value) > maxBags) {
+                        qtyInput.value = maxBags;
+                    }
+                } else {
+                    qtyInput.max = b.qtyKg;
+                    qtyLabel.innerHTML = `Jumlah (Max: ${b.qtyKg}) <span class="req">*</span>`;
+                }
+            }
+            calculateTotalPakanKg();
+        }
+
+        function calculateTotalPakanKg() {
+            let total = 0;
+            const rows = document.querySelectorAll('.pakan-row');
+            rows.forEach(row => {
+                const productSelect = row.querySelector('.inp-row-product');
+                const qtyInput = row.querySelector('.inp-row-qty');
+                const unitSelect = row.querySelector('.inp-row-unit');
+
+                const prodId = productSelect.value;
+                const qty = parseFloat(qtyInput.value) || 0;
+                const unit = unitSelect.value;
+
+                if (prodId && qty > 0) {
+                    const c = commodities.find(item => item.id === prodId);
+                    if (c) {
+                        if (unit === 'Zak') {
+                            total += qty * c.weightPerUnit;
+                        } else {
+                            total += qty;
+                        }
+                    }
+                }
+            });
+
+            const totalSpan = document.getElementById('label-total-pakan-kg');
+            if (totalSpan) totalSpan.textContent = total.toLocaleString('id');
+        }
+
+        function deductStockInInventory(commId, lot, qtyKg) {
+            const stored = localStorage.getItem('rayfarm_commodities');
+            if (!stored) return;
+            try {
+                const comList = JSON.parse(stored);
+                const c = comList.find(item => item.id === commId);
+                if (c) {
+                    const b = c.batches.find(batch => batch.lot === lot);
+                    if (b) {
+                        b.qtyKg = Math.max(0, b.qtyKg - qtyKg);
+                        b.qtyBags = Math.floor(b.qtyKg / c.weightPerUnit);
+                        localStorage.setItem('rayfarm_commodities', JSON.stringify(comList));
+                    }
+                }
+            } catch(e) {
+                console.error("Error updating inventory stock:", e);
             }
         }
 
@@ -2068,9 +2404,11 @@
         }
 
         // Reset simulation database manually to factory defaults
-        function resetAllData() {
+        function resetAllData(event) {
+            if (event) event.stopPropagation();
             if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik? Tindakan ini akan menghapus semua riwayat input buatan Anda.")) {
                 localStorage.removeItem('coops');
+                localStorage.removeItem('rayfarm_commodities');
                 location.reload();
             }
         }
@@ -2138,19 +2476,62 @@
 
                     // Render Pakan
                     if (!log.type || log.type === 'pakan') {
-                        const pakanTypeLabel = {
-                            'pakan-premix': 'Premium Mix',
-                            'pakan-standar': 'Standar',
-                            'pakan-konsentrat': 'Konsentrat',
-                            'pakan-limbah': 'Limbah'
-                        }[log.pakan_type] || log.pakan_type || '—';
+                        loadCommoditiesForDailyLog();
+                        
+                        const pakanTypeStr = log.pakan_type || '';
+                        let cleanName = pakanTypeStr;
+                        let lotVal = '';
+                        
+                        const lotMatch = pakanTypeStr.match(/\(Lot:\s*([^)]+)\)/);
+                        if (lotMatch) {
+                            lotVal = lotMatch[1].trim();
+                            cleanName = pakanTypeStr.split('(Lot:')[0].trim();
+                        } else {
+                            cleanName = {
+                                'pakan-premix': 'Premium Mix',
+                                'pakan-standar': 'Standar',
+                                'pakan-konsentrat': 'Konsentrat',
+                                'pakan-limbah': 'Limbah'
+                            }[pakanTypeStr] || pakanTypeStr || '—';
+                        }
+
+                        let matchedComm = null;
+                        if (lotVal) {
+                            commodities.forEach(c => {
+                                if (c.batches.some(b => b.lot === lotVal)) {
+                                    matchedComm = c;
+                                }
+                            });
+                        }
+                        if (!matchedComm && cleanName) {
+                            const c = commodities.find(item => cleanName.includes(item.name) || item.name.includes(cleanName));
+                            if (c) {
+                                matchedComm = c;
+                            }
+                        }
+
+                        let qtyDisplay = '';
+                        if (matchedComm) {
+                            const formatted = formatStock(log.pakan || 0, matchedComm.weightPerUnit, matchedComm.unitName);
+                            qtyDisplay = `<div style="font-weight:600; color: var(--ink);">${formatted}</div><div style="font-size:10.5px; color:var(--ink3); font-weight:normal; margin-top:2px;">(${log.pakan || 0} kg)</div>`;
+                        } else {
+                            // Fallback assuming 50kg bag
+                            const formatted = formatStock(log.pakan || 0, 50, 'Zak');
+                            qtyDisplay = `<div style="font-weight:600; color: var(--ink);">${formatted}</div><div style="font-size:10.5px; color:var(--ink3); font-weight:normal; margin-top:2px;">(${log.pakan || 0} kg)</div>`;
+                        }
+
+                        let typeDisplay = `<div style="font-weight: 500; color: var(--ink);">${cleanName}</div>`;
+                        if (lotVal) {
+                            typeDisplay += `<div style="margin-top: 3px;"><span style="background: var(--surf2); border: 1px solid var(--bdr); color: var(--ink2); padding: 1.5px 5px; border-radius: 4px; font-size: 10px; font-weight: 600; font-family: 'DM Mono', monospace; display: inline-block; letter-spacing: 0.2px;">LOT: ${lotVal}</span></div>`;
+                        }
+
                         tbodyPakan.innerHTML += `
                             <tr>
                                 <td style="font-family:'DM Mono', monospace; font-weight:600;">${log.date}</td>
                                 <td style="font-size:10px; color:var(--ink3); font-family:'DM Sans', sans-serif;">${log.flock && log.flock !== 'Semua' ? log.flock : 'Semua Flock'}</td>
-                                <td style="font-weight: 500;">${pakanTypeLabel}</td>
-                                <td style="font-weight: 500;">${log.pakan || 0} kg</td>
-                                <td style="font-weight: 500; color: var(--sky);">${log.air || 0} L</td>
+                                <td>${typeDisplay}</td>
+                                <td>${qtyDisplay}</td>
+                                <td style="font-weight: 600; color: var(--sky); font-size: 13px;">${log.air || 0} L</td>
                                 ${aksiHtml}
                             </tr>
                         `;
@@ -2251,8 +2632,13 @@
                     
                     // Correctly initialize tab states based on the selected flock (Semua Flock)
                     handleFlockChange();
-
-                    // Reset stock info display
+                    
+                    // Reinitialize dynamic pakan rows to a single initial row
+                    const container = document.getElementById('pakan-rows-container');
+                    if (container) {
+                        container.innerHTML = '';
+                        addPakanRow();
+                    } 
                     const stockInfoEl = document.getElementById('pakan-stock-info');
                     if (stockInfoEl) stockInfoEl.style.display = 'none';
                 }
@@ -2310,10 +2696,34 @@
             handleFlockChange();
 
             if (type === 'pakan') {
-                document.getElementById('inp-pakan-type').value = log.pakan_type || '';
-                document.getElementById('inp-pakan-jumlah').value = log.pakan || 0;
+                const container = document.getElementById('pakan-rows-container');
+                if (container) container.innerHTML = '';
+                
+                loadCommoditiesForDailyLog();
+                let matchedCommId = '';
+                let matchedLot = '';
+
+                const pakanTypeStr = log.pakan_type || '';
+                const lotMatch = pakanTypeStr.match(/\(Lot:\s*([^)]+)\)/);
+                if (lotMatch) {
+                    matchedLot = lotMatch[1].trim();
+                    commodities.forEach(c => {
+                        if (c.batches.some(b => b.lot === matchedLot)) {
+                            matchedCommId = c.id;
+                        }
+                    });
+                }
+
+                if (!matchedCommId) {
+                    const cleanName = pakanTypeStr.split('(Lot:')[0].trim();
+                    const c = commodities.find(item => cleanName.includes(item.name) || item.name.includes(cleanName));
+                    if (c) {
+                        matchedCommId = c.id;
+                    }
+                }
+
+                addPakanRow(matchedCommId, matchedLot, log.pakan, 'Kg');
                 document.getElementById('inp-air').value = log.air || 0;
-                handlePakanTypeChange();
             } else if (type === 'produksi') {
                 document.getElementById('inp-komoditas').value = log.komoditas || (log.telur ? 'Telur Ayam Gred A' : '');
                 document.getElementById('inp-total').value = typeof log.total !== 'undefined' ? log.total : (log.telur ? log.telur * 16 : 0);
@@ -2371,9 +2781,70 @@
             };
 
             if (type === 'pakan') {
-                newLog.pakan_type = document.getElementById('inp-pakan-type').value;
-                newLog.pakan = parseFloat(document.getElementById('inp-pakan-jumlah').value) || 0;
-                newLog.air = parseFloat(document.getElementById('inp-air').value) || 0;
+                const rows = document.querySelectorAll('.pakan-row');
+                if (rows.length === 0) {
+                    alert('Silakan tambah minimal 1 baris pakan.');
+                    return;
+                }
+
+                loadCommoditiesForDailyLog();
+
+                if (currentEditIndex > -1) {
+                    const row = rows[0];
+                    const productSelect = row.querySelector('.inp-row-product');
+                    const batchSelect = row.querySelector('.inp-row-batch');
+                    const qtyInput = row.querySelector('.inp-row-qty');
+                    const unitSelect = row.querySelector('.inp-row-unit');
+
+                    const commId = productSelect.value;
+                    const lot = batchSelect.value;
+                    const qtyVal = parseFloat(qtyInput.value) || 0;
+                    const unit = unitSelect.value;
+
+                    const c = commodities.find(item => item.id === commId);
+                    if (!c) return;
+
+                    const qtyKg = unit === 'Zak' ? (qtyVal * c.weightPerUnit) : qtyVal;
+
+                    newLog.pakan_type = `${c.name} (Lot: ${lot})`;
+                    newLog.pakan = qtyKg;
+                    newLog.air = parseFloat(document.getElementById('inp-air').value) || 0;
+
+                    deductStockInInventory(commId, lot, qtyKg);
+                    coop.history[currentEditIndex] = newLog;
+                    currentEditIndex = -1;
+                } else {
+                    const airVal = parseFloat(document.getElementById('inp-air').value) || 0;
+                    
+                    rows.forEach((row, idx) => {
+                        const productSelect = row.querySelector('.inp-row-product');
+                        const batchSelect = row.querySelector('.inp-row-batch');
+                        const qtyInput = row.querySelector('.inp-row-qty');
+                        const unitSelect = row.querySelector('.inp-row-unit');
+
+                        const commId = productSelect.value;
+                        const lot = batchSelect.value;
+                        const qtyVal = parseFloat(qtyInput.value) || 0;
+                        const unit = unitSelect.value;
+
+                        const c = commodities.find(item => item.id === commId);
+                        if (!c) return;
+
+                        const qtyKg = unit === 'Zak' ? (qtyVal * c.weightPerUnit) : qtyVal;
+
+                        const subLog = {
+                            date: dateStr,
+                            type: 'pakan',
+                            flock: globalFlock,
+                            pakan_type: `${c.name} (Lot: ${lot})`,
+                            pakan: qtyKg,
+                            air: idx === 0 ? airVal : 0
+                        };
+
+                        coop.history.unshift(subLog);
+                        deductStockInInventory(commId, lot, qtyKg);
+                    });
+                }
             } else if (type === 'produksi') {
                 newLog.komoditas = document.getElementById('inp-komoditas').value || '';
                 newLog.total = parseFloat(document.getElementById('inp-total').value) || 0;

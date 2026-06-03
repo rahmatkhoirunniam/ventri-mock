@@ -1049,7 +1049,7 @@
     <!-- SIDEBAR -->
     <aside class="sb">
         <div class="sb-logo">
-            <div class="sb-mark">🐓 RayFarm</div>
+            <div class="sb-mark"><span style="cursor: pointer; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2) rotate(-10deg)'" onmouseout="this.style.transform='scale(1)'" onclick="resetAllData(event)" title="Klik untuk Reset Data">🐓</span> RayFarm</div>
             <div class="sb-sub">Sistem Inventaris</div>
         </div>
         <div class="sb-sec">
@@ -1668,6 +1668,16 @@
         function pickKandang(el) {
             document.querySelectorAll('.kcard').forEach(c => c.classList.remove('sel'));
             el.classList.add('sel');
+        }
+
+        // Reset simulation database manually to factory defaults
+        function resetAllData(event) {
+            if (event) event.stopPropagation();
+            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik? Tindakan ini akan menghapus semua riwayat input buatan Anda.")) {
+                localStorage.removeItem('coops');
+                localStorage.removeItem('rayfarm_commodities');
+                location.reload();
+            }
         }
 
         // init
