@@ -1133,12 +1133,15 @@
                     <div class="frow">
                         <div class="fg">
                             <label>Jumlah Kemasan Utuh (e.g. Zak) <span class="req">*</span></label>
-                            <input type="number" id="rec-qty" min="0" value="10" oninput="updateReceiptCalculator()" required>
+                            <input type="number" id="rec-qty" min="0" placeholder="contoh: 10" oninput="updateReceiptCalculator()">
                         </div>
                         <div class="fg">
-                            <label>Sisa Pecahan Berat (kg)</label>
-                            <input type="number" id="rec-qty-kg" min="0" value="0" step="0.1" oninput="updateReceiptCalculator()" placeholder="contoh: 20">
+                            <label>Sisa Pecahan Berat (kg) <span class="req">*</span></label>
+                            <input type="number" id="rec-qty-kg" min="0" step="0.1" placeholder="contoh: 20" oninput="updateReceiptCalculator()">
                         </div>
+                    </div>
+                    <div style="margin-top: -8px; margin-bottom: 12px;">
+                        <span class="hint">* Wajib mengisi minimal salah satu dari Jumlah Kemasan Utuh atau Sisa Pecahan Berat.</span>
                     </div>
 
                     <!-- LIVE CALCULATOR PREVIEW -->
@@ -1720,6 +1723,15 @@
 
             const c = commodities.find(item => item.id === commId);
             if (!c) return;
+
+            if (qtyBagsInput < 0 || qtyExtraKg < 0) {
+                alert('Gagal mencatat: Jumlah tidak boleh bernilai negatif.');
+                return;
+            }
+            if (qtyBagsInput === 0 && qtyExtraKg === 0) {
+                alert('Gagal mencatat: Mohon isi minimal salah satu dari Jumlah Kemasan Utuh atau Sisa Pecahan Berat (harus lebih dari 0).');
+                return;
+            }
 
             const totalKg = (qtyBagsInput * c.weightPerUnit) + qtyExtraKg;
             const realBags = Math.floor(totalKg / c.weightPerUnit); // resolve total weight into proper bag count
