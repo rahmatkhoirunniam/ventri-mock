@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Pakan — RayFarm</title>
+    <title>Katalog Hasil Produksi — RayFarm</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap"
         rel="stylesheet">
@@ -155,7 +155,7 @@
             background: var(--surf);
             border-bottom: 1px solid var(--bdr);
             padding: 0 28px;
-            height: 58px;
+            height: 64px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -164,15 +164,31 @@
             z-index: 50;
         }
 
+        .breadcrumbs {
+            font-size: 11px;
+            color: var(--ink3);
+            margin-bottom: 2px;
+            font-weight: 500;
+        }
+
+        .breadcrumbs a {
+            color: var(--ink3);
+            text-decoration: none;
+        }
+
+        .breadcrumbs span {
+            margin: 0 4px;
+        }
+
         .tb-title {
             font-family: 'Fraunces', serif;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: 700;
             color: var(--ink);
         }
 
         .tb-sub {
-            font-size: 12px;
+            font-size: 11.5px;
             color: var(--ink2);
             font-family: 'DM Sans', sans-serif;
             font-weight: 300;
@@ -243,18 +259,21 @@
         .status-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
+            gap: 14px;
         }
 
         .sc {
             background: var(--surf);
             border: 1px solid var(--bdr);
             border-radius: var(--r);
-            padding: 14px 16px;
+            padding: 18px 16px;
             position: relative;
             overflow: hidden;
             transition: .13s;
             cursor: default;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
         .sc:hover {
@@ -262,59 +281,30 @@
             transform: translateY(-1px);
         }
 
-        .sc::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--ink3);
-        }
-
-        .sc.total::after { background: var(--sky); }
-        .sc.pakan::after { background: var(--sage); }
-        .sc.vok::after { background: var(--purple); }
-        .sc.produksi::after { background: var(--amber); }
-        .sc.kritis::after { background: var(--rust); }
-
-        .sc-icon {
+        .sc-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 18px;
-            margin-bottom: 6px;
+            flex-shrink: 0;
         }
 
         .sc-val {
             font-family: 'Fraunces', serif;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 700;
             line-height: 1.1;
             color: var(--ink);
         }
 
-        .sc-val .sc-unit {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 12px;
-            color: var(--ink2);
-            font-weight: 400;
-        }
-
         .sc-label {
             font-size: 11px;
             color: var(--ink2);
-            margin-top: 5px;
-            font-weight: 500;
-        }
-
-        .sc-sub {
-            font-size: 10px;
-            color: var(--ink3);
             margin-top: 2px;
-        }
-
-        /* Alert bar */
-        .sc-alert-text {
-            color: var(--rust);
-            font-weight: 600;
+            font-weight: 500;
         }
 
         /* Filter controls */
@@ -394,7 +384,7 @@
         }
 
         th {
-            padding: 11px 16px;
+            padding: 12px 16px;
             text-align: left;
             font-size: 10.5px;
             font-weight: 600;
@@ -435,16 +425,16 @@
 
         .cat-tag {
             display: inline-flex;
-            padding: 2px 7px;
+            padding: 2.5px 8px;
             border-radius: 4px;
-            font-size: 10px;
-            font-weight: 500;
+            font-size: 9.5px;
+            font-weight: 600;
             letter-spacing: .3px;
         }
 
-        .cat-tag.pakan {
-            background: #e6f1ec;
-            color: var(--sage);
+        .cat-tag.produksi {
+            background: var(--amber-l);
+            color: var(--amber);
         }
 
         /* Dual Stock display */
@@ -469,7 +459,7 @@
 
         .stock-alert-badge {
             display: inline-block;
-            margin-top: 4px;
+            margin-top: 3px;
             background: var(--rust-l);
             color: var(--rust);
             font-size: 9px;
@@ -477,11 +467,12 @@
             padding: 1.5px 5px;
             border-radius: 3px;
             text-transform: uppercase;
+            width: fit-content;
         }
 
         .stock-ok-badge {
             display: inline-block;
-            margin-top: 4px;
+            margin-top: 3px;
             background: var(--sage-l);
             color: var(--sage);
             font-size: 9px;
@@ -489,6 +480,7 @@
             padding: 1.5px 5px;
             border-radius: 3px;
             text-transform: uppercase;
+            width: fit-content;
         }
 
         /* Exp badge */
@@ -673,20 +665,7 @@
             width: 100%;
             max-width: 580px;
             box-shadow: 0 16px 48px rgba(8, 6, 2, .24);
-            animation: up .18s cubic-bezier(0.34, 1.56, 0.64, 1);
             margin: auto;
-        }
-
-        @keyframes up {
-            from {
-                opacity: 0;
-                transform: translateY(20px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
         }
 
         .mh {
@@ -801,79 +780,92 @@
             resize: vertical;
         }
 
-        .fg .hint {
-            font-size: 10.5px;
-            color: var(--ink3);
-            margin-top: 1px;
-        }
-
         .frow {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
-        /* Calculator preview card in receipt modal */
-        .calc-preview {
-            background: var(--sage-l);
-            border: 1px solid var(--sage-m);
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: var(--sage);
-            font-weight: 500;
+        .hint {
+            font-size: 10.5px;
+            color: var(--ink3);
+            margin-top: 1px;
+            line-height: 1.3;
         }
 
-        .calc-lbl {
+        /* Pagination style */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding: 0 4px;
+        }
+
+        .pag-text {
             font-size: 12px;
             color: var(--ink2);
         }
 
-        .calc-val {
-            font-family: 'Fraunces', serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--sage);
-        }
-
-        /* Deduction visual for daily usage */
-        .deduct-flow {
-            background: var(--bg);
-            border: 1px solid var(--bdr);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 14px;
+        .pag-buttons {
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 6px;
         }
 
-        .df-row {
+        .pag-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--bdr);
+            border-radius: 50%;
+            background: #fff;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            cursor: pointer;
             font-size: 12px;
+            font-weight: 500;
+            color: var(--ink2);
+            transition: 0.12s;
+            user-select: none;
         }
 
-        .df-row.bold {
-            font-weight: 600;
+        .pag-btn:hover {
+            background: var(--surf2);
             color: var(--ink);
         }
 
-        .df-row.result {
-            margin-top: 6px;
-            border-top: 1px dashed var(--bdr);
-            padding-top: 6px;
-            color: var(--sage);
-            font-weight: 600;
+        .pag-btn.active {
+            background: var(--sage);
+            border-color: var(--sage);
+            color: #fff;
+            cursor: default;
         }
 
-        .df-row.result .res-val {
-            font-family: 'Fraunces', serif;
-            font-size: 16px;
+        .pag-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pag-btn.disabled:hover {
+            background: #fff;
+            color: var(--ink2);
+        }
+
+        /* Lot history list layout */
+        .hist-item {
+            border-bottom: 1px solid var(--bdr);
+            padding: 10px 0;
+        }
+        .hist-item:last-child {
+            border-bottom: none;
+        }
+        .hist-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--ink3);
+            margin-top: 3px;
         }
     </style>
 </head>
@@ -882,32 +874,27 @@
 
     <!-- SIDEBAR -->
     <aside class="sb">
-        <div class="sb-logo" onclick="location.href='dashboard.html'">
+        <div class="sb-logo" onclick="location.href='index.html'">
             <div class="sb-mark"><span style="cursor: pointer; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2) rotate(-10deg)'" onmouseout="this.style.transform='scale(1)'" onclick="resetAllData(event)" title="Klik untuk Reset Data">🐓</span> RayFarm</div>
             <div class="sb-sub">Sistem Inventaris</div>
         </div>
         <div class="sb-sec">
             <div class="sb-lbl">Utama</div>
-            <div class="nav" onclick="location.href='dashboard.html'"><span class="ico">📊</span><span
-                    class="lbl">Dashboard</span></div>
+            <div class="nav" onclick="location.href='dashboard.html'"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
         </div>
         <div class="sb-sec">
             <div class="sb-lbl">Katalog Komoditas</div>
             <div class="nav"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
-            <div class="nav active" onclick="location.href='pakan.html'"><span class="ico">🌾</span><span
-                    class="lbl">Pakan</span></div>
+            <div class="nav" onclick="location.href='pakan.html'"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
             <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
-            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
-            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock /
-                    Hewan</span></div>
+            <div class="nav active" onclick="location.href='hasil-produksi.html'"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
         </div>
         <div class="sb-sec">
             <div class="sb-lbl">Operasional</div>
-            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span
-                    class="lbl">Monitoring Kandang</span></div>
+            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
             <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
-            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span
-                    class="bdg">3</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
             <div class="nav"><span class="ico">🏭</span><span class="lbl">Stok per Gudang</span></div>
         </div>
     </aside>
@@ -916,11 +903,11 @@
     <div class="main">
         <div class="topbar">
             <div>
-                <div class="tb-title">Katalog — Pakan</div>
-                <div class="tb-sub">Kelola seluruh komoditas pakan · Formula, penerimaan, & monitoring stok</div>
+                <div class="breadcrumbs">Katalog Komoditas <span>/</span> <a href="hasil-produksi.html" style="color: var(--ink2); font-weight: 600;">Hasil Produksi</a></div>
+                <div class="tb-title">Katalog — Hasil Produksi</div>
+                <div class="tb-sub">Kelola seluruh komoditas farm: Pakan, VOK, dan Hasil Produksi.</div>
             </div>
             <div class="tb-right">
-                <button class="btn btn-ghost btn-amber" onclick="openModal('usage-modal')">🌾 Simulasikan Pemakaian Harian</button>
                 <button class="btn btn-ghost" onclick="openModal('receive-modal')">📥 Terima Barang</button>
                 <button class="btn btn-solid" onclick="openModal('add-commodity-modal')">＋ Tambah Komoditas</button>
             </div>
@@ -931,39 +918,45 @@
             <!-- 5 STATUS SUMMARY CARDS -->
             <div class="status-grid">
                 <!-- Card 1: Total Commodities -->
-                <div class="sc total">
-                    <div class="sc-icon">📦</div>
-                    <div class="sc-val" id="sum-commodities">0</div>
-                    <div class="sc-label">Total Komoditas</div>
-                    <div class="sc-sub">Pakan ternak terdaftar</div>
+                <div class="sc">
+                    <div class="sc-circle" style="background: #e0f2fe; color: #0284c7;">📦</div>
+                    <div>
+                        <div class="sc-val" id="sum-commodities">0</div>
+                        <div class="sc-label">Total Komoditas</div>
+                    </div>
                 </div>
-                <!-- Card 2: Total Bags -->
-                <div class="sc pakan">
-                    <div class="sc-icon">🌾</div>
-                    <div class="sc-val" id="sum-bags">0 <span class="sc-unit">Zak</span></div>
-                    <div class="sc-label">Total Stok Fisik</div>
-                    <div class="sc-sub">Jumlah karung di gudang</div>
+                <!-- Card 2: Pakan -->
+                <div class="sc">
+                    <div class="sc-circle" style="background: #e6f1ec; color: var(--sage);">🌾</div>
+                    <div>
+                        <div class="sc-val" id="sum-pakan">0</div>
+                        <div class="sc-label">Pakan</div>
+                    </div>
                 </div>
-                <!-- Card 3: Total Kg -->
-                <div class="sc vok">
-                    <div class="sc-icon">⚖️</div>
-                    <div class="sc-val" id="sum-weight">0 <span class="sc-unit">Kg</span></div>
-                    <div class="sc-label">Total Berat Pakan</div>
-                    <div class="sc-sub">Dukungan pencatatan harian</div>
+                <!-- Card 3: VOK -->
+                <div class="sc">
+                    <div class="sc-circle" style="background: #f3e8ff; color: #9333ea;">💉</div>
+                    <div>
+                        <div class="sc-val" id="sum-vok">0</div>
+                        <div class="sc-label">VOK</div>
+                    </div>
                 </div>
-                <!-- Card 4: Warehouses -->
-                <div class="sc produksi">
-                    <div class="sc-icon">🏭</div>
-                    <div class="sc-val">3 <span class="sc-unit">Lokasi</span></div>
-                    <div class="sc-label">Gudang Penyimpanan</div>
-                    <div class="sc-sub">Pemisahan alokasi stok</div>
+                <!-- Card 4: Hasil Produksi -->
+                <div class="sc">
+                    <div class="sc-circle" style="background: #fef3c7; color: #d97706;">🥚</div>
+                    <div>
+                        <div class="sc-val" id="sum-produksi">0</div>
+                        <div class="sc-label">Hasil Produksi</div>
+                    </div>
                 </div>
-                <!-- Card 5: Low Stock Alerts -->
-                <div class="sc kritis">
-                    <div class="sc-icon">⚠️</div>
-                    <div class="sc-val sc-alert-text" id="sum-alerts">0</div>
-                    <div class="sc-label">Stok Kurang / Kritis</div>
-                    <div class="sc-sub">Segera lakukan pembelian</div>
+                <!-- Card 5: Expiry Alerts -->
+                <div class="sc" style="position: relative;">
+                    <span id="expiry-dot" style="position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--rust); display: none;"></span>
+                    <div class="sc-circle" style="background: #fee2e2; color: #dc2626;">⚠️</div>
+                    <div>
+                        <div class="sc-val" id="sum-alerts" style="color: var(--rust);">0</div>
+                        <div class="sc-label">Mendekati Kadaluarsa</div>
+                    </div>
                 </div>
             </div>
 
@@ -971,35 +964,40 @@
             <div class="filters">
                 <div class="search-box">
                     <span class="si">🔍</span>
-                    <input type="text" id="search-input" oninput="renderTable()" placeholder="Cari nama komoditas, SKU, barcode...">
+                    <input type="text" id="search-input" oninput="renderTable()" placeholder="Cari nama, SKU, barcode...">
                 </div>
+                <select class="sel" id="filter-category" onchange="renderTable()">
+                    <option value="Hasil Produksi" selected>Hasil Produksi</option>
+                    <option value="Pakan">Pakan</option>
+                    <option value="VOK">VOK</option>
+                    <option value="all">Semua Kategori</option>
+                </select>
                 <select class="sel" id="filter-status" onchange="renderTable()">
-                    <option value="all">Semua Status Stok</option>
-                    <option value="critical">Kurang dari Minimum</option>
+                    <option value="all">Semua Status</option>
+                    <option value="critical">Stok Kurang / Kritis</option>
                     <option value="ok">Stok Cukup</option>
                 </select>
                 <select class="sel" id="filter-gudang" onchange="renderTable()">
                     <option value="all">Semua Gudang</option>
+                    <option value="Gudang Utama">Gudang Utama</option>
+                    <option value="Gudang Hasil Produksi">Gudang Hasil Produksi</option>
                     <option value="Gudang Pakan Utama">Gudang Pakan Utama</option>
-                    <option value="Gudang Kandang A">Gudang Kandang A</option>
-                    <option value="Gudang Kandang B">Gudang Kandang B</option>
                 </select>
             </div>
 
-            <!-- DATA TABLE -->
+            <!-- TABLE -->
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 40px"></th>
+                            <th style="width: 40px;"></th>
                             <th>Nama Komoditas</th>
                             <th>Kategori</th>
-                            <th>Satuan Utama</th>
-                            <th>Berat / Kemasan</th>
+                            <th>Satuan</th>
                             <th>Batch / Lot</th>
                             <th>Kadaluarsa Terdekat</th>
                             <th>Total Stok</th>
-                            <th>Harga per Kemasan</th>
+                            <th>Harga Jual</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -1007,6 +1005,16 @@
                         <!-- Loaded dynamically -->
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Pagination footer -->
+            <div class="pagination-container">
+                <div class="pag-text" id="pagination-text">Menampilkan 1–4 dari 4 komoditas</div>
+                <div class="pag-buttons">
+                    <div class="pag-btn disabled" id="btn-prev">&lt;</div>
+                    <div class="pag-btn active">1</div>
+                    <div class="pag-btn disabled" id="btn-next">&gt;</div>
+                </div>
             </div>
 
         </div>
@@ -1018,7 +1026,7 @@
             <div class="mh">
                 <div>
                     <div class="mt">Tambah Komoditas Baru</div>
-                    <div class="ms">Daftarkan item pakan baru ke dalam katalog sistem.</div>
+                    <div class="ms">Daftarkan hasil produksi atau item baru ke katalog sistem.</div>
                 </div>
                 <button class="mclose" onclick="closeModal('add-commodity-modal')">✕</button>
             </div>
@@ -1028,7 +1036,7 @@
                         <div class="fsec-title">Informasi Dasar</div>
                         <div class="fg">
                             <label>Nama Komoditas <span class="req">*</span></label>
-                            <input type="text" id="add-name" required placeholder="contoh: Pakan Layer Starter BR-1">
+                            <input type="text" id="add-name" required placeholder="contoh: Telur Komersial / Normal (Grade A)">
                         </div>
                         <div class="frow">
                             <div class="fg">
@@ -1037,8 +1045,9 @@
                             </div>
                             <div class="fg">
                                 <label>Kategori</label>
-                                <select id="add-category" disabled>
-                                    <option value="Pakan" selected>🌾 Pakan</option>
+                                <select id="add-category">
+                                    <option value="Hasil Produksi" selected>🔸 Hasil Produksi</option>
+                                    <option value="Pakan">🌾 Pakan</option>
                                 </select>
                             </div>
                         </div>
@@ -1046,31 +1055,27 @@
                             <div class="fg">
                                 <label>Satuan Kemasan <span class="req">*</span></label>
                                 <select id="add-unit" required>
+                                    <option value="Pcs" selected>Pcs / Butir</option>
+                                    <option value="Kg">Kg</option>
                                     <option value="Zak">Zak / Karung</option>
-                                    <option value="Pcs">Pcs</option>
-                                    <option value="Box">Box</option>
-                                    <option value="Drum">Drum</option>
                                 </select>
-                                <span class="hint">Satuan saat barang diterima (kemasan bulk).</span>
                             </div>
                             <div class="fg">
                                 <label>Berat per Kemasan (kg) <span class="req">*</span></label>
-                                <input type="number" id="add-weight" value="50" min="1" step="0.5" required placeholder="contoh: 50">
-                                <span class="hint">Kunci konversi ke satuan pemakaian (kg).</span>
+                                <input type="number" id="add-weight" value="1" min="0.1" step="0.1" required>
                             </div>
                         </div>
                         <div class="frow">
                             <div class="fg">
                                 <label>Stok Minimum Alert (Kemasan)</label>
-                                <input type="number" id="add-minalert" value="20" min="0" placeholder="contoh: 20">
-                                <span class="hint">Batas minimum sebelum muncul peringatan restok.</span>
+                                <input type="number" id="add-minalert" value="10" min="0">
                             </div>
                             <div class="fg">
                                 <label>Suhu Simpan Ideal</label>
                                 <select id="add-suhu">
+                                    <option value="Suhu Dingin (4-10°C)" selected>Suhu Dingin (4-10°C)</option>
                                     <option value="Suhu Ruang (25-30°C)">Suhu Ruang (25-30°C)</option>
-                                    <option value="Suhu Dingin (15-20°C)">Suhu Dingin (15-20°C)</option>
-                                    <option value="Bebas">Bebas / Kering</option>
+                                    <option value="Bebas">Bebas</option>
                                 </select>
                             </div>
                         </div>
@@ -1079,17 +1084,17 @@
                     <div class="fsec">
                         <div class="fsec-title">Atribut & Harga</div>
                         <div class="fg">
-                            <label>Informasi Nutrisi / Komposisi</label>
-                            <input type="text" id="add-nutrisi" placeholder="contoh: Protein 21%, Energi 2900 kkal/kg">
+                            <label>Keterangan / Atribut</label>
+                            <input type="text" id="add-nutrisi" placeholder="contoh: Telur segar kualitas premium">
                         </div>
                         <div class="frow">
                             <div class="fg">
-                                <label>Harga Beli Default per Kemasan (Rp)</label>
-                                <input type="number" id="add-hargabeli" value="450000" min="0" placeholder="contoh: 450000">
+                                <label>Harga Beli / HPP per Unit (Rp)</label>
+                                <input type="number" id="add-hargabeli" value="0" min="0">
                             </div>
                             <div class="fg">
-                                <label>Harga Jual (Rp) - Opsional</label>
-                                <input type="number" id="add-hargajual" placeholder="Bila dijual kembali">
+                                <label>Harga Jual per Unit (Rp) <span class="req">*</span></label>
+                                <input type="number" id="add-hargajual" value="1500" min="0" required>
                             </div>
                         </div>
                     </div>
@@ -1108,14 +1113,14 @@
             <div class="mh">
                 <div>
                     <div class="mt">Catat Penerimaan Barang</div>
-                    <div class="ms">Input stok masuk dari pengiriman/pembelian supplier.</div>
+                    <div class="ms">Input stok masuk hasil produksi baru ke dalam gudang.</div>
                 </div>
                 <button class="mclose" onclick="closeModal('receive-modal')">✕</button>
             </div>
             <form id="receive-form" onsubmit="handleReceiveGoods(event)">
                 <div class="mb">
                     <div class="fg">
-                        <label>Komoditas Pakan <span class="req">*</span></label>
+                        <label>Komoditas Hasil Produksi <span class="req">*</span></label>
                         <select id="rec-commodity" onchange="updateReceiptCalculator()" required>
                             <!-- loaded dynamically -->
                         </select>
@@ -1124,58 +1129,52 @@
                     <div class="fg">
                         <label>Gudang / Lokasi Penyimpanan <span class="req">*</span></label>
                         <select id="rec-gudang" required>
-                            <option value="Gudang Pakan Utama">Gudang Pakan Utama</option>
-                            <option value="Gudang Kandang A">Gudang Kandang A</option>
-                            <option value="Gudang Kandang B">Gudang Kandang B</option>
+                            <option value="Gudang Hasil Produksi" selected>Gudang Hasil Produksi</option>
+                            <option value="Gudang Utama">Gudang Utama</option>
                         </select>
                     </div>
 
                     <div class="frow">
                         <div class="fg">
-                            <label>Jumlah Kemasan Utuh (e.g. Zak) <span class="req">*</span></label>
-                            <input type="number" id="rec-qty" min="0" placeholder="contoh: 10" oninput="updateReceiptCalculator()">
+                            <label>Jumlah Unit (e.g. Pcs) <span class="req">*</span></label>
+                            <input type="number" id="rec-qty" min="1" required placeholder="contoh: 100">
                         </div>
                         <div class="fg">
-                            <label>Sisa Pecahan Berat (kg) <span class="req">*</span></label>
-                            <input type="number" id="rec-qty-kg" min="0" step="0.1" placeholder="contoh: 20" oninput="updateReceiptCalculator()">
+                            <label>Total Berat (Kg) <span class="req">*</span></label>
+                            <input type="number" id="rec-qty-kg" min="0.1" step="0.1" required placeholder="contoh: 6.2">
                         </div>
                     </div>
-                    <div style="margin-top: -8px; margin-bottom: 12px;">
-                        <span class="hint">* Wajib mengisi minimal salah satu dari Jumlah Kemasan Utuh atau Sisa Pecahan Berat.</span>
-                    </div>
-
-                    <!-- LIVE CALCULATOR PREVIEW -->
-                    <div class="calc-preview">
-                        <span class="calc-lbl">Visualisasi Total Berat Terhitung (kg):</span>
-                        <span class="calc-val" id="rec-calc-text">10 Zak = 500 kg</span>
+                    <div class="fg" style="margin-top: 8px;">
+                        <label>No. Lot / Batch</label>
+                        <input type="text" id="rec-lot" placeholder="Otomatis jika kosong">
+                        <span class="hint">Format auto-gen: HSL-YYYYMM-XXXX</span>
                     </div>
 
                     <div class="frow">
                         <div class="fg">
-                            <label>HPP / Satuan Kemasan (Rp) <span class="req">*</span></label>
+                            <label>HPP / Harga Satuan (Rp) <span class="req">*</span></label>
                             <input type="number" id="rec-hpp" required>
                         </div>
                         <div class="fg">
-                            <label>Tanggal Terima <span class="req">*</span></label>
+                            <label>Tanggal Terima / Input <span class="req">*</span></label>
                             <input type="date" id="rec-date" required>
                         </div>
                     </div>
 
                     <div class="frow">
                         <div class="fg">
-                            <label>No. Lot / Batch</label>
-                            <input type="text" id="rec-lot" placeholder="Otomatis jika kosong">
-                            <span class="hint">Format auto-gen: PKN-YYYYMM-XXXX</span>
-                        </div>
-                        <div class="fg">
                             <label>Tanggal Kadaluarsa <span class="req">*</span></label>
                             <input type="date" id="rec-expiry" required>
+                        </div>
+                        <div class="fg">
+                            <label>Operator / Petugas</label>
+                            <input type="text" id="rec-operator" value="Samsudin" placeholder="Operator bertugas">
                         </div>
                     </div>
 
                     <div class="fg">
                         <label>Catatan Penerimaan</label>
-                        <textarea id="rec-notes" rows="2" placeholder="contoh: Batch pengiriman baru, kemasan utuh, kering"></textarea>
+                        <textarea id="rec-notes" rows="2" placeholder="contoh: Batch produksi pagi hari, kondisi bersih"></textarea>
                     </div>
                 </div>
                 <div class="mfooter">
@@ -1186,84 +1185,74 @@
         </div>
     </div>
 
-    <!-- ======== MODAL: SIMULASI PEMAKAIAN HARIAN (DEMO) ======== -->
-    <div class="overlay" id="usage-modal">
+    <!-- ======== MODAL: EDIT KOMODITAS ======== -->
+    <div class="overlay" id="edit-commodity-modal">
         <div class="modal">
             <div class="mh">
                 <div>
-                    <div class="mt">Simulasikan Pemakaian Pakan Harian</div>
-                    <div class="ms">Demonstrasi support pencatatan harian menggunakan berat terkecil (kg). Sisa stok otomatis dikonversi kembali ke kemasan utuh & pecahan sisa secara detail.</div>
+                    <div class="mt">Edit Komoditas</div>
+                    <div class="ms">Ubah informasi komoditas dalam katalog.</div>
                 </div>
-                <button class="mclose" onclick="closeModal('usage-modal')">✕</button>
+                <button class="mclose" onclick="closeModal('edit-commodity-modal')">✕</button>
             </div>
-            <form id="usage-form" onsubmit="handleUsage(event)">
+            <form id="edit-commodity-form" onsubmit="handleEditCommoditySubmit(event)">
+                <input type="hidden" id="edit-id">
                 <div class="mb">
                     <div class="fg">
-                        <label>Pilih Lot / Batch Pakan Terisi <span class="req">*</span></label>
-                        <select id="usg-lot" onchange="updateUsageCalculator()" required>
-                            <!-- loaded dynamically -->
-                        </select>
+                        <label>Nama Komoditas <span class="req">*</span></label>
+                        <input type="text" id="edit-name" required>
                     </div>
-
                     <div class="frow">
                         <div class="fg">
-                            <label>Jumlah Pemakaian (kg) <span class="req">*</span></label>
-                            <input type="number" id="usg-qty" min="0.1" step="0.1" value="12.5" oninput="updateUsageCalculator()" required>
-                            <span class="hint">Input dalam satuan berat harian farm (kg).</span>
+                            <label>Satuan</label>
+                            <input type="text" id="edit-unit" readonly style="background: var(--surf2); cursor: not-allowed;">
                         </div>
                         <div class="fg">
-                            <label>Kandang Tujuan <span class="req">*</span></label>
-                            <select id="usg-kandang" required>
-                                <option value="Kandang A">Kandang A (Layer)</option>
-                                <option value="Kandang B">Kandang B (Broiler)</option>
-                                <option value="Kandang C">Kandang C (DOC Brooder)</option>
-                            </select>
+                            <label>Stok Minimum Alert</label>
+                            <input type="number" id="edit-minalert" min="0" required>
                         </div>
                     </div>
-
-                    <!-- DEDUCTION FLOW VISUAL PREVIEW -->
-                    <div class="deduct-flow" id="usg-flow-box">
-                        <div class="df-row bold">
-                            <span>Stok Lot Awal:</span>
-                            <span id="usg-flow-start">4 Zak (200 kg)</span>
-                        </div>
-                        <div class="df-row">
-                            <span style="color: var(--rust)">(-) Konsumsi Pakan Harian:</span>
-                            <span style="color: var(--rust); font-weight: 500;" id="usg-flow-deduct">12.5 kg</span>
-                        </div>
-                        <div class="df-row result">
-                            <span>Sisa Stok Terhitung:</span>
-                            <span class="res-val" id="usg-flow-end">3 Zak + 37.5 kg (187.5 kg)</span>
-                        </div>
-                    </div>
-
                     <div class="frow">
                         <div class="fg">
-                            <label>Tanggal Pemakaian <span class="req">*</span></label>
-                            <input type="date" id="usg-date" required>
+                            <label>Harga Beli per Unit (Rp)</label>
+                            <input type="number" id="edit-hargabeli" min="0">
                         </div>
                         <div class="fg">
-                            <label>Operator Farm</label>
-                            <input type="text" id="usg-operator" value="Samsudin" placeholder="Operator bertugas">
+                            <label>Harga Jual per Unit (Rp)</label>
+                            <input type="number" id="edit-hargajual" min="0">
                         </div>
-                    </div>
-
-                    <div class="fg">
-                        <label>Catatan Tambahan</label>
-                        <input type="text" id="usg-notes" placeholder="contoh: Pemberian pakan pagi hari">
                     </div>
                 </div>
                 <div class="mfooter">
-                    <button type="button" class="btn btn-ghost" onclick="closeModal('usage-modal')">Batal</button>
-                    <button type="submit" class="btn btn-amber">Kurangi Stok Pakan</button>
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('edit-commodity-modal')">Batal</button>
+                    <button type="submit" class="btn btn-solid">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- ======== MODAL: RIWAYAT TRANSAKSI / LOT ======== -->
+    <div class="overlay" id="history-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt">Riwayat Lot & Transaksi</div>
+                    <div class="ms" id="history-subtitle">Telur Komersial / Normal</div>
+                </div>
+                <button class="mclose" onclick="closeModal('history-modal')">✕</button>
+            </div>
+            <div class="mb" id="history-content-container" style="max-height: 50vh; overflow-y: auto;">
+                <!-- Filled dynamically -->
+            </div>
+            <div class="mfooter">
+                <button type="button" class="btn btn-ghost" onclick="closeModal('history-modal')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ======== JAVASCRIPT SYSTEM ======== -->
     <script>
-        // Default seed data
+        // Standard seed data covering both Pakan and Hasil Produksi
         const INITIAL_COMMODITIES = [
             // Feed (Pakan)
             {
@@ -1393,9 +1382,10 @@
                 try {
                     commodities = JSON.parse(stored);
                     
-                    // Merge any missing Hasil Produksi items
+                    // Make sure our default production hasil items are present in loaded list
                     let hasHasilProduksi = commodities.some(c => c.category === "Hasil Produksi");
                     if (!hasHasilProduksi) {
+                        // Merge the missing production hasil items
                         INITIAL_COMMODITIES.forEach(initC => {
                             if (initC.category === "Hasil Produksi" && !commodities.some(c => c.id === initC.id)) {
                                 commodities.push(initC);
@@ -1410,33 +1400,36 @@
                 commodities = INITIAL_COMMODITIES;
                 saveData();
             }
-            
-            // Set current date on date pickers
+
+            // Populate forms dates default
             const todayStr = new Date().toISOString().substring(0, 10);
             document.getElementById('rec-date').value = todayStr;
-            document.getElementById('rec-expiry').value = new Date(Date.now() + 180 * 86400000).toISOString().substring(0, 10); // +6 months
-            document.getElementById('usg-date').value = todayStr;
+            document.getElementById('rec-expiry').value = new Date(Date.now() + 30 * 86400000).toISOString().substring(0, 10); // +30 days
 
             renderTable();
             populateCommodityDropdowns();
-            populateLotDropdowns();
         }
 
-        // Save data to LocalStorage
         function saveData() {
             localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
         }
 
-        // Modal Operations
+        function resetAllData(event) {
+            if (event) event.stopPropagation();
+            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik?")) {
+                localStorage.removeItem('coops');
+                localStorage.removeItem('rayfarm_commodities');
+                location.reload();
+            }
+        }
+
+        // Modal triggers
         function openModal(id) {
             document.getElementById(id).classList.add('open');
             document.body.style.overflow = 'hidden';
-
             if (id === 'receive-modal') {
+                populateCommodityDropdowns();
                 updateReceiptCalculator();
-            } else if (id === 'usage-modal') {
-                populateLotDropdowns();
-                updateUsageCalculator();
             }
         }
 
@@ -1445,170 +1438,124 @@
             document.body.style.overflow = '';
         }
 
-        // Setup drop down commodity selections
+        // Dropdown populating for receiving goods modal
         function populateCommodityDropdowns() {
             const selectEl = document.getElementById('rec-commodity');
             selectEl.innerHTML = '';
             
+            // Filter dropdown to only show the selected category in the filter dropdown
+            const activeFilterCat = document.getElementById('filter-category').value;
+            
             commodities.forEach(c => {
+                // If filter is locked, only show matched categories
+                if (activeFilterCat !== 'all' && c.category !== activeFilterCat) return;
+                
                 const opt = document.createElement('option');
                 opt.value = c.id;
-                opt.textContent = `${c.name} (${c.weightPerUnit} kg/${c.unitName})`;
+                opt.textContent = `${c.name} (${c.unitName})`;
                 selectEl.appendChild(opt);
             });
         }
 
-        // Setup drop down active batches for daily usage
-        function populateLotDropdowns() {
-            const selectEl = document.getElementById('usg-lot');
-            selectEl.innerHTML = '';
-
-            let hasLots = false;
-            commodities.forEach(c => {
-                c.batches.forEach(b => {
-                    if (b.qtyKg > 0) {
-                        hasLots = true;
-                        const opt = document.createElement('option');
-                        opt.value = `${c.id}||${b.lot}`;
-                        
-                        const bagDisp = formatStock(b.qtyKg, c.weightPerUnit, c.unitName);
-                        opt.textContent = `${c.name} - Lot: ${b.lot} (Tersedia: ${bagDisp} / ${b.qtyKg} kg)`;
-                        selectEl.appendChild(opt);
-                    }
-                });
-            });
-
-            if (!hasLots) {
-                const opt = document.createElement('option');
-                opt.value = '';
-                opt.textContent = 'Tidak ada stok pakan aktif di gudang';
-                selectEl.appendChild(opt);
-                document.getElementById('usg-form').querySelector('button[type="submit"]').disabled = true;
-            } else {
-                document.getElementById('usg-form').querySelector('button[type="submit"]').disabled = false;
-            }
-        }
-
-        // Visual format for stocks (e.g. "3 Zak + 35 kg" or "4 Zak")
-        function formatStock(qtyKg, weightPerUnit, unitName) {
-            const bags = Math.floor(qtyKg / weightPerUnit);
-            const rem = (qtyKg % weightPerUnit).toFixed(1) * 1; // remove trailing zeros
-            if (bags === 0 && rem === 0) return `0 ${unitName}`;
-            if (rem === 0) return `${bags} ${unitName}`;
-            if (bags === 0) return `${rem} kg`;
-            return `${bags} ${unitName} + ${rem} kg`;
-        }
-
-        // Helper: calculate days to expiry
-        function daysToExpiry(dateStr) {
-            const diff = new Date(dateStr) - new Date();
-            return Math.ceil(diff / 86400000);
-        }
-
-        // Visual badges for expiry status
-        function getExpiryBadge(dateStr) {
-            const days = daysToExpiry(dateStr);
-            if (days <= 0) return `<span class="exp-badge danger">Kadaluarsa</span>`;
-            if (days <= 30) return `<span class="exp-badge danger">${days} hari lagi</span>`;
-            if (days <= 90) return `<span class="exp-badge warning">${days} hari lagi</span>`;
-            return `<span class="exp-badge">${days} hari</span>`;
-        }
-
-        // Live calculator preview in Receipt Modal
         function updateReceiptCalculator() {
             const commId = document.getElementById('rec-commodity').value;
             if (!commId) return;
 
-            const qty = parseFloat(document.getElementById('rec-qty').value) || 0;
-            const extraKg = parseFloat(document.getElementById('rec-qty-kg').value) || 0;
             const c = commodities.find(item => item.id === commId);
-            
             if (c) {
-                // Populate default HPP
-                document.getElementById('rec-hpp').value = c.hargaBeli;
-                
-                const totalWeight = (qty * c.weightPerUnit) + extraKg;
-                if (extraKg > 0) {
-                    document.getElementById('rec-calc-text').textContent = `${qty} ${c.unitName} + ${extraKg} kg = ${totalWeight.toLocaleString('id')} kg`;
-                } else {
-                    document.getElementById('rec-calc-text').textContent = `${qty} ${c.unitName} = ${totalWeight.toLocaleString('id')} kg`;
-                }
+                document.getElementById('rec-hpp').value = c.hargaBeli || 0;
             }
         }
 
-        // Live visual deduction preview in Usage Modal
-        function updateUsageCalculator() {
-            const val = document.getElementById('usg-lot').value;
-            if (!val) {
-                document.getElementById('usg-flow-box').style.display = 'none';
-                return;
-            }
-
-            document.getElementById('usg-flow-box').style.display = 'flex';
-
-            const [commId, lotId] = val.split('||');
-            const qtyDeduct = parseFloat(document.getElementById('usg-qty').value) || 0;
-
-            const c = commodities.find(item => item.id === commId);
-            if (!c) return;
-
-            const b = c.batches.find(batch => batch.lot === lotId);
-            if (!b) return;
-
-            const weightPerUnit = c.weightPerUnit;
-            const unitName = c.unitName;
-
-            const currentKg = b.qtyKg;
-            const remainKg = Math.max(0, currentKg - qtyDeduct);
-
-            // Display initial
-            document.getElementById('usg-flow-start').textContent = `${formatStock(currentKg, weightPerUnit, unitName)} (${currentKg.toLocaleString('id')} kg)`;
-            // Display deduct
-            document.getElementById('usg-flow-deduct').textContent = `${qtyDeduct.toLocaleString('id')} kg`;
-            // Display result sisa
-            document.getElementById('usg-flow-end').textContent = `${formatStock(remainKg, weightPerUnit, unitName)} (${remainKg.toLocaleString('id')} kg)`;
-
-            // Alert validation
-            if (qtyDeduct > currentKg) {
-                document.getElementById('usg-flow-end').innerHTML = `<span style="color: var(--rust); font-weight: bold;">Sisa tidak cukup (Defisit ${Math.abs(currentKg - qtyDeduct).toFixed(1)} kg)</span>`;
-            }
+        // Helpers
+        function daysToExpiry(dateStr) {
+            if (!dateStr) return 9999;
+            const diff = new Date(dateStr) - new Date();
+            return Math.ceil(diff / 86400000);
         }
 
-        // Render Table & Summary Cards
+        function getExpiryBadge(dateStr) {
+            const days = daysToExpiry(dateStr);
+            if (days <= 0) return `<span class="exp-badge danger">Kadaluarsa</span>`;
+            if (days <= 3) return `<span class="exp-badge danger">Expired ${dateStr}</span>`;
+            if (days <= 30) return `<span class="exp-badge danger">${days} hari lagi</span>`;
+            if (days <= 90) return `<span class="exp-badge warning">${days} hari lagi</span>`;
+            
+            // Format to Indonesian standard date DD/MM/YYYY
+            const dateParts = dateStr.split('-');
+            if (dateParts.length === 3) {
+                return `<span class="exp-badge">${dateParts[2]}/${dateParts[1]}/${dateParts[0]}</span>`;
+            }
+            return `<span class="exp-badge">${dateStr}</span>`;
+        }
+
+        // Render Table & Summary stats
         const expandedRows = new Set();
         function renderTable() {
             const tbody = document.getElementById('commodity-tbody');
             tbody.innerHTML = '';
 
             const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const filterCategory = document.getElementById('filter-category').value;
             const filterStatus = document.getElementById('filter-status').value;
             const filterGudang = document.getElementById('filter-gudang').value;
 
-            // Summary metrics
-            let totalComm = 0;
-            let totalBags = 0;
-            let totalWeightKg = 0;
-            let totalAlerts = 0;
+            // Summary counters
+            let countTotal = 0;
+            let countPakan = 0;
+            let countVok = 0;
+            let countProduksi = 0;
+            let countAlerts = 0;
 
+            // Compute overall database metrics first (unfiltered)
             commodities.forEach(c => {
-                if (c.category !== 'Pakan') return;
+                countTotal++;
+                if (c.category === 'Pakan') countPakan++;
+                if (c.category === 'VOK') countVok++;
+                if (c.category === 'Hasil Produksi') countProduksi++;
 
-                // Calculate stock per commodity
-                let commBags = 0;
-                let commWeight = 0;
-                let minExpDays = 9999;
-                let nearestExpDate = '';
+                // Expiry checks
+                c.batches.forEach(b => {
+                    const days = daysToExpiry(b.expiryDate);
+                    if (days <= 30) {
+                        countAlerts++;
+                    }
+                });
+            });
 
-                // Filter batches based on warehouse selection
+            // Update DOM summary cards
+            document.getElementById('sum-commodities').textContent = countTotal;
+            document.getElementById('sum-pakan').textContent = countPakan;
+            document.getElementById('sum-vok').textContent = countVok;
+            document.getElementById('sum-produksi').textContent = countProduksi;
+            document.getElementById('sum-alerts').textContent = countAlerts;
+            document.getElementById('expiry-dot').style.display = countAlerts > 0 ? 'block' : 'none';
+
+            // Filter commodities and render rows
+            let renderedCount = 0;
+            commodities.forEach(c => {
+                // Category Filter
+                if (filterCategory !== 'all' && c.category !== filterCategory) return;
+
+                // Search Filter
+                const matchesSearch = c.name.toLowerCase().includes(searchVal) || c.id.toLowerCase().includes(searchVal);
+                if (!matchesSearch) return;
+
+                // Gudang Filter
                 const filteredBatches = c.batches.filter(b => {
                     if (filterGudang !== 'all' && b.gudang !== filterGudang) return false;
                     return true;
                 });
 
+                // Calculate stock for this warehouse
+                let totalStockQty = 0;
+                let totalStockWeight = 0;
+                let minExpDays = 9999;
+                let nearestExpDate = '';
+
                 filteredBatches.forEach(b => {
-                    commWeight += b.qtyKg;
-                    commBags += Math.floor(b.qtyKg / c.weightPerUnit);
-                    
+                    totalStockQty += b.qty || 0;
+                    totalStockWeight += b.qtyKg || 0;
                     const days = daysToExpiry(b.expiryDate);
                     if (days < minExpDays) {
                         minExpDays = days;
@@ -1616,36 +1563,40 @@
                     }
                 });
 
-                // Overall totals calculation (unfiltered for top summaries)
-                let allWeight = c.batches.reduce((sum, b) => sum + b.qtyKg, 0);
-                let allBags = Math.floor(allWeight / c.weightPerUnit);
-                let isCritical = allBags < c.minAlert;
+                const isCritical = totalStockQty < c.minAlert;
 
-                totalComm++;
-                totalBags += allBags;
-                totalWeightKg += allWeight;
-                if (isCritical) totalAlerts++;
+                // Status Filter
+                if (filterStatus === 'critical' && !isCritical) return;
+                if (filterStatus === 'ok' && isCritical) return;
 
-                // Apply search & filter
-                const matchesSearch = c.name.toLowerCase().includes(searchVal) || c.id.toLowerCase().includes(searchVal);
-                
-                let matchesStatus = true;
-                if (filterStatus === 'critical') matchesStatus = isCritical;
-                if (filterStatus === 'ok') matchesStatus = !isCritical;
+                // If warehouse selected is not "all", and we have no stock in it, skip
+                if (filterGudang !== 'all' && filteredBatches.length === 0) return;
 
-                // If warehouse filter is on and there are no batches in that warehouse, do not show row
-                const matchesGudang = filterGudang === 'all' || filteredBatches.length > 0;
-
-                if (!matchesSearch || !matchesStatus || !matchesGudang) return;
-
-                // Render main row
-                const isCommCritical = commBags < c.minAlert;
-                const statusBadge = isCommCritical 
-                    ? `<span class="stock-alert-badge">Min ${c.minAlert} ${c.unitName}</span>`
-                    : `<span class="stock-ok-badge">Aman</span>`;
+                renderedCount++;
 
                 const tr = document.createElement('tr');
                 tr.className = 'main-row';
+                
+                const isCommCritical = totalStockQty < c.minAlert;
+                
+                // Color formatting for stock value
+                let stockValHtml = '';
+                if (isCommCritical) {
+                    stockValHtml = `
+                        <div class="stock-primary" style="color: var(--rust); font-weight: 700;">${totalStockQty.toLocaleString('id')} ${c.unitName}</div>
+                        <div class="stock-secondary" style="color: var(--rust); font-size: 11px;">${totalStockWeight.toLocaleString('id')} kg</div>
+                    `;
+                } else {
+                    stockValHtml = `
+                        <div class="stock-primary" style="font-weight: 700;">${totalStockQty.toLocaleString('id')} ${c.unitName}</div>
+                        <div class="stock-secondary" style="font-size: 11px; color: var(--ink2);">${totalStockWeight.toLocaleString('id')} kg</div>
+                    `;
+                }
+                
+                const statusBadge = isCommCritical 
+                    ? `<span class="stock-alert-badge">Min ${c.minAlert}</span>`
+                    : `<span class="stock-ok-badge">Aman</span>`;
+
                 tr.innerHTML = `
                     <td>
                         <button class="exp-btn ${expandedRows.has(c.id) ? 'open' : ''}" onclick="toggleLotRow('${c.id}')">
@@ -1656,9 +1607,8 @@
                         <div class="cname">${c.name}</div>
                         <div class="cmeta">${c.id}</div>
                     </td>
-                    <td><span class="cat-tag pakan">Pakan</span></td>
+                    <td><span class="cat-tag produksi">${c.category}</span></td>
                     <td><strong>${c.unitName}</strong></td>
-                    <td>${c.weightPerUnit} kg</td>
                     <td>
                         <button class="exp-btn" onclick="toggleLotRow('${c.id}')">
                             ${filteredBatches.length} lot / batch
@@ -1666,18 +1616,20 @@
                     </td>
                     <td>${nearestExpDate ? getExpiryBadge(nearestExpDate) : '—'}</td>
                     <td>
-                        <div class="stock-block">
-                            <div class="stock-primary">${formatStock(commWeight, c.weightPerUnit, c.unitName)}</div>
-                            <div class="stock-secondary">${commWeight.toLocaleString('id')} kg total</div>
-                            <div>${statusBadge}</div>
+                        <div class="stock-block" style="display: flex; flex-direction: column; gap: 2px;">
+                            ${stockValHtml}
+                            ${statusBadge}
                         </div>
                     </td>
-                    <td>Rp ${c.hargaBeli.toLocaleString('id')}</td>
+                    <td>${c.hargaJual > 0 ? 'Rp ' + c.hargaJual.toLocaleString('id') : '—'}</td>
                     <td>
-                        <button class="abt" onclick="editCommodity('${c.id}')" title="Edit Formula">✏️</button>
-                        <button class="abt del" onclick="deleteCommodity('${c.id}')" title="Hapus">🗑</button>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="abt" onclick="openEditModal('${c.id}')" title="Edit">✏️</button>
+                            <button class="abt del" onclick="handleDeleteCommodity('${c.id}')" title="Hapus">🗑️</button>
+                        </div>
                     </td>
                 `;
+
                 tbody.appendChild(tr);
 
                 // Render expanded batches subtable
@@ -1686,14 +1638,13 @@
                 lotTr.id = `lotrow-${c.id}`;
 
                 const lotRows = filteredBatches.map(b => {
-                    const bagDisp = formatStock(b.qtyKg, c.weightPerUnit, c.unitName);
                     return `
                         <tr>
                             <td><span class="lot-tag">${b.lot}</span></td>
                             <td><span class="loc-chip">${b.gudang}</span></td>
-                            <td><strong>${bagDisp}</strong></td>
+                            <td><strong>${b.qty.toLocaleString('id')} ${c.unitName}</strong></td>
                             <td><span class="cmeta">${b.qtyKg.toLocaleString('id')} kg</span></td>
-                            <td>Rp ${b.hpp.toLocaleString('id')}</td>
+                            <td>Rp ${(c.hargaJual || 0).toLocaleString('id')}</td>
                             <td>${b.receiveDate}</td>
                             <td>${getExpiryBadge(b.expiryDate)}</td>
                             <td>
@@ -1704,7 +1655,7 @@
                 }).join('');
 
                 lotTr.innerHTML = `
-                    <td colspan="10">
+                    <td colspan="9">
                         <div class="lot-inner">
                             <div class="lot-head">
                                 <span class="lot-head-title">📋 Penempatan Lot / Batch — ${c.name}</span>
@@ -1720,7 +1671,7 @@
                                             <th>Lokasi Gudang</th>
                                             <th>Stok Utama</th>
                                             <th>Total Berat (kg)</th>
-                                            <th>HPP / Satuan</th>
+                                            <th>Harga Jual / Satuan</th>
                                             <th>Tanggal Masuk</th>
                                             <th>Kadaluarsa</th>
                                             <th>Aksi</th>
@@ -1738,60 +1689,49 @@
                 tbody.appendChild(lotTr);
             });
 
-            // Update top cards
-            document.getElementById('sum-commodities').textContent = totalComm;
-            document.getElementById('sum-bags').innerHTML = `${totalBags} <span class="sc-unit">Zak</span>`;
-            document.getElementById('sum-weight').innerHTML = `${totalWeightKg.toLocaleString('id')} <span class="sc-unit">Kg</span>`;
-            document.getElementById('sum-alerts').textContent = totalAlerts;
+            // Update pagination text
+            document.getElementById('pagination-text').textContent = `Menampilkan 1–${renderedCount} dari ${renderedCount} komoditas`;
         }
 
-        // Toggle Expandable batch sub-rows
         function toggleLotRow(id) {
-            const el = document.getElementById(`lotrow-${id}`);
             if (expandedRows.has(id)) {
                 expandedRows.delete(id);
-                if (el) el.classList.remove('show');
             } else {
                 expandedRows.add(id);
-                if (el) el.classList.add('show');
             }
             renderTable();
         }
 
-        // Prefill goods receipt modal when triggered from inner lot table
-        function openModalWithPrefill(commId) {
-            document.getElementById('rec-commodity').value = commId;
-            openModal('receive-modal');
-        }
-
-        // Form handler: Add New Commodity
+        // Form submits: Add commodity
         function handleAddCommodity(e) {
             e.preventDefault();
             
             const name = document.getElementById('add-name').value;
-            const customSku = document.getElementById('add-sku').value.trim();
+            const category = document.getElementById('add-category').value;
             const unit = document.getElementById('add-unit').value;
-            const weight = parseFloat(document.getElementById('add-weight').value) || 50;
-            const minAlert = parseFloat(document.getElementById('add-minalert').value) || 0;
+            const weight = parseFloat(document.getElementById('add-weight').value) || 1;
+            const minAlert = parseFloat(document.getElementById('add-minalert').value) || 10;
             const suhu = document.getElementById('add-suhu').value;
-            const nutrisi = document.getElementById('add-nutrisi').value || '—';
+            const nutrisi = document.getElementById('add-nutrisi').value;
             const hargaBeli = parseFloat(document.getElementById('add-hargabeli').value) || 0;
-            const hargaJualVal = document.getElementById('add-hargajual').value;
-            const hargaJual = hargaJualVal ? parseFloat(hargaJualVal) : null;
+            const hargaJual = parseFloat(document.getElementById('add-hargajual').value) || 0;
 
-            // Generate SKU
-            const sku = customSku || `PKN-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+            let sku = document.getElementById('add-sku').value.trim().toUpperCase();
+            if (!sku) {
+                const prefix = category === 'Pakan' ? 'PKN' : 'HSL';
+                sku = `${prefix}-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+            }
 
             // Check duplicate SKU
             if (commodities.some(c => c.id === sku)) {
-                alert('Kode SKU/Lot ini sudah terdaftar.');
+                alert("SKU / Kode komoditas sudah terdaftar!");
                 return;
             }
 
             const newComm = {
                 id: sku,
                 name: name,
-                category: "Pakan",
+                category: category,
                 unitName: unit,
                 weightPerUnit: weight,
                 minAlert: minAlert,
@@ -1804,127 +1744,59 @@
 
             commodities.push(newComm);
             saveData();
-            
-            // UI refresh
             closeModal('add-commodity-modal');
-            populateCommodityDropdowns();
+            e.target.reset();
             renderTable();
-            document.getElementById('add-commodity-form').reset();
-            alert(`Berhasil mendaftarkan komoditas pakan: ${name}`);
         }
 
-        // Form handler: Catat Penerimaan Barang (Stok Masuk)
+        // Form submits: Receive Stock
         function handleReceiveGoods(e) {
             e.preventDefault();
 
             const commId = document.getElementById('rec-commodity').value;
+            const qty = parseFloat(document.getElementById('rec-qty').value) || 0;
             const gudang = document.getElementById('rec-gudang').value;
-            const qtyBagsInput = parseFloat(document.getElementById('rec-qty').value) || 0;
-            const qtyExtraKg = parseFloat(document.getElementById('rec-qty-kg').value) || 0;
             const hpp = parseFloat(document.getElementById('rec-hpp').value) || 0;
-            const date = document.getElementById('rec-date').value;
-            const expiry = document.getElementById('rec-expiry').value;
-            const notes = document.getElementById('rec-notes').value || '—';
-            const customLot = document.getElementById('rec-lot').value.trim();
+            const recDate = document.getElementById('rec-date').value;
+            const expiryDate = document.getElementById('rec-expiry').value;
+            const notes = document.getElementById('rec-notes').value;
+
+            let lot = document.getElementById('rec-lot').value.trim().toUpperCase();
+            if (!lot) {
+                const dateParts = recDate.split('-');
+                const yearMonth = dateParts.length >= 2 ? `${dateParts[0]}${dateParts[1]}` : '202606';
+                const rand = Math.floor(1000 + Math.random() * 9000);
+                const prefix = commodities.find(c => c.id === commId).category === 'Pakan' ? 'PKN' : 'HSL';
+                lot = `${prefix}-${yearMonth}-${rand}`;
+            }
 
             const c = commodities.find(item => item.id === commId);
             if (!c) return;
 
-            if (qtyBagsInput < 0 || qtyExtraKg < 0) {
-                alert('Gagal mencatat: Jumlah tidak boleh bernilai negatif.');
-                return;
-            }
-            if (qtyBagsInput === 0 && qtyExtraKg === 0) {
-                alert('Gagal mencatat: Mohon isi minimal salah satu dari Jumlah Kemasan Utuh atau Sisa Pecahan Berat (harus lebih dari 0).');
-                return;
-            }
-
-            const totalKg = (qtyBagsInput * c.weightPerUnit) + qtyExtraKg;
-            const realBags = Math.floor(totalKg / c.weightPerUnit); // resolve total weight into proper bag count
-            const datePart = date.replace(/-/g, '').substring(0, 6);
-            const lot = customLot || `PKN-${datePart}-${Math.floor(1000 + Math.random() * 9000)}`;
-
+            // Create new batch
             const newBatch = {
                 lot: lot,
                 gudang: gudang,
-                qtyBags: realBags,
-                qtyKg: totalKg,
-                receiveDate: date,
-                expiryDate: expiry,
+                qty: qty, // holds the number of units / pcs
+                qtyKg: parseFloat(document.getElementById('rec-qty-kg').value) || 0, // holds the weight in kg
+                receiveDate: recDate,
+                expiryDate: expiryDate,
                 hpp: hpp,
                 notes: notes
             };
 
-            // Add batch to commodity
-            c.batches.push(newBatch);
+            c.batches.unshift(newBatch);
             saveData();
-
-            // UI Refresh
             closeModal('receive-modal');
+            e.target.reset();
             renderTable();
-            populateLotDropdowns();
-            document.getElementById('receive-form').reset();
-            
-            const displayStr = formatStock(totalKg, c.weightPerUnit, c.unitName);
-            alert(`Stok diterima & dikonversi: ${displayStr} (${totalKg} kg total) sukses dicatat ke lot ${lot}.`);
         }
 
-        // Form handler: Simulasikan Pemakaian Pakan Harian
-        function handleUsage(e) {
-            e.preventDefault();
-
-            const val = document.getElementById('usg-lot').value;
-            if (!val) return;
-
-            const [commId, lotId] = val.split('||');
-            const qtyDeduct = parseFloat(document.getElementById('usg-qty').value) || 0;
-            const kandang = document.getElementById('usg-kandang').value;
-            const date = document.getElementById('usg-date').value;
-            const operator = document.getElementById('usg-operator').value;
-            const notes = document.getElementById('usg-notes').value || 'Pencatatan konsumsi rutin';
-
-            const c = commodities.find(item => item.id === commId);
-            if (!c) return;
-
-            const b = c.batches.find(batch => batch.lot === lotId);
-            if (!b) return;
-
-            if (qtyDeduct > b.qtyKg) {
-                alert(`Gagal: Pengurangan melebihi stok yang tersedia. Maksimal ${b.qtyKg} kg.`);
-                return;
-            }
-
-            // Deduct stock in kg
-            b.qtyKg = Math.max(0, b.qtyKg - qtyDeduct);
-            // Re-calculate bags count
-            b.qtyBags = Math.floor(b.qtyKg / c.weightPerUnit);
-
-            saveData();
-
-            // UI Refresh
-            closeModal('usage-modal');
-            renderTable();
-            populateLotDropdowns();
-            document.getElementById('usage-form').reset();
-            
-            alert(`Konsumsi Pakan sukses dikurangi: ${qtyDeduct} kg pakan telah didistribusikan ke ${kandang} oleh ${operator}.`);
+        function openModalWithPrefill(commId) {
+            document.getElementById('rec-commodity').value = commId;
+            openModal('receive-modal');
         }
 
-        // Delete Commodity from catalog
-        function deleteCommodity(id) {
-            const c = commodities.find(item => item.id === id);
-            if (!c) return;
-
-            if (confirm(`Apakah Anda yakin ingin menghapus komoditas "${c.name}" dari seluruh katalog? Tindakan ini akan menghapus semua lot stok pakan terkait.`)) {
-                commodities = commodities.filter(item => item.id !== id);
-                saveData();
-                renderTable();
-                populateCommodityDropdowns();
-                populateLotDropdowns();
-            }
-        }
-
-        // Delete single batch lot
         function deleteBatch(commId, lot) {
             const c = commodities.find(item => item.id === commId);
             if (!c) return;
@@ -1933,45 +1805,95 @@
                 c.batches = c.batches.filter(b => b.lot !== lot);
                 saveData();
                 renderTable();
-                populateLotDropdowns();
             }
         }
 
-        // Mock Edit commodity formula
-        function editCommodity(id) {
+        // Edit Modal Operations
+        function openEditModal(id) {
             const c = commodities.find(item => item.id === id);
             if (!c) return;
 
-            // Fill form for editing
-            document.getElementById('add-name').value = c.name;
-            document.getElementById('add-sku').value = c.id;
-            document.getElementById('add-unit').value = c.unitName;
-            document.getElementById('add-weight').value = c.weightPerUnit;
-            document.getElementById('add-minalert').value = c.minAlert;
-            document.getElementById('add-suhu').value = c.suhu;
-            document.getElementById('add-nutrisi').value = c.nutrisi;
-            document.getElementById('add-hargabeli').value = c.hargaBeli;
-            document.getElementById('add-hargajual').value = c.hargaJual || '';
+            document.getElementById('edit-id').value = c.id;
+            document.getElementById('edit-name').value = c.name;
+            document.getElementById('edit-unit').value = c.unitName;
+            document.getElementById('edit-minalert').value = c.minAlert;
+            document.getElementById('edit-hargabeli').value = c.hargaBeli || 0;
+            document.getElementById('edit-hargajual').value = c.hargaJual || 0;
 
-            // Open Modal
-            openModal('add-commodity-modal');
-            
-            // To support actual edit rather than duplicating on submit, let's remove the previous entry first (mock simplification)
-            commodities = commodities.filter(item => item.id !== id);
+            openModal('edit-commodity-modal');
         }
 
-        // Reset simulation database manually to factory defaults
-        function resetAllData(event) {
-            if (event) event.stopPropagation();
-            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik? Tindakan ini akan menghapus semua riwayat input buatan Anda.")) {
-                localStorage.removeItem('coops');
-                localStorage.removeItem('rayfarm_commodities');
-                location.reload();
+        function handleEditCommoditySubmit(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('edit-id').value;
+            const name = document.getElementById('edit-name').value;
+            const minAlert = parseFloat(document.getElementById('edit-minalert').value) || 0;
+            const hargabeli = parseFloat(document.getElementById('edit-hargabeli').value) || 0;
+            const hargajual = parseFloat(document.getElementById('edit-hargajual').value) || 0;
+
+            const c = commodities.find(item => item.id === id);
+            if (c) {
+                c.name = name;
+                c.minAlert = minAlert;
+                c.hargaBeli = hargabeli;
+                c.hargaJual = hargajual;
+                saveData();
+                closeModal('edit-commodity-modal');
+                renderTable();
             }
         }
 
-        // Load systems
-        window.onload = initData;
+        // Delete commodity
+        function handleDeleteCommodity(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus komoditas ini dari katalog? Tindakan ini tidak dapat dibatalkan.")) {
+                commodities = commodities.filter(c => c.id !== id);
+                saveData();
+                renderTable();
+            }
+        }
+
+        // History Modal Operations
+        function openHistoryModal(id) {
+            const c = commodities.find(item => item.id === id);
+            if (!c) return;
+
+            document.getElementById('history-subtitle').textContent = c.name;
+
+            const container = document.getElementById('history-content-container');
+            container.innerHTML = '';
+
+            let listHtml = '';
+            
+            // Loop through active batches and simulate some dummy transactions
+            if (c.batches.length === 0) {
+                listHtml = `<div style="text-align: center; color: var(--ink3); font-style: italic; padding: 20px 0;">Belum ada riwayat masuk/keluar untuk barang ini.</div>`;
+            } else {
+                c.batches.forEach(b => {
+                    listHtml += `
+                        <div class="hist-item">
+                            <div style="display: flex; justify-content: space-between; font-weight: 600;">
+                                <span style="color: var(--sage);">📥 Masuk (+${b.qtyKg.toLocaleString('id')} ${c.unitName})</span>
+                                <span style="font-family: 'DM Mono', monospace;">Lot: ${b.lot}</span>
+                            </div>
+                            <div class="hist-meta">
+                                <span>Gudang: ${b.gudang}</span>
+                                <span>Tanggal: ${b.receiveDate}</span>
+                            </div>
+                            <div style="font-size: 11.5px; color: var(--ink2); margin-top: 4px; font-style: italic;">
+                                Catatan: ${b.notes || 'Penerimaan barang masuk'}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            container.innerHTML = listHtml;
+            openModal('history-modal');
+        }
+
+        // Initialize Page
+        initData();
     </script>
 </body>
 
