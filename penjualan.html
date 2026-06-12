@@ -728,7 +728,7 @@
             background: #ffffff;
             color: #000000;
             padding: 24px;
-            border: 1px solid #bdr;
+            border: 1px solid var(--bdr);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             font-size: 12px;
             line-height: 1.4;
@@ -827,7 +827,7 @@
         <div class="topbar">
             <div>
                 <div class="tb-title">Penjualan & Kasir (POS)</div>
-                <div class="tb-sub">Transaksi penjualan eceran dan grosir komoditas panen</div>
+                <div class="tb-sub">Transaksi penjualan komoditas panen berdasarkan satuan dan timbangan berat</div>
             </div>
             <div class="tb-right">
                 <button class="btn btn-ghost" onclick="openHistoryModal()">📋 Riwayat Penjualan</button>
@@ -865,13 +865,36 @@
                     <div class="checkout-summary">
                         <div class="summary-row">
                             <span class="summary-label">Total Belanja</span>
-                            <span class="summary-value" id="total-price">Rp 0</span>
+                            <span class="summary-value" id="total-price" style="font-size: 14.5px;">Rp 0</span>
+                        </div>
+                        <div class="summary-row" style="margin-top: 2px;">
+                            <span class="summary-label">Potongan Diskon</span>
+                            <span class="summary-value" id="discount-disp" style="color: var(--rust); font-size: 14.5px;">- Rp 0</span>
+                        </div>
+                        <div class="summary-row" style="margin-top: 4px; border-top: 1px dashed var(--bdr); padding-top: 8px;">
+                            <span class="summary-label" style="font-weight: 700; color: var(--ink);">Total Akhir</span>
+                            <span class="summary-value" id="grand-total-disp" style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--sage);">Rp 0</span>
                         </div>
 
                         <form class="form-checkout" onsubmit="processTransaction(event)">
                             <div style="display: flex; flex-direction: column; gap: 4px;">
                                 <label for="cust-name">Nama Pembeli</label>
                                 <input type="text" id="cust-name" placeholder="Umum / Pelanggan retail" required value="Umum">
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 10px; margin-top: 4px;">
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <label for="discount-type">Tipe Diskon</label>
+                                    <select id="discount-type" onchange="handleDiscountChange()">
+                                        <option value="None" selected>Tanpa Diskon</option>
+                                        <option value="Percent">Persentase (%)</option>
+                                        <option value="Nominal">Nominal Rupiah (Rp)</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <label for="discount-value" id="lbl-discount-val">Nilai Diskon</label>
+                                    <input type="number" id="discount-value" min="0" value="0" oninput="handleDiscountInput()" disabled>
+                                </div>
                             </div>
 
                             <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 10px; margin-top: 4px;">
@@ -939,6 +962,7 @@
                     <div class="fg">
                         <label for="modal-qty-input" id="modal-qty-label">Jumlah (Butir)</label>
                         <input type="number" id="modal-qty-input" min="1" step="1" oninput="updateModalSubtotal()" required>
+                        <span class="hint" id="modal-qty-conversion-hint" style="color: var(--sage); font-weight: 600; margin-top: 4px; display: block;"></span>
                     </div>
 
                     <!-- Realtime Price Calculation -->
@@ -1244,9 +1268,11 @@
                     ? `<span class="prod-stock-val">${totalPcs.toLocaleString('id')} Pcs <span style="font-weight:normal;color:var(--ink2);">(${totalKg.toFixed(1)} kg)</span></span>`
                     : `<span class="prod-stock-crit">Habis / Kosong</span>`;
 
+                const unitLabel = (c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'Butir' : (c.unitName || 'Pcs');
+
                 const priceKgHtml = c.hargaJualKg > 0 
-                    ? `<div class="price-row"><span>Grosir (Kg):</span><span class="price-val">Rp ${c.hargaJualKg.toLocaleString('id')}</span></div>`
-                    : `<div class="price-row"><span>Grosir (Kg):</span><span class="price-val" style="color:var(--ink3);">Tidak didukung</span></div>`;
+                    ? `<div class="price-row"><span>Harga (/Kg):</span><span class="price-val">Rp ${c.hargaJualKg.toLocaleString('id')}</span></div>`
+                    : `<div class="price-row"><span>Harga (/Kg):</span><span class="price-val" style="color:var(--ink3);">Tidak didukung</span></div>`;
 
                 const card = document.createElement('div');
                 card.className = 'prod-card';
@@ -1265,7 +1291,7 @@
                     </div>
                     <div class="prod-prices">
                         <div class="price-row">
-                            <span>Eceran (Butir):</span>
+                            <span>Harga (/${unitLabel}):</span>
                             <span class="price-val">Rp ${c.hargaJual.toLocaleString('id')}</span>
                         </div>
                         ${priceKgHtml}
@@ -1306,6 +1332,8 @@
             });
 
             // Set default selling unit (Pcs if supported, otherwise Kg)
+            currentSaleUnit = '';
+            document.getElementById('modal-qty-input').value = 1;
             setSaleUnit('Pcs');
             if (c.hargaJualKg === 0) {
                 // hide Kg option
@@ -1315,13 +1343,15 @@
             }
 
             updateLotStockHint();
-            document.getElementById('modal-qty-input').value = 1;
             updateModalSubtotal();
 
             openModal('add-cart-modal');
         }
 
         function setSaleUnit(unit) {
+            const prevUnit = currentSaleUnit;
+            if (prevUnit === unit) return;
+
             currentSaleUnit = unit;
             document.getElementById('toggle-pcs').classList.toggle('active', unit === 'Pcs');
             document.getElementById('toggle-kg').classList.toggle('active', unit === 'Kg');
@@ -1329,13 +1359,46 @@
             const qtyLabel = document.getElementById('modal-qty-label');
             const qtyInp = document.getElementById('modal-qty-input');
             
+            const prodId = document.getElementById('modal-product-id').value;
+            const lotId = document.getElementById('modal-lot-select').value;
+            
+            let ratio = 1;
+            let maxStock = Infinity;
+            if (prodId && lotId) {
+                const c = commodities.find(item => item.id === prodId);
+                if (c) {
+                    const b = c.batches.find(item => item.lot === lotId);
+                    if (b && b.qty > 0 && b.qtyKg > 0) {
+                        ratio = b.qtyKg / b.qty; // Kg per Pcs
+                        maxStock = (unit === 'Pcs') ? b.qty : b.qtyKg;
+                    }
+                }
+            }
+
+            const currentVal = parseFloat(qtyInp.value) || 0;
+
             if (unit === 'Pcs') {
                 qtyLabel.textContent = "Jumlah (Butir / Pcs)";
                 qtyInp.step = "1";
-                if (qtyInp.value) qtyInp.value = Math.round(qtyInp.value);
+                if (prevUnit && currentVal > 0) {
+                    // convert from Kg to Pcs
+                    let convertedVal = Math.round(currentVal / ratio);
+                    if (convertedVal > maxStock) convertedVal = maxStock;
+                    qtyInp.value = Math.max(1, convertedVal);
+                } else {
+                    qtyInp.value = 1;
+                }
             } else {
                 qtyLabel.textContent = "Berat Timbangan (Kg)";
                 qtyInp.step = "0.1";
+                if (prevUnit && currentVal > 0) {
+                    // convert from Pcs to Kg
+                    let convertedVal = parseFloat((currentVal * ratio).toFixed(2));
+                    if (convertedVal > maxStock) convertedVal = parseFloat(maxStock.toFixed(2));
+                    qtyInp.value = Math.max(0.1, convertedVal);
+                } else {
+                    qtyInp.value = 1;
+                }
             }
             updateLotStockHint();
             updateModalSubtotal();
@@ -1355,19 +1418,30 @@
             if (b) {
                 hintSpan.textContent = `Stok lot aktif: ${b.qty.toLocaleString('id')} Butir / ${b.qtyKg.toFixed(2)} Kg`;
                 
+                const val = parseFloat(qtyInput.value) || 0;
                 if (currentSaleUnit === 'Pcs') {
                     qtyInput.max = b.qty;
+                    if (val > b.qty) {
+                        qtyInput.value = b.qty;
+                    }
                 } else {
                     qtyInput.max = b.qtyKg;
+                    if (val > b.qtyKg) {
+                        qtyInput.value = parseFloat(b.qtyKg.toFixed(2));
+                    }
                 }
             }
+            updateModalSubtotal();
         }
+
 
         function updateModalSubtotal() {
             const prodId = document.getElementById('modal-product-id').value;
+            const lotId = document.getElementById('modal-lot-select').value;
             const qtyVal = parseFloat(document.getElementById('modal-qty-input').value) || 0;
             const priceDisp = document.getElementById('modal-price-disp');
             const subtotalDisp = document.getElementById('modal-subtotal-disp');
+            const conversionHint = document.getElementById('modal-qty-conversion-hint');
 
             if (!prodId) return;
 
@@ -1384,6 +1458,26 @@
 
             const subtotal = qtyVal * unitPrice;
             subtotalDisp.textContent = `Rp ${subtotal.toLocaleString('id')}`;
+
+            // Calculate real-time conversion hint based on selected lot's ratio
+            if (conversionHint && lotId && qtyVal > 0) {
+                const b = c.batches.find(item => item.lot === lotId);
+                if (b && b.qty > 0 && b.qtyKg > 0) {
+                    if (currentSaleUnit === 'Pcs') {
+                        const ratio = b.qtyKg / b.qty;
+                        const convertedKg = qtyVal * ratio;
+                        conversionHint.textContent = `⚖️ Estimasi Berat: ± ${convertedKg.toFixed(2)} Kg`;
+                    } else {
+                        const ratio = b.qty / b.qtyKg;
+                        const convertedPcs = Math.round(qtyVal * ratio);
+                        conversionHint.textContent = `🥚 Estimasi Jumlah: ± ${convertedPcs.toLocaleString('id')} Butir`;
+                    }
+                } else {
+                    conversionHint.textContent = '';
+                }
+            } else if (conversionHint) {
+                conversionHint.textContent = '';
+            }
         }
 
         // Handle Add to Cart submission
@@ -1471,17 +1565,25 @@
         // Render Cart Panel
         function renderCart() {
             const container = document.getElementById('cart-container');
-            const totalText = document.getElementById('total-price');
             const payInp = document.getElementById('amount-paid');
 
             if (!container) return;
             container.innerHTML = '';
 
-            let total = 0;
-
             if (cart.length === 0) {
                 container.innerHTML = '<div class="cart-empty">Keranjang belanja kosong. Silakan pilih komoditas di galeri.</div>';
-                totalText.textContent = 'Rp 0';
+                
+                const discType = document.getElementById('discount-type');
+                if (discType) discType.value = 'None';
+                const discVal = document.getElementById('discount-value');
+                if (discVal) {
+                    discVal.value = 0;
+                    discVal.disabled = true;
+                }
+                const discLbl = document.getElementById('lbl-discount-val');
+                if (discLbl) discLbl.textContent = "Nilai Diskon";
+
+                updateSummaryDisplay();
                 if (payInp) {
                     payInp.value = '';
                     payInp.readOnly = true;
@@ -1493,8 +1595,6 @@
             if (payInp) payInp.readOnly = false;
 
             cart.forEach((item, idx) => {
-                total += item.subtotal;
-
                 const qtyDisp = item.sellMethod === 'Pcs' 
                     ? `${item.qtySold.toLocaleString('id')} Butir`
                     : `${item.weightSold.toFixed(2)} Kg`;
@@ -1523,7 +1623,7 @@
                 container.appendChild(itemDiv);
             });
 
-            totalText.textContent = `Rp ${total.toLocaleString('id')}`;
+            updateSummaryDisplay();
             calculateChange();
         }
 
@@ -1539,13 +1639,104 @@
             }
         }
 
+        function getCartTotal() {
+            let total = 0;
+            cart.forEach(item => total += item.subtotal);
+            return total;
+        }
+
+        function getDiscountAmount() {
+            const subtotal = getCartTotal();
+            const type = document.getElementById('discount-type')?.value || 'None';
+            const val = parseFloat(document.getElementById('discount-value')?.value) || 0;
+
+            if (type === 'Percent') {
+                const pct = Math.min(100, Math.max(0, val));
+                return Math.round((pct / 100) * subtotal);
+            } else if (type === 'Nominal') {
+                return Math.min(subtotal, Math.max(0, val));
+            }
+            return 0;
+        }
+
+        function getGrandTotal() {
+            const subtotal = getCartTotal();
+            const discount = getDiscountAmount();
+            return Math.max(0, subtotal - discount);
+        }
+
+        function handleDiscountChange() {
+            const type = document.getElementById('discount-type').value;
+            const valInp = document.getElementById('discount-value');
+            const lblVal = document.getElementById('lbl-discount-val');
+
+            if (type === 'None') {
+                valInp.value = 0;
+                valInp.disabled = true;
+                lblVal.textContent = "Nilai Diskon";
+            } else if (type === 'Percent') {
+                valInp.disabled = false;
+                valInp.value = 0;
+                valInp.min = 0;
+                valInp.max = 100;
+                lblVal.textContent = "Diskon (%)";
+            } else if (type === 'Nominal') {
+                valInp.disabled = false;
+                valInp.value = 0;
+                valInp.min = 0;
+                valInp.max = getCartTotal();
+                lblVal.textContent = "Diskon (Rp)";
+            }
+            updateSummaryDisplay();
+            
+            const method = document.getElementById('pay-method').value;
+            if (method === 'QRIS' || method === 'Transfer Bank') {
+                document.getElementById('amount-paid').value = getGrandTotal();
+            }
+            calculateChange();
+        }
+
+        function handleDiscountInput() {
+            const type = document.getElementById('discount-type').value;
+            const valInp = document.getElementById('discount-value');
+            let val = parseFloat(valInp.value) || 0;
+
+            if (type === 'Percent') {
+                if (val < 0) val = 0;
+                if (val > 100) val = 100;
+                valInp.value = val;
+            } else if (type === 'Nominal') {
+                const subtotal = getCartTotal();
+                if (val < 0) val = 0;
+                if (val > subtotal) val = subtotal;
+                valInp.value = val;
+            }
+            updateSummaryDisplay();
+            
+            const method = document.getElementById('pay-method').value;
+            if (method === 'QRIS' || method === 'Transfer Bank') {
+                document.getElementById('amount-paid').value = getGrandTotal();
+            }
+            calculateChange();
+        }
+
+        function updateSummaryDisplay() {
+            const subtotal = getCartTotal();
+            const discountAmt = getDiscountAmount();
+            const grandTotal = getGrandTotal();
+
+            document.getElementById('total-price').textContent = `Rp ${subtotal.toLocaleString('id')}`;
+            document.getElementById('discount-disp').textContent = `- Rp ${discountAmt.toLocaleString('id')}`;
+            document.getElementById('grand-total-disp').textContent = `Rp ${grandTotal.toLocaleString('id')}`;
+        }
+
         function handlePayMethodChange() {
             const method = document.getElementById('pay-method').value;
             const payInp = document.getElementById('amount-paid');
-            const total = getCartTotal();
+            const grandTotal = getGrandTotal();
 
             if (method === 'QRIS' || method === 'Transfer Bank') {
-                payInp.value = total;
+                payInp.value = grandTotal;
                 payInp.readOnly = true;
             } else {
                 payInp.readOnly = false;
@@ -1554,17 +1745,10 @@
             calculateChange();
         }
 
-        function getCartTotal() {
-            let total = 0;
-            cart.forEach(item => total += item.subtotal);
-            return total;
-        }
-
         function calculateChange() {
-            const total = getCartTotal();
+            const grandTotal = getGrandTotal();
             const payVal = parseFloat(document.getElementById('amount-paid').value) || 0;
             const changeText = document.getElementById('change-value');
-            const changeRow = document.getElementById('change-row');
             const submitBtn = document.getElementById('btn-submit-tx');
 
             if (cart.length === 0) {
@@ -1573,7 +1757,7 @@
                 return;
             }
 
-            const change = payVal - total;
+            const change = payVal - grandTotal;
 
             if (change >= 0) {
                 changeText.textContent = `Rp ${change.toLocaleString('id')}`;
@@ -1592,12 +1776,12 @@
 
             if (cart.length === 0) return;
 
-            const total = getCartTotal();
+            const grandTotal = getGrandTotal();
             const payVal = parseFloat(document.getElementById('amount-paid').value) || 0;
             const customerName = document.getElementById('cust-name').value.trim() || 'Umum';
             const payMethod = document.getElementById('pay-method').value;
 
-            if (payVal < total) {
+            if (payVal < grandTotal) {
                 alert("Jumlah bayar tidak mencukupi total belanja!");
                 return;
             }
@@ -1636,10 +1820,14 @@
                 dateTime: `${dd}/${mm}/${yyyy} ${timeStr}`,
                 customerName: customerName,
                 items: [...cart],
-                totalPrice: total,
+                subtotal: getCartTotal(),
+                discountType: document.getElementById('discount-type').value,
+                discountValue: parseFloat(document.getElementById('discount-value').value) || 0,
+                discountAmount: getDiscountAmount(),
+                totalPrice: grandTotal,
                 paymentMethod: payMethod,
                 amountPaid: payVal,
-                amountReturn: payVal - total,
+                amountReturn: payVal - grandTotal,
                 operator: "Kasir-RayFarm"
             };
 
@@ -1656,6 +1844,17 @@
             cart = [];
             document.getElementById('cust-name').value = 'Umum';
             document.getElementById('pay-method').value = 'Tunai';
+            
+            const discType = document.getElementById('discount-type');
+            if (discType) discType.value = 'None';
+            const discVal = document.getElementById('discount-value');
+            if (discVal) {
+                discVal.value = 0;
+                discVal.disabled = true;
+            }
+            const discLbl = document.getElementById('lbl-discount-val');
+            if (discLbl) discLbl.textContent = "Nilai Diskon";
+
             handlePayMethodChange();
             
             // Reload views
@@ -1685,6 +1884,18 @@
 </div>
 `;
             });
+
+            const subtotalText = tx.subtotal ? tx.subtotal : tx.totalPrice;
+            const discountHtml = tx.discountAmount > 0 ? `
+<div class="receipt-row">
+    <span>Subtotal:</span>
+    <span>Rp ${subtotalText.toLocaleString('id')}</span>
+</div>
+<div class="receipt-row" style="color: #b02b1e;">
+    <span>Diskon:</span>
+    <span>-Rp ${tx.discountAmount.toLocaleString('id')}</span>
+</div>
+` : '';
 
             visual.innerHTML = `
 <div class="receipt-header">
@@ -1716,8 +1927,9 @@
 </div>
 
 <div class="receipt-divider"></div>
+${discountHtml}
 <div class="receipt-row" style="font-weight: 700;">
-    <span>TOTAL BELANJA:</span>
+    <span>TOTAL BAYAR:</span>
     <span>Rp ${tx.totalPrice.toLocaleString('id')}</span>
 </div>
 <div class="receipt-row">
@@ -1758,6 +1970,10 @@
                             : `${item.weightSold.toFixed(1)} kg`;
                         itemsSummary += `<div style="font-size:11.5px;">• ${item.commodityName} (${qtyDisp})</div>`;
                     });
+
+                    if (tx.discountAmount > 0) {
+                        itemsSummary += `<div style="font-size:10.5px; color:var(--rust); font-style:italic; margin-top:2px;">• Diskon Terpotong: -Rp ${tx.discountAmount.toLocaleString('id')}</div>`;
+                    }
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `

@@ -76,10 +76,14 @@ Data riwayat transaksi kasir disimpan di `localStorage.setItem('rayfarm_sales', 
       "subtotal": 360000
     }
   ],
-  "totalPrice": 360000,
+  "subtotal": 360000,                   // [BARU] Total belanja sebelum diskon
+  "discountType": "Percent",            // [BARU] "Percent", "Nominal", atau "None"
+  "discountValue": 10,                  // [BARU] Nilai input (persen atau rupiah)
+  "discountAmount": 36000,              // [BARU] Nominal potongan diskon dalam Rp
+  "totalPrice": 324000,                 // Total bayar akhir setelah dipotong diskon
   "paymentMethod": "Tunai",             // "Tunai", "Transfer Bank", "Qris"
-  "amountPaid": 400000,
-  "amountReturn": 40000,
+  "amountPaid": 350000,
+  "amountReturn": 26000,
   "operator": "Kasir-Arief"
 }
 ```
@@ -107,6 +111,39 @@ Misal pembeli membeli telur sebanyak $W_{sell}$ kg dari lot yang memiliki total 
    $$Q_{sold} = \text{round}\left(W_{sell} \times \left(\frac{Q_{lot}}{W_{lot}}\right)\right)$$
 3. Kurangi sisa butir: 
    $$Q_{new} = Q_{lot} - Q_{sold}$$
+
+### 3.3 Aturan Nilai Default & Konversi Otomatis (UX Card Specification)
+
+Untuk memudahkan developer membuat task card, berikut adalah aturan default input dan konversi yang harus diimplementasikan pada modal kasir:
+
+1. **Inisialisasi Nilai Default Modal:**
+   * Saat modal penjualan pertama kali dibuka, satuan jual default adalah **Butir / Pcs** dengan nilai input default **`1` Pcs**.
+   * Sistem merekomendasikan batch tertua secara otomatis (**FEFO** sebagai default lot pilihan).
+
+2. **Konversi UX Pintar saat Mengganti Satuan Jual (Pcs <=> Kg):**
+   * Jika pengguna mengubah unit dari **Pcs ke Kg**, nilai input saat ini harus langsung dikonversi secara otomatis:
+     $$\text{Nilai Baru (Kg)} = \text{Nilai Lama (Pcs)} \times \left(\frac{W_{lot}}{Q_{lot}}\right)$$
+     *(Dibulatkan ke 2 desimal)*
+   * Jika pengguna mengubah unit dari **Kg ke Pcs**, nilai input saat ini dikonversi dan dibulatkan ke bilangan bulat terdekat:
+     $$\text{Nilai Baru (Pcs)} = \text{round}\left(\text{Nilai Lama (Kg)} \times \left(\frac{Q_{lot}}{W_{lot}}\right)\right)$$
+   * Jika hasil konversi melebihi stok lot terpilih, nilai input harus dibatasi (**capping**) maksimal sesuai sisa stok unit yang aktif.
+   * Jika input kosong atau bernilai $\le 0$, maka default menjadi **`1` Pcs** atau **`1.0` Kg** setelah diganti.
+
+3. **Perhitungan Default Berat/Butir Proporsional (Sisi Database/Sistem):**
+   * Meskipun kasir hanya memasukkan satu unit (misal: Pcs), sistem akan menyimpan sisa berat default secara proporsional.
+   * **Default Berat untuk Penjualan Pcs:** $\text{weightSold} = \text{qtySold} \times (W_{lot} / Q_{lot})$
+   * **Default Pcs untuk Penjualan Kg:** $\text{qtySold} = \text{round}(\text{weightSold} \times (Q_{lot} / W_{lot}))$
+
+4. **Fitur Diskon Transaksi (Persentase / Rupiah):**
+   * Kasir dapat memasukkan potongan harga untuk keseluruhan transaksi belanja pada panel checkout.
+   * **Tipe Diskon:**
+     * **Tanpa Diskon (None):** Nilai diskon dinonaktifkan (disabled) dan diset ke `0`.
+     * **Persentase (%):** Kasir menginput nilai persentase (batas `0` s.d. `100`). Potongan dihitung dengan formula: $\text{discountAmount} = \text{round}\left(\frac{\text{Percent}}{100} \times \text{Subtotal}\right)$.
+     * **Nominal Rupiah (Rp):** Kasir menginput jumlah potongan langsung dalam Rupiah (batas `0` s.d. $\text{Subtotal}$).
+   * **Perhitungan Uang Kembali & Validasi:**
+     * **Total Akhir (Grand Total):** $\text{totalPrice} = \text{Subtotal} - \text{discountAmount}$.
+     * **Kembalian:** $\text{amountReturn} = \text{Uang Diterima} - \text{totalPrice}$.
+     * Tombol "Selesaikan Transaksi" dinonaktifkan jika uang yang diterima kurang dari `totalPrice`.
 
 ---
 
