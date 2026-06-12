@@ -905,6 +905,7 @@
             <div class="sb-lbl">Operasional</div>
             <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span
                     class="lbl">Monitoring Kandang</span></div>
+            <div class="nav" onclick="location.href='penjualan.html'"><span class="ico">🛒</span><span class="lbl">Penjualan / Kasir</span></div>
             <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
             <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span
                     class="bdg">3</span></div>
@@ -1341,7 +1342,28 @@
                 suhu: "Suhu Dingin (4-10°C)",
                 hargaBeli: 0,
                 hargaJual: 1500,
-                batches: []
+                batches: [
+                    {
+                        lot: "Panen Pagi (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1500,
+                        qtyKg: 93.7,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    },
+                    {
+                        lot: "Panen Kemarin (11/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1000,
+                        qtyKg: 62.5,
+                        receiveDate: "2026-06-11",
+                        expiryDate: "2026-07-11",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
             },
             {
                 id: "HSL-3ZXOW3R6",
@@ -1354,7 +1376,18 @@
                 suhu: "Suhu Dingin (4-10°C)",
                 hargaBeli: 0,
                 hargaJual: 1000,
-                batches: []
+                batches: [
+                    {
+                        lot: "Pecah Kandang A (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 250,
+                        qtyKg: 15.6,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
             },
             {
                 id: "HSL-YQRFIKJ6",
@@ -1367,7 +1400,18 @@
                 suhu: "Suhu Ruang",
                 hargaBeli: 0,
                 hargaJual: 35000,
-                batches: []
+                batches: [
+                    {
+                        lot: "Afkir Kandang B (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 60,
+                        qtyKg: 90.0,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
             },
             {
                 id: "HSL-BEKMNPCK",
@@ -1380,7 +1424,18 @@
                 suhu: "Suhu Dingin (4-10°C)",
                 hargaBeli: 0,
                 hargaJual: 2500,
-                batches: []
+                batches: [
+                    {
+                        lot: "Omega Premium (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 500,
+                        qtyKg: 31.2,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
             }
         ];
 
@@ -1399,6 +1454,25 @@
                         INITIAL_COMMODITIES.forEach(initC => {
                             if (initC.category === "Hasil Produksi" && !commodities.some(c => c.id === initC.id)) {
                                 commodities.push(initC);
+                            }
+                        });
+                        saveData();
+                    }
+
+                    // Self-seed Hasil Produksi stock if all of them are currently empty
+                    let totalHasilStock = 0;
+                    commodities.forEach(c => {
+                        if (c.category === "Hasil Produksi" && c.batches) {
+                            c.batches.forEach(b => totalHasilStock += b.qty || 0);
+                        }
+                    });
+                    if (totalHasilStock === 0) {
+                        commodities.forEach(c => {
+                            if (c.category === "Hasil Produksi") {
+                                const initialItem = INITIAL_COMMODITIES.find(initItem => initItem.id === c.id);
+                                if (initialItem && initialItem.batches && initialItem.batches.length > 0) {
+                                    c.batches = JSON.parse(JSON.stringify(initialItem.batches));
+                                }
                             }
                         });
                         saveData();

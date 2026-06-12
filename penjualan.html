@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasir & Penjualan — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* Sidebar styling */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            cursor: pointer;
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        .nav .bdg {
+            background: var(--rust);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* main content layout */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar styling */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tb-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .tb-sub {
+            font-size: 12px;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            margin-top: 1px;
+        }
+
+        .tb-right {
+            display: flex;
+            gap: 9px;
+        }
+
+        /* general button styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: .13s;
+            user-select: none;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--bdr2);
+            color: var(--ink);
+        }
+
+        .btn-solid {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .btn-solid:hover {
+            background: #2e5640;
+        }
+
+        .btn-solid-sky {
+            background: var(--sky);
+            color: #fff;
+        }
+
+        .btn-solid-sky:hover {
+            background: #123e6d;
+        }
+
+        .btn-disabled {
+            background: var(--surf3);
+            color: var(--ink3);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* content layout */
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* POS panels */
+        .pos-panel {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surf);
+        }
+
+        .panel-title {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-body {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* search box */
+        .search-row {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .search-row input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13.5px;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+        }
+
+        .search-row input:focus {
+            border-color: var(--sage);
+            background: var(--surf);
+            box-shadow: 0 0 0 2px var(--sage-l);
+        }
+
+        .search-row::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink3);
+            font-size: 14px;
+        }
+
+        /* product grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .prod-card {
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            background: var(--surf);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.2s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .prod-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+            border-color: var(--sage-m);
+        }
+
+        .prod-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .prod-name {
+            font-family: 'Fraunces', serif;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+
+        .prod-sku {
+            font-family: 'DM Mono', monospace;
+            font-size: 10.5px;
+            color: var(--ink3);
+            margin-top: 2px;
+        }
+
+        .prod-icon {
+            font-size: 24px;
+            background: var(--bg);
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .prod-stock-block {
+            background: var(--bg);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 11.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .prod-stock-val {
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .prod-stock-crit {
+            color: var(--rust);
+            font-weight: 600;
+        }
+
+        .prod-prices {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--ink2);
+        }
+
+        .price-val {
+            font-family: 'DM Mono', monospace;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        /* Cart Panel / Right side */
+        .cart-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .cart-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--ink3);
+            font-style: italic;
+        }
+
+        .cart-item {
+            background: var(--bg);
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .cart-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .cart-item-lot {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            background: var(--surf3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--ink2);
+            margin-top: 2px;
+            display: inline-block;
+        }
+
+        .cart-item-del {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--ink3);
+            font-size: 15px;
+            padding: 2px;
+            transition: .1s;
+        }
+
+        .cart-item-del:hover {
+            color: var(--rust);
+        }
+
+        .cart-item-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-meta {
+            font-size: 12px;
+            color: var(--ink2);
+        }
+
+        .cart-item-total {
+            font-family: 'DM Mono', monospace;
+            font-weight: 700;
+            color: var(--sage);
+        }
+
+        /* checkout totals */
+        .checkout-summary {
+            border-top: 1px dashed var(--bdr2);
+            padding-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: var(--ink2);
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .summary-value.grand {
+            font-size: 24px;
+            color: var(--rust);
+        }
+
+        .form-checkout {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .form-checkout select,
+        .form-checkout input {
+            padding: 9px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surf);
+            color: var(--ink);
+            outline: none;
+        }
+
+        .form-checkout select:focus,
+        .form-checkout input:focus {
+            border-color: var(--sage);
+        }
+
+        .form-checkout label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            margin-bottom: 2px;
+        }
+
+        /* Modal styling */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 6, 2, .55);
+            z-index: 200;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-y: auto;
+            backdrop-filter: blur(1.5px);
+        }
+
+        .overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surf);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 16px 48px rgba(8, 6, 2, .24);
+            animation: up .18s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin: auto;
+        }
+
+        @keyframes up {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .mh {
+            padding: 20px 24px 14px;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .mt {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ms {
+            font-size: 12px;
+            color: var(--ink2);
+            margin-top: 3px;
+        }
+
+        .mclose {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--ink3);
+            font-size: 16px;
+            padding: 4px;
+            transition: .1s;
+        }
+
+        .mclose:hover {
+            color: var(--ink);
+        }
+
+        .mb {
+            padding: 20px 24px;
+        }
+
+        .mfooter {
+            padding: 14px 24px 18px;
+            border-top: 1px solid var(--bdr);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: var(--surf);
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+        }
+
+        .fg {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 14px;
+        }
+
+        .fg label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .fg select,
+        .fg input {
+            padding: 9px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13.5px;
+            background: var(--surf);
+            color: var(--ink);
+            outline: none;
+        }
+
+        .fg select:focus,
+        .fg input:focus {
+            border-color: var(--sage);
+        }
+
+        .fg .hint {
+            font-size: 11px;
+            color: var(--ink3);
+            margin-top: 2px;
+        }
+
+        .unit-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--bdr);
+            background: var(--surf);
+            color: var(--ink2);
+            text-align: center;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: .13s;
+            user-select: none;
+        }
+
+        .toggle-btn.active {
+            border-color: var(--sage);
+            background: var(--sage-l);
+            color: var(--sage);
+            font-weight: 700;
+        }
+
+        /* Monospaced Receipt visual */
+        .receipt-container {
+            font-family: 'DM Mono', monospace;
+            background: #ffffff;
+            color: #000000;
+            padding: 24px;
+            border: 1px solid #bdr;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            font-size: 12px;
+            line-height: 1.4;
+            max-width: 320px;
+            margin: 0 auto;
+            border-radius: 4px;
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .receipt-title {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .receipt-divider {
+            border-top: 1px dashed #000000;
+            margin: 10px 0;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .receipt-item-block {
+            margin-bottom: 8px;
+        }
+
+        /* Sales history table styling */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .history-table th {
+            background: var(--surf2);
+            padding: 8px 10px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 9.5px;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .history-table td {
+            padding: 10px 10px;
+            border-bottom: 1px solid var(--bdr);
+            vertical-align: middle;
+        }
+
+        .history-table tr:hover td {
+            background: var(--bg);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo" onclick="location.href='dashboard.html'">
+            <div class="sb-mark"><span style="cursor: pointer; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2) rotate(-10deg)'" onmouseout="this.style.transform='scale(1)'" onclick="resetAllData(event)" title="Klik untuk Reset Data">🐓</span> RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav" onclick="location.href='dashboard.html'"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav" onclick="location.href='pakan.html'"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav active" onclick="location.href='penjualan.html'"><span class="ico">🛒</span><span class="lbl">Penjualan / Kasir</span></div>
+            <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
+            <div class="nav"><span class="ico">🏭</span><span class="lbl">Stok per Gudang</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN PANEL -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Penjualan & Kasir (POS)</div>
+                <div class="tb-sub">Transaksi penjualan eceran dan grosir komoditas panen</div>
+            </div>
+            <div class="tb-right">
+                <button class="btn btn-ghost" onclick="openHistoryModal()">📋 Riwayat Penjualan</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- LEFT COLUMN: Product Catalog -->
+            <div class="pos-panel">
+                <div class="panel-header">
+                    <div class="panel-title">🛒 Galeri Komoditas Hasil Panen</div>
+                    <span style="font-size: 11px; font-weight: 600; color: var(--ink2); text-transform: uppercase;">SIAP JUAL</span>
+                </div>
+                <div class="panel-body">
+                    <div class="search-row">
+                        <input type="text" id="search-input" oninput="renderCatalog()" placeholder="Cari nama komoditas atau SKU...">
+                    </div>
+                    <div class="product-grid" id="catalog-container">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Checkout Panel -->
+            <div class="pos-panel">
+                <div class="panel-header">
+                    <div class="panel-title">📝 Detail Keranjang</div>
+                    <button class="btn btn-ghost" style="padding: 4px 10px; font-size: 11px;" onclick="clearCart()">Kosongkan</button>
+                </div>
+                <div class="panel-body" style="display: flex; flex-direction: column;">
+                    <div class="cart-list" id="cart-container">
+                        <!-- Loaded dynamically -->
+                    </div>
+
+                    <div class="checkout-summary">
+                        <div class="summary-row">
+                            <span class="summary-label">Total Belanja</span>
+                            <span class="summary-value" id="total-price">Rp 0</span>
+                        </div>
+
+                        <form class="form-checkout" onsubmit="processTransaction(event)">
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                <label for="cust-name">Nama Pembeli</label>
+                                <input type="text" id="cust-name" placeholder="Umum / Pelanggan retail" required value="Umum">
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 10px; margin-top: 4px;">
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <label for="pay-method">Metode Pembayaran</label>
+                                    <select id="pay-method" onchange="handlePayMethodChange()">
+                                        <option value="Tunai" selected>💵 Tunai</option>
+                                        <option value="Transfer Bank">🏦 Transfer Bank</option>
+                                        <option value="QRIS">📱 QRIS / E-Wallet</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <label for="amount-paid" id="lbl-pay">Diterima (Rp)</label>
+                                    <input type="number" id="amount-paid" min="0" oninput="calculateChange()" required>
+                                </div>
+                            </div>
+
+                            <div class="summary-row" style="margin-top: 8px; border-top: 1px solid var(--bdr); padding-top: 12px;" id="change-row">
+                                <span class="summary-label" style="font-weight: 600;">Uang Kembali</span>
+                                <span class="summary-value grand" id="change-value">Rp 0</span>
+                            </div>
+
+                            <button type="submit" class="btn btn-solid" style="width: 100%; padding: 12px; font-weight: 700; margin-top: 8px; justify-content: center; font-size: 14px;" id="btn-submit-tx">
+                                💳 Selesaikan Transaksi
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL: ADD TO CART POPUP ======== -->
+    <div class="overlay" id="add-cart-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt">Atur Penjualan Item</div>
+                    <div class="ms" id="modal-product-name">Telur Normal Grade A</div>
+                </div>
+                <button class="mclose" onclick="closeModal('add-cart-modal')">✕</button>
+            </div>
+            <form id="add-cart-form" onsubmit="handleAddToCartSubmit(event)">
+                <input type="hidden" id="modal-product-id">
+                <div class="mb">
+                    <!-- Unit toggle -->
+                    <div class="fg">
+                        <label>Pilih Satuan Jual</label>
+                        <div class="unit-toggle">
+                            <div class="toggle-btn active" id="toggle-pcs" onclick="setSaleUnit('Pcs')">Butir / Pcs</div>
+                            <div class="toggle-btn" id="toggle-kg" onclick="setSaleUnit('Kg')">Berat (Kg)</div>
+                        </div>
+                    </div>
+
+                    <!-- Lot Selection -->
+                    <div class="fg">
+                        <label for="modal-lot-select">Pilih Lot / Batch Panen</label>
+                        <select id="modal-lot-select" onchange="updateLotStockHint()" required>
+                            <!-- Injected dynamically -->
+                        </select>
+                        <span class="hint" id="modal-lot-hint">Stok tersedia: —</span>
+                    </div>
+
+                    <!-- Quantity Input -->
+                    <div class="fg">
+                        <label for="modal-qty-input" id="modal-qty-label">Jumlah (Butir)</label>
+                        <input type="number" id="modal-qty-input" min="1" step="1" oninput="updateModalSubtotal()" required>
+                    </div>
+
+                    <!-- Realtime Price Calculation -->
+                    <div class="receipt-divider" style="border-top-color: var(--bdr);"></div>
+                    <div class="summary-row" style="margin-top: 6px;">
+                        <span class="summary-label">Harga Satuan:</span>
+                        <span class="price-val" id="modal-price-disp">Rp 1.500 / Butir</span>
+                    </div>
+                    <div class="summary-row" style="margin-top: 6px;">
+                        <span class="summary-label" style="font-weight: 700; color: var(--ink);">Subtotal Belanja:</span>
+                        <span class="summary-value" id="modal-subtotal-disp" style="color: var(--sage);">Rp 0</span>
+                    </div>
+                </div>
+                <div class="mfooter">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('add-cart-modal')">Batal</button>
+                    <button type="submit" class="btn btn-solid">Masukkan Keranjang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======== MODAL: RECEIPT PRINT DIALOG ======== -->
+    <div class="overlay" id="receipt-modal">
+        <div class="modal" style="max-width: 380px;">
+            <div class="mh">
+                <div>
+                    <div class="mt">Struk Penjualan</div>
+                    <div class="ms">Simulasi cetak struk kasir RayFarm</div>
+                </div>
+                <button class="mclose" onclick="closeModal('receipt-modal')">✕</button>
+            </div>
+            <div class="mb">
+                <div class="receipt-container" id="receipt-visual">
+                    <!-- Monospaced visual structure injected here -->
+                </div>
+            </div>
+            <div class="mfooter" style="justify-content: space-between;">
+                <button type="button" class="btn btn-ghost" onclick="closeModal('receipt-modal')">Tutup</button>
+                <button type="button" class="btn btn-solid-sky" onclick="alert('Simulasi mencetak struk berhasil!')">🖨️ Cetak Struk</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL: TRANSACTION HISTORY ======== -->
+    <div class="overlay" id="history-modal">
+        <div class="modal" style="max-width: 800px;">
+            <div class="mh">
+                <div>
+                    <div class="mt">Riwayat Penjualan</div>
+                    <div class="ms">Daftar transaksi kasir RayFarm yang tercatat</div>
+                </div>
+                <button class="mclose" onclick="closeModal('history-modal')">✕</button>
+            </div>
+            <div class="mb" style="max-height: 60vh; overflow-y: auto; padding: 10px 20px;">
+                <div id="history-empty-msg" style="text-align: center; padding: 40px; color: var(--ink3); font-style: italic;">
+                    Belum ada transaksi penjualan terdaftar.
+                </div>
+                <div id="history-table-wrapper" style="display: none;">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>No. Transaksi</th>
+                                <th>Waktu</th>
+                                <th>Pembeli</th>
+                                <th>Item Detail</th>
+                                <th>Total</th>
+                                <th>Pembayaran</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-tbody">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="mfooter">
+                <button type="button" class="btn btn-ghost" onclick="closeModal('history-modal')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SYSTEM logic -->
+    <script>
+        // Seed Database
+        const INITIAL_COMMODITIES = [
+            {
+                id: "HSL-BFYUUV9W",
+                name: "Telur Komersial / Normal (Grade A)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Telur segar kualitas premium",
+                suhu: "Suhu Dingin (4-10°C)",
+                hargaBeli: 0,
+                hargaJual: 1500,
+                hargaJualKg: 24000,
+                batches: [
+                    {
+                        lot: "Panen Pagi (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1500,
+                        qtyKg: 93.7,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    },
+                    {
+                        lot: "Panen Kemarin (11/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1000,
+                        qtyKg: 62.5,
+                        receiveDate: "2026-06-11",
+                        expiryDate: "2026-07-11",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-3ZXOW3R6",
+                name: "Telur Retak / Pecah (Grade B)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Telur retak untuk industri kue",
+                suhu: "Suhu Dingin (4-10°C)",
+                hargaBeli: 0,
+                hargaJual: 1000,
+                hargaJualKg: 16000,
+                batches: [
+                    {
+                        lot: "Pecah Kandang A (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 250,
+                        qtyKg: 15.6,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-YQRFIKJ6",
+                name: "Ayam Afkir (Spent Hens)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Ayam petelur afkir siap potong",
+                suhu: "Suhu Ruang",
+                hargaBeli: 0,
+                hargaJual: 35000,
+                hargaJualKg: 0, // only sold by pcs
+                batches: [
+                    {
+                        lot: "Afkir Kandang B (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 60,
+                        qtyKg: 90.0,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-BEKMNPCK",
+                name: "Omega 3",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Telur kaya Omega 3",
+                suhu: "Suhu Dingin (4-10°C)",
+                hargaBeli: 0,
+                hargaJual: 2500,
+                hargaJualKg: 40000,
+                batches: [
+                    {
+                        lot: "Omega Premium (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 500,
+                        qtyKg: 31.2,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            }
+        ];
+
+        let commodities = [];
+        let cart = [];
+        let salesHistory = [];
+        let currentSaleUnit = 'Pcs'; // Default selection 'Pcs'
+
+        // Load data on start
+        window.addEventListener('DOMContentLoaded', () => {
+            initData();
+            renderCatalog();
+            renderCart();
+            
+            // Set default date logic
+            const payInput = document.getElementById('amount-paid');
+            if (payInput) payInput.value = '';
+        });
+
+        function initData() {
+            const storedComm = localStorage.getItem('rayfarm_commodities');
+            if (storedComm) {
+                try {
+                    commodities = JSON.parse(storedComm);
+                    // Ensure our properties like hargaJualKg exist
+                    commodities.forEach(c => {
+                        if (c.category === "Hasil Produksi") {
+                            if (typeof c.hargaJualKg === 'undefined') {
+                                if (c.id === "HSL-BFYUUV9W") c.hargaJualKg = 24000;
+                                else if (c.id === "HSL-3ZXOW3R6") c.hargaJualKg = 16000;
+                                else if (c.id === "HSL-BEKMNPCK") c.hargaJualKg = 40000;
+                                else c.hargaJualKg = 0;
+                            }
+                        }
+                    });
+
+                    // Self-seed Hasil Produksi stock if all of them are currently empty
+                    let totalHasilStock = 0;
+                    commodities.forEach(c => {
+                        if (c.category === "Hasil Produksi" && c.batches) {
+                            c.batches.forEach(b => totalHasilStock += b.qty || 0);
+                        }
+                    });
+                    if (totalHasilStock === 0) {
+                        commodities.forEach(c => {
+                            if (c.category === "Hasil Produksi") {
+                                const initialItem = INITIAL_COMMODITIES.find(initItem => initItem.id === c.id);
+                                if (initialItem && initialItem.batches && initialItem.batches.length > 0) {
+                                    c.batches = JSON.parse(JSON.stringify(initialItem.batches));
+                                }
+                            }
+                        });
+                        saveData();
+                    }
+                } catch (e) {
+                    commodities = INITIAL_COMMODITIES;
+                }
+            } else {
+                commodities = INITIAL_COMMODITIES;
+                saveData();
+            }
+
+            const storedSales = localStorage.getItem('rayfarm_sales');
+            if (storedSales) {
+                try {
+                    salesHistory = JSON.parse(storedSales);
+                } catch (e) {
+                    salesHistory = [];
+                }
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+        }
+
+        function saveSalesHistory() {
+            localStorage.setItem('rayfarm_sales', JSON.stringify(salesHistory));
+        }
+
+        // Render the product grid items
+        function renderCatalog() {
+            const container = document.getElementById('catalog-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const filtered = commodities.filter(c => c.category === 'Hasil Produksi' && c.name.toLowerCase().includes(searchVal));
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--ink3); padding: 20px; font-style: italic;">Komoditas tidak ditemukan.</div>';
+                return;
+            }
+
+            filtered.forEach(c => {
+                // Compute total stock across all active batches
+                let totalPcs = 0;
+                let totalKg = 0;
+                if (c.batches && Array.isArray(c.batches)) {
+                    c.batches.forEach(b => {
+                        totalPcs += b.qty || 0;
+                        totalKg += b.qtyKg || 0;
+                    });
+                }
+
+                const isCritical = totalPcs < c.minAlert;
+                const stockDisp = totalPcs > 0 
+                    ? `<span class="prod-stock-val">${totalPcs.toLocaleString('id')} Pcs <span style="font-weight:normal;color:var(--ink2);">(${totalKg.toFixed(1)} kg)</span></span>`
+                    : `<span class="prod-stock-crit">Habis / Kosong</span>`;
+
+                const priceKgHtml = c.hargaJualKg > 0 
+                    ? `<div class="price-row"><span>Grosir (Kg):</span><span class="price-val">Rp ${c.hargaJualKg.toLocaleString('id')}</span></div>`
+                    : `<div class="price-row"><span>Grosir (Kg):</span><span class="price-val" style="color:var(--ink3);">Tidak didukung</span></div>`;
+
+                const card = document.createElement('div');
+                card.className = 'prod-card';
+                card.onclick = () => openAddToCart(c.id);
+                card.innerHTML = `
+                    <div class="prod-header">
+                        <div>
+                            <div class="prod-name">${c.name}</div>
+                            <div class="prod-sku">${c.id}</div>
+                        </div>
+                        <div class="prod-icon">🥚</div>
+                    </div>
+                    <div class="prod-stock-block">
+                        <span>Stok Siap Jual:</span>
+                        ${stockDisp}
+                    </div>
+                    <div class="prod-prices">
+                        <div class="price-row">
+                            <span>Eceran (Butir):</span>
+                            <span class="price-val">Rp ${c.hargaJual.toLocaleString('id')}</span>
+                        </div>
+                        ${priceKgHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Open Modal Add to Cart
+        function openAddToCart(id) {
+            const c = commodities.find(item => item.id === id);
+            if (!c) return;
+
+            // Check if there are any batches in inventory first
+            const activeBatches = c.batches ? c.batches.filter(b => b.qty > 0 || b.qtyKg > 0) : [];
+            if (activeBatches.length === 0) {
+                alert(`Maaf, stok komoditas "${c.name}" sedang kosong di gudang.`);
+                return;
+            }
+
+            document.getElementById('modal-product-id').value = c.id;
+            document.getElementById('modal-product-name').textContent = c.name;
+
+            // Populate lot selection
+            const selectEl = document.getElementById('modal-lot-select');
+            selectEl.innerHTML = '';
+
+            // Put FEFO first (nearest expiry lot)
+            const sortedBatches = [...activeBatches].sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+            
+            sortedBatches.forEach((b, idx) => {
+                const opt = document.createElement('option');
+                opt.value = b.lot;
+                opt.textContent = `${b.lot} - Exp: ${b.expiryDate} (Sisa: ${b.qty} Pcs / ${b.qtyKg.toFixed(1)} kg)`;
+                if (idx === 0) opt.textContent = `⭐ [FEFO] ` + opt.textContent;
+                selectEl.appendChild(opt);
+            });
+
+            // Set default selling unit (Pcs if supported, otherwise Kg)
+            setSaleUnit('Pcs');
+            if (c.hargaJualKg === 0) {
+                // hide Kg option
+                document.getElementById('toggle-kg').style.display = 'none';
+            } else {
+                document.getElementById('toggle-kg').style.display = '';
+            }
+
+            updateLotStockHint();
+            document.getElementById('modal-qty-input').value = 1;
+            updateModalSubtotal();
+
+            openModal('add-cart-modal');
+        }
+
+        function setSaleUnit(unit) {
+            currentSaleUnit = unit;
+            document.getElementById('toggle-pcs').classList.toggle('active', unit === 'Pcs');
+            document.getElementById('toggle-kg').classList.toggle('active', unit === 'Kg');
+            
+            const qtyLabel = document.getElementById('modal-qty-label');
+            const qtyInp = document.getElementById('modal-qty-input');
+            
+            if (unit === 'Pcs') {
+                qtyLabel.textContent = "Jumlah (Butir / Pcs)";
+                qtyInp.step = "1";
+                if (qtyInp.value) qtyInp.value = Math.round(qtyInp.value);
+            } else {
+                qtyLabel.textContent = "Berat Timbangan (Kg)";
+                qtyInp.step = "0.1";
+            }
+            updateLotStockHint();
+            updateModalSubtotal();
+        }
+
+        function updateLotStockHint() {
+            const prodId = document.getElementById('modal-product-id').value;
+            const lotId = document.getElementById('modal-lot-select').value;
+            const hintSpan = document.getElementById('modal-lot-hint');
+            const qtyInput = document.getElementById('modal-qty-input');
+
+            if (!prodId || !lotId) return;
+
+            const c = commodities.find(item => item.id === prodId);
+            const b = c.batches.find(item => item.lot === lotId);
+
+            if (b) {
+                hintSpan.textContent = `Stok lot aktif: ${b.qty.toLocaleString('id')} Butir / ${b.qtyKg.toFixed(2)} Kg`;
+                
+                if (currentSaleUnit === 'Pcs') {
+                    qtyInput.max = b.qty;
+                } else {
+                    qtyInput.max = b.qtyKg;
+                }
+            }
+        }
+
+        function updateModalSubtotal() {
+            const prodId = document.getElementById('modal-product-id').value;
+            const qtyVal = parseFloat(document.getElementById('modal-qty-input').value) || 0;
+            const priceDisp = document.getElementById('modal-price-disp');
+            const subtotalDisp = document.getElementById('modal-subtotal-disp');
+
+            if (!prodId) return;
+
+            const c = commodities.find(item => item.id === prodId);
+            let unitPrice = 0;
+
+            if (currentSaleUnit === 'Pcs') {
+                unitPrice = c.hargaJual;
+                priceDisp.textContent = `Rp ${unitPrice.toLocaleString('id')} / Butir`;
+            } else {
+                unitPrice = c.hargaJualKg;
+                priceDisp.textContent = `Rp ${unitPrice.toLocaleString('id')} / Kg`;
+            }
+
+            const subtotal = qtyVal * unitPrice;
+            subtotalDisp.textContent = `Rp ${subtotal.toLocaleString('id')}`;
+        }
+
+        // Handle Add to Cart submission
+        function handleAddToCartSubmit(e) {
+            e.preventDefault();
+            const prodId = document.getElementById('modal-product-id').value;
+            const lotId = document.getElementById('modal-lot-select').value;
+            const qtyVal = parseFloat(document.getElementById('modal-qty-input').value) || 0;
+
+            if (!prodId || !lotId || qtyVal <= 0) return;
+
+            const c = commodities.find(item => item.id === prodId);
+            const b = c.batches.find(item => item.lot === lotId);
+
+            if (!c || !b) return;
+
+            // Validate stock limits
+            if (currentSaleUnit === 'Pcs' && qtyVal > b.qty) {
+                alert(`Gagal: Pengambilan melebihi stok yang tersedia (${b.qty} Pcs)`);
+                return;
+            }
+            if (currentSaleUnit === 'Kg' && qtyVal > b.qtyKg) {
+                alert(`Gagal: Pengambilan melebihi berat yang tersedia (${b.qtyKg.toFixed(2)} Kg)`);
+                return;
+            }
+
+            // Calculate exact or proportional weight/qty sold
+            let qtySold = 0;
+            let weightSold = 0;
+            let pricePerUnit = 0;
+
+            if (currentSaleUnit === 'Pcs') {
+                qtySold = qtyVal;
+                // proportional weight deduction
+                const ratio = b.qty > 0 ? (b.qtyKg / b.qty) : 0;
+                weightSold = qtySold * ratio;
+                pricePerUnit = c.hargaJual;
+            } else {
+                weightSold = qtyVal;
+                // proportional qty deduction
+                const ratio = b.qtyKg > 0 ? (b.qty / b.qtyKg) : 0;
+                qtySold = Math.round(weightSold * ratio);
+                pricePerUnit = c.hargaJualKg;
+            }
+
+            const subtotal = qtyVal * pricePerUnit;
+
+            // Add item to cart list (aggregate if same product and batch)
+            const existIndex = cart.findIndex(item => item.commodityId === prodId && item.lotSelected === lotId && item.sellMethod === currentSaleUnit);
+
+            if (existIndex > -1) {
+                // check stock sum validation
+                const potentialQty = cart[existIndex].qtySold + qtySold;
+                const potentialWeight = cart[existIndex].weightSold + weightSold;
+                
+                if (currentSaleUnit === 'Pcs' && potentialQty > b.qty) {
+                    alert(`Gagal: Total keranjang untuk lot ini melebihi stok (${b.qty} Pcs)`);
+                    return;
+                }
+                if (currentSaleUnit === 'Kg' && potentialWeight > b.qtyKg) {
+                    alert(`Gagal: Total keranjang untuk lot ini melebihi berat (${b.qtyKg.toFixed(2)} Kg)`);
+                    return;
+                }
+
+                cart[existIndex].qtySold += qtySold;
+                cart[existIndex].weightSold += weightSold;
+                cart[existIndex].subtotal += subtotal;
+            } else {
+                cart.push({
+                    commodityId: c.id,
+                    commodityName: c.name,
+                    sellMethod: currentSaleUnit,
+                    lotSelected: lotId,
+                    qtySold: qtySold,
+                    weightSold: weightSold,
+                    pricePerUnit: pricePerUnit,
+                    subtotal: subtotal
+                });
+            }
+
+            closeModal('add-cart-modal');
+            renderCart();
+        }
+
+        // Render Cart Panel
+        function renderCart() {
+            const container = document.getElementById('cart-container');
+            const totalText = document.getElementById('total-price');
+            const payInp = document.getElementById('amount-paid');
+
+            if (!container) return;
+            container.innerHTML = '';
+
+            let total = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<div class="cart-empty">Keranjang belanja kosong. Silakan pilih komoditas di galeri.</div>';
+                totalText.textContent = 'Rp 0';
+                if (payInp) {
+                    payInp.value = '';
+                    payInp.readOnly = true;
+                }
+                calculateChange();
+                return;
+            }
+
+            if (payInp) payInp.readOnly = false;
+
+            cart.forEach((item, idx) => {
+                total += item.subtotal;
+
+                const qtyDisp = item.sellMethod === 'Pcs' 
+                    ? `${item.qtySold.toLocaleString('id')} Butir`
+                    : `${item.weightSold.toFixed(2)} Kg`;
+                
+                const mathDisp = item.sellMethod === 'Pcs'
+                    ? `(${item.weightSold.toFixed(2)} kg proporsional)`
+                    : `(${item.qtySold} butir proporsional)`;
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item';
+                itemDiv.innerHTML = `
+                    <div class="cart-item-header">
+                        <div>
+                            <span class="cart-item-name">${item.commodityName}</span>
+                            <div><span class="cart-item-lot">LOT: ${item.lotSelected}</span></div>
+                        </div>
+                        <button class="cart-item-del" onclick="removeFromCart(${idx})" title="Hapus dari Keranjang">🗑️</button>
+                    </div>
+                    <div class="cart-item-body">
+                        <span class="cart-item-meta">
+                            <strong>${qtyDisp}</strong> ${mathDisp} x Rp ${item.pricePerUnit.toLocaleString('id')}/${item.sellMethod === 'Pcs' ? 'butir' : 'kg'}
+                        </span>
+                        <span class="cart-item-total">Rp ${item.subtotal.toLocaleString('id')}</span>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+
+            totalText.textContent = `Rp ${total.toLocaleString('id')}`;
+            calculateChange();
+        }
+
+        function removeFromCart(idx) {
+            cart.splice(idx, 1);
+            renderCart();
+        }
+
+        function clearCart() {
+            if (cart.length > 0) {
+                cart = [];
+                renderCart();
+            }
+        }
+
+        function handlePayMethodChange() {
+            const method = document.getElementById('pay-method').value;
+            const payInp = document.getElementById('amount-paid');
+            const total = getCartTotal();
+
+            if (method === 'QRIS' || method === 'Transfer Bank') {
+                payInp.value = total;
+                payInp.readOnly = true;
+            } else {
+                payInp.readOnly = false;
+                payInp.value = '';
+            }
+            calculateChange();
+        }
+
+        function getCartTotal() {
+            let total = 0;
+            cart.forEach(item => total += item.subtotal);
+            return total;
+        }
+
+        function calculateChange() {
+            const total = getCartTotal();
+            const payVal = parseFloat(document.getElementById('amount-paid').value) || 0;
+            const changeText = document.getElementById('change-value');
+            const changeRow = document.getElementById('change-row');
+            const submitBtn = document.getElementById('btn-submit-tx');
+
+            if (cart.length === 0) {
+                changeText.textContent = 'Rp 0';
+                submitBtn.className = 'btn btn-solid btn-disabled';
+                return;
+            }
+
+            const change = payVal - total;
+
+            if (change >= 0) {
+                changeText.textContent = `Rp ${change.toLocaleString('id')}`;
+                changeText.style.color = 'var(--sage)';
+                submitBtn.className = 'btn btn-solid';
+            } else {
+                changeText.textContent = `Rp 0 (Kurang Rp ${Math.abs(change).toLocaleString('id')})`;
+                changeText.style.color = 'var(--rust)';
+                submitBtn.className = 'btn btn-solid btn-disabled';
+            }
+        }
+
+        // Process Transaction & Subtract Stock
+        function processTransaction(e) {
+            e.preventDefault();
+
+            if (cart.length === 0) return;
+
+            const total = getCartTotal();
+            const payVal = parseFloat(document.getElementById('amount-paid').value) || 0;
+            const customerName = document.getElementById('cust-name').value.trim() || 'Umum';
+            const payMethod = document.getElementById('pay-method').value;
+
+            if (payVal < total) {
+                alert("Jumlah bayar tidak mencukupi total belanja!");
+                return;
+            }
+
+            // Subtract stock proporsional dari commodities
+            cart.forEach(cartItem => {
+                const c = commodities.find(item => item.id === cartItem.commodityId);
+                if (c) {
+                    const b = c.batches.find(batch => batch.lot === cartItem.lotSelected);
+                    if (b) {
+                        // Deduct stock proportionally
+                        b.qty = Math.max(0, b.qty - cartItem.qtySold);
+                        b.qtyKg = Math.max(0, b.qtyKg - cartItem.weightSold);
+                        
+                        // Wipe if stock is zero to avoid floating rounding inaccuracies
+                        if (b.qty <= 0 || b.qtyKg <= 0.01) {
+                            b.qty = 0;
+                            b.qtyKg = 0;
+                        }
+                    }
+                    // Filter out completely empty batches to clean inventory
+                    c.batches = c.batches.filter(b => b.qty > 0 || b.qtyKg > 0);
+                }
+            });
+
+            // Auto-generate invoice number
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const timeStr = now.toLocaleTimeString('id');
+            const txId = `TX-${yyyy}${mm}${dd}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+            const newTx = {
+                id: txId,
+                dateTime: `${dd}/${mm}/${yyyy} ${timeStr}`,
+                customerName: customerName,
+                items: [...cart],
+                totalPrice: total,
+                paymentMethod: payMethod,
+                amountPaid: payVal,
+                amountReturn: payVal - total,
+                operator: "Kasir-RayFarm"
+            };
+
+            salesHistory.unshift(newTx);
+
+            // Save state
+            saveData();
+            saveSalesHistory();
+
+            // Render simulated receipt
+            renderReceipt(newTx);
+
+            // Reset cart
+            cart = [];
+            document.getElementById('cust-name').value = 'Umum';
+            document.getElementById('pay-method').value = 'Tunai';
+            handlePayMethodChange();
+            
+            // Reload views
+            renderCatalog();
+            renderCart();
+            openModal('receipt-modal');
+        }
+
+        // Render Monospaced Receipt
+        function renderReceipt(tx) {
+            const visual = document.getElementById('receipt-visual');
+            if (!visual) return;
+
+            let itemsHtml = '';
+            tx.items.forEach(item => {
+                const qtyDisp = item.sellMethod === 'Pcs'
+                    ? `${item.qtySold} btr`
+                    : `${item.weightSold.toFixed(2)} kg`;
+                
+                itemsHtml += `
+<div class="receipt-row">
+    <span>${item.commodityName.substring(0, 24)}</span>
+</div>
+<div class="receipt-row" style="color:#555555; padding-left: 10px;">
+    <span>  ${qtyDisp} x Rp ${item.pricePerUnit.toLocaleString('id')}</span>
+    <span>Rp ${item.subtotal.toLocaleString('id')}</span>
+</div>
+`;
+            });
+
+            visual.innerHTML = `
+<div class="receipt-header">
+    <div class="receipt-title">RAYFARM</div>
+    <div style="font-size: 10px;">Sistem Inventaris & Kasir Terpadu</div>
+    <div style="font-size: 10px;">Desa Karangduren, Jawa Tengah</div>
+</div>
+<div class="receipt-divider"></div>
+<div class="receipt-row">
+    <span>No. Tx:</span>
+    <span>${tx.id}</span>
+</div>
+<div class="receipt-row">
+    <span>Waktu:</span>
+    <span>${tx.dateTime}</span>
+</div>
+<div class="receipt-row">
+    <span>Kasir:</span>
+    <span>${tx.operator}</span>
+</div>
+<div class="receipt-row">
+    <span>Pelanggan:</span>
+    <span>${tx.customerName}</span>
+</div>
+<div class="receipt-divider"></div>
+
+<div class="receipt-item-block">
+    ${itemsHtml}
+</div>
+
+<div class="receipt-divider"></div>
+<div class="receipt-row" style="font-weight: 700;">
+    <span>TOTAL BELANJA:</span>
+    <span>Rp ${tx.totalPrice.toLocaleString('id')}</span>
+</div>
+<div class="receipt-row">
+    <span>Pembayaran (${tx.paymentMethod}):</span>
+    <span>Rp ${tx.amountPaid.toLocaleString('id')}</span>
+</div>
+<div class="receipt-row" style="font-weight: 500;">
+    <span>KEMBALI:</span>
+    <span>Rp ${tx.amountReturn.toLocaleString('id')}</span>
+</div>
+<div class="receipt-divider"></div>
+<div style="text-align: center; font-size: 10px; margin-top: 10px; font-style: italic;">
+    Terima Kasih Atas Kunjungan Anda<br>
+    -- Produk Segar dari Kandang Kami --
+</div>
+`;
+        }
+
+        // Open transaction history list
+        function openHistoryModal() {
+            const emptyEl = document.getElementById('history-empty-msg');
+            const wrapperEl = document.getElementById('history-table-wrapper');
+            const tbody = document.getElementById('history-tbody');
+
+            if (salesHistory.length === 0) {
+                emptyEl.style.display = 'block';
+                wrapperEl.style.display = 'none';
+            } else {
+                emptyEl.style.display = 'none';
+                wrapperEl.style.display = 'block';
+                tbody.innerHTML = '';
+
+                salesHistory.forEach(tx => {
+                    let itemsSummary = '';
+                    tx.items.forEach(item => {
+                        const qtyDisp = item.sellMethod === 'Pcs'
+                            ? `${item.qtySold} btr`
+                            : `${item.weightSold.toFixed(1)} kg`;
+                        itemsSummary += `<div style="font-size:11.5px;">• ${item.commodityName} (${qtyDisp})</div>`;
+                    });
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-family:'DM Mono', monospace; font-weight:600;">${tx.id}</td>
+                        <td>${tx.dateTime}</td>
+                        <td style="font-weight:500;">${tx.customerName}</td>
+                        <td>${itemsSummary}</td>
+                        <td style="font-family:'DM Mono', monospace; font-weight:700; color:var(--sage);">Rp ${tx.totalPrice.toLocaleString('id')}</td>
+                        <td>${tx.paymentMethod}</td>
+                        <td>
+                            <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 11px;" onclick="reprintTx('${tx.id}')">🖨️ Struk</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            openModal('history-modal');
+        }
+
+        function reprintTx(txId) {
+            const tx = salesHistory.find(item => item.id === txId);
+            if (tx) {
+                renderReceipt(tx);
+                openModal('receipt-modal');
+            }
+        }
+
+        // Modal Triggers
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function resetAllData(event) {
+            if (event) event.stopPropagation();
+            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik?")) {
+                localStorage.removeItem('coops');
+                localStorage.removeItem('rayfarm_commodities');
+                localStorage.removeItem('rayfarm_sales');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+
+</html>

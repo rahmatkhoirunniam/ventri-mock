@@ -1,0 +1,2 @@
+- dengan data hasil produksi yang sudah ada
+- dan input pencatan harian dengan input manual butir / berat

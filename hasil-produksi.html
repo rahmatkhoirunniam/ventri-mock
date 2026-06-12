@@ -893,6 +893,7 @@
         <div class="sb-sec">
             <div class="sb-lbl">Operasional</div>
             <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav" onclick="location.href='penjualan.html'"><span class="ico">🛒</span><span class="lbl">Penjualan / Kasir</span></div>
             <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
             <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
             <div class="nav"><span class="ico">🏭</span><span class="lbl">Stok per Gudang</span></div>
@@ -1093,8 +1094,14 @@
                                 <input type="number" id="add-hargabeli" value="0" min="0">
                             </div>
                             <div class="fg">
-                                <label>Harga Jual per Unit (Rp) <span class="req">*</span></label>
+                                <label>Harga Jual per Pcs (Rp) <span class="req">*</span></label>
                                 <input type="number" id="add-hargajual" value="1500" min="0" required>
+                            </div>
+                        </div>
+                        <div class="frow" style="margin-top: 8px;">
+                            <div class="fg" style="max-width: 50%;">
+                                <label>Harga Jual per Kg (Rp)</label>
+                                <input type="number" id="add-hargajual-kg" value="24000" min="0">
                             </div>
                         </div>
                     </div>
@@ -1218,8 +1225,14 @@
                             <input type="number" id="edit-hargabeli" min="0">
                         </div>
                         <div class="fg">
-                            <label>Harga Jual per Unit (Rp)</label>
+                            <label>Harga Jual per Pcs (Rp)</label>
                             <input type="number" id="edit-hargajual" min="0">
+                        </div>
+                    </div>
+                    <div class="frow" style="margin-top: 8px;">
+                        <div class="fg" style="max-width: 50%;">
+                            <label>Harga Jual per Kg (Rp)</label>
+                            <input type="number" id="edit-hargajual-kg" min="0">
                         </div>
                     </div>
                 </div>
@@ -1330,7 +1343,28 @@
                 suhu: "Suhu Dingin (4-10°C)",
                 hargaBeli: 0,
                 hargaJual: 1500,
-                batches: []
+                batches: [
+                    {
+                        lot: "Panen Pagi (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1500,
+                        qtyKg: 93.7,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    },
+                    {
+                        lot: "Panen Kemarin (11/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1000,
+                        qtyKg: 62.5,
+                        receiveDate: "2026-06-11",
+                        expiryDate: "2026-07-11",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
             },
             {
                 id: "HSL-3ZXOW3R6",
@@ -1343,7 +1377,18 @@
                 suhu: "Suhu Dingin (4-10°C)",
                 hargaBeli: 0,
                 hargaJual: 1000,
-                batches: []
+                batches: [
+                    {
+                        lot: "Pecah Kandang A (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 250,
+                        qtyKg: 15.6,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
             },
             {
                 id: "HSL-YQRFIKJ6",
@@ -1356,7 +1401,18 @@
                 suhu: "Suhu Ruang",
                 hargaBeli: 0,
                 hargaJual: 35000,
-                batches: []
+                batches: [
+                    {
+                        lot: "Afkir Kandang B (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 60,
+                        qtyKg: 90.0,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
             },
             {
                 id: "HSL-BEKMNPCK",
@@ -1369,7 +1425,18 @@
                 suhu: "Suhu Dingin (4-10°C)",
                 hargaBeli: 0,
                 hargaJual: 2500,
-                batches: []
+                batches: [
+                    {
+                        lot: "Omega Premium (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 500,
+                        qtyKg: 31.2,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
             }
         ];
 
@@ -1389,6 +1456,25 @@
                         INITIAL_COMMODITIES.forEach(initC => {
                             if (initC.category === "Hasil Produksi" && !commodities.some(c => c.id === initC.id)) {
                                 commodities.push(initC);
+                            }
+                        });
+                        saveData();
+                    }
+
+                    // Self-seed Hasil Produksi stock if all of them are currently empty
+                    let totalHasilStock = 0;
+                    commodities.forEach(c => {
+                        if (c.category === "Hasil Produksi" && c.batches) {
+                            c.batches.forEach(b => totalHasilStock += b.qty || 0);
+                        }
+                    });
+                    if (totalHasilStock === 0) {
+                        commodities.forEach(c => {
+                            if (c.category === "Hasil Produksi") {
+                                const initialItem = INITIAL_COMMODITIES.find(initItem => initItem.id === c.id);
+                                if (initialItem && initialItem.batches && initialItem.batches.length > 0) {
+                                    c.batches = JSON.parse(JSON.stringify(initialItem.batches));
+                                }
                             }
                         });
                         saveData();
@@ -1621,7 +1707,14 @@
                             ${statusBadge}
                         </div>
                     </td>
-                    <td>${c.hargaJual > 0 ? 'Rp ' + c.hargaJual.toLocaleString('id') : '—'}</td>
+                    <td>
+                        ${(() => {
+                            let parts = [];
+                            if (c.hargaJual > 0) parts.push(`Rp ${c.hargaJual.toLocaleString('id')} / ${c.unitName || 'Pcs'}`);
+                            if (c.hargaJualKg > 0) parts.push(`Rp ${c.hargaJualKg.toLocaleString('id')} / Kg`);
+                            return parts.length > 0 ? parts.join('<br>') : '—';
+                        })()}
+                    </td>
                     <td>
                         <div style="display: flex; gap: 4px;">
                             <button class="abt" onclick="openEditModal('${c.id}')" title="Edit">✏️</button>
@@ -1638,13 +1731,19 @@
                 lotTr.id = `lotrow-${c.id}`;
 
                 const lotRows = filteredBatches.map(b => {
+                    const priceDisp = (() => {
+                        let parts = [];
+                        if (c.hargaJual > 0) parts.push(`Rp ${c.hargaJual.toLocaleString('id')} / ${c.unitName || 'Pcs'}`);
+                        if (c.hargaJualKg > 0) parts.push(`Rp ${c.hargaJualKg.toLocaleString('id')} / Kg`);
+                        return parts.length > 0 ? parts.join(' | ') : '—';
+                    })();
                     return `
                         <tr>
                             <td><span class="lot-tag">${b.lot}</span></td>
                             <td><span class="loc-chip">${b.gudang}</span></td>
                             <td><strong>${b.qty.toLocaleString('id')} ${c.unitName}</strong></td>
                             <td><span class="cmeta">${b.qtyKg.toLocaleString('id')} kg</span></td>
-                            <td>Rp ${(c.hargaJual || 0).toLocaleString('id')}</td>
+                            <td>${priceDisp}</td>
                             <td>${b.receiveDate}</td>
                             <td>${getExpiryBadge(b.expiryDate)}</td>
                             <td>
@@ -1715,6 +1814,7 @@
             const nutrisi = document.getElementById('add-nutrisi').value;
             const hargaBeli = parseFloat(document.getElementById('add-hargabeli').value) || 0;
             const hargaJual = parseFloat(document.getElementById('add-hargajual').value) || 0;
+            const hargaJualKg = parseFloat(document.getElementById('add-hargajual-kg').value) || 0;
 
             let sku = document.getElementById('add-sku').value.trim().toUpperCase();
             if (!sku) {
@@ -1739,6 +1839,7 @@
                 suhu: suhu,
                 hargaBeli: hargaBeli,
                 hargaJual: hargaJual,
+                hargaJualKg: hargaJualKg,
                 batches: []
             };
 
@@ -1819,6 +1920,7 @@
             document.getElementById('edit-minalert').value = c.minAlert;
             document.getElementById('edit-hargabeli').value = c.hargaBeli || 0;
             document.getElementById('edit-hargajual').value = c.hargaJual || 0;
+            document.getElementById('edit-hargajual-kg').value = c.hargaJualKg || 0;
 
             openModal('edit-commodity-modal');
         }
@@ -1831,6 +1933,7 @@
             const minAlert = parseFloat(document.getElementById('edit-minalert').value) || 0;
             const hargabeli = parseFloat(document.getElementById('edit-hargabeli').value) || 0;
             const hargajual = parseFloat(document.getElementById('edit-hargajual').value) || 0;
+            const hargajualKg = parseFloat(document.getElementById('edit-hargajual-kg').value) || 0;
 
             const c = commodities.find(item => item.id === id);
             if (c) {
@@ -1838,6 +1941,7 @@
                 c.minAlert = minAlert;
                 c.hargaBeli = hargabeli;
                 c.hargaJual = hargajual;
+                c.hargaJualKg = hargajualKg;
                 saveData();
                 closeModal('edit-commodity-modal');
                 renderTable();
