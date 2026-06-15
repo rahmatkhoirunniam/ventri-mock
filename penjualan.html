@@ -961,7 +961,7 @@
                     <!-- Quantity Input -->
                     <div class="fg">
                         <label for="modal-qty-input" id="modal-qty-label">Jumlah (Butir)</label>
-                        <input type="number" id="modal-qty-input" min="1" step="1" oninput="updateModalSubtotal()" required>
+                        <input type="number" id="modal-qty-input" min="1" step="1" oninput="handleQtyInput()" required>
                         <span class="hint" id="modal-qty-conversion-hint" style="color: var(--sage); font-weight: 600; margin-top: 4px; display: block;"></span>
                     </div>
 
@@ -1270,6 +1270,10 @@
 
                 const unitLabel = (c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'Butir' : (c.unitName || 'Pcs');
 
+                const pricePcsHtml = c.hargaJual > 0 
+                    ? `<div class="price-row"><span>Harga (/${unitLabel}):</span><span class="price-val">Rp ${c.hargaJual.toLocaleString('id')}</span></div>`
+                    : `<div class="price-row"><span>Harga (/${unitLabel}):</span><span class="price-val" style="color:var(--ink3);">Tidak didukung</span></div>`;
+
                 const priceKgHtml = c.hargaJualKg > 0 
                     ? `<div class="price-row"><span>Harga (/Kg):</span><span class="price-val">Rp ${c.hargaJualKg.toLocaleString('id')}</span></div>`
                     : `<div class="price-row"><span>Harga (/Kg):</span><span class="price-val" style="color:var(--ink3);">Tidak didukung</span></div>`;
@@ -1290,10 +1294,7 @@
                         ${stockDisp}
                     </div>
                     <div class="prod-prices">
-                        <div class="price-row">
-                            <span>Harga (/${unitLabel}):</span>
-                            <span class="price-val">Rp ${c.hargaJual.toLocaleString('id')}</span>
-                        </div>
+                        ${pricePcsHtml}
                         ${priceKgHtml}
                     </div>
                 `;
@@ -1323,18 +1324,25 @@
             // Put FEFO first (nearest expiry lot)
             const sortedBatches = [...activeBatches].sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
             
-            sortedBatches.forEach((b, idx) => {
+            sortedBatches.forEach((b) => {
                 const opt = document.createElement('option');
                 opt.value = b.lot;
                 opt.textContent = `${b.lot} - Exp: ${b.expiryDate} (Sisa: ${b.qty} Pcs / ${b.qtyKg.toFixed(1)} kg)`;
-                if (idx === 0) opt.textContent = `⭐ [FEFO] ` + opt.textContent;
                 selectEl.appendChild(opt);
             });
 
             // Set default selling unit (Pcs if supported, otherwise Kg)
             currentSaleUnit = '';
             document.getElementById('modal-qty-input').value = 1;
-            setSaleUnit('Pcs');
+            
+            if (c.hargaJual > 0) {
+                document.getElementById('toggle-pcs').style.display = '';
+                setSaleUnit('Pcs');
+            } else {
+                document.getElementById('toggle-pcs').style.display = 'none';
+                setSaleUnit('Kg');
+            }
+
             if (c.hargaJualKg === 0) {
                 // hide Kg option
                 document.getElementById('toggle-kg').style.display = 'none';
@@ -1428,6 +1436,31 @@
                     qtyInput.max = b.qtyKg;
                     if (val > b.qtyKg) {
                         qtyInput.value = parseFloat(b.qtyKg.toFixed(2));
+                    }
+                }
+            }
+            updateModalSubtotal();
+        }
+
+        function handleQtyInput() {
+            const prodId = document.getElementById('modal-product-id').value;
+            const lotId = document.getElementById('modal-lot-select').value;
+            const qtyInput = document.getElementById('modal-qty-input');
+
+            if (prodId && lotId) {
+                const c = commodities.find(item => item.id === prodId);
+                const b = c.batches.find(item => item.lot === lotId);
+
+                if (b) {
+                    const val = parseFloat(qtyInput.value) || 0;
+                    if (currentSaleUnit === 'Pcs') {
+                        if (val > b.qty) {
+                            qtyInput.value = b.qty;
+                        }
+                    } else {
+                        if (val > b.qtyKg) {
+                            qtyInput.value = parseFloat(b.qtyKg.toFixed(2));
+                        }
                     }
                 }
             }

@@ -1094,8 +1094,8 @@
                                 <input type="number" id="add-hargabeli" value="0" min="0">
                             </div>
                             <div class="fg">
-                                <label>Harga Jual per Pcs (Rp) <span class="req">*</span></label>
-                                <input type="number" id="add-hargajual" value="1500" min="0" required>
+                                <label id="add-hargajual-label">Harga Jual per Pcs (Rp)</label>
+                                <input type="number" id="add-hargajual" value="1500" min="0">
                             </div>
                         </div>
                         <div class="frow" style="margin-top: 8px;">
@@ -1225,7 +1225,7 @@
                             <input type="number" id="edit-hargabeli" min="0">
                         </div>
                         <div class="fg">
-                            <label>Harga Jual per Pcs (Rp)</label>
+                            <label id="edit-hargajual-label">Harga Jual per Pcs (Rp)</label>
                             <input type="number" id="edit-hargajual" min="0">
                         </div>
                     </div>
@@ -1279,6 +1279,7 @@
                 suhu: "Suhu Ruang (25-30°C)",
                 hargaBeli: 450000,
                 hargaJual: 0,
+                hargaJualKg: 0,
                 batches: [
                     {
                         lot: "PKN-202606-0001",
@@ -1303,6 +1304,7 @@
                 suhu: "Suhu Ruang (25-30°C)",
                 hargaBeli: 420000,
                 hargaJual: 0,
+                hargaJualKg: 0,
                 batches: []
             },
             {
@@ -1316,6 +1318,7 @@
                 suhu: "Suhu Ruang (25-30°C)",
                 hargaBeli: 510000,
                 hargaJual: 0,
+                hargaJualKg: 0,
                 batches: []
             },
             {
@@ -1329,6 +1332,7 @@
                 suhu: "Kering & Berventilasi Baik",
                 hargaBeli: 280000,
                 hargaJual: 0,
+                hargaJualKg: 0,
                 batches: []
             },
             // Production Results (Hasil Produksi)
@@ -1343,6 +1347,7 @@
                 suhu: "Suhu Dingin (4-10°C)",
                 hargaBeli: 0,
                 hargaJual: 1500,
+                hargaJualKg: 24000,
                 batches: [
                     {
                         lot: "Panen Pagi (12/06/2026)",
@@ -1377,6 +1382,7 @@
                 suhu: "Suhu Dingin (4-10°C)",
                 hargaBeli: 0,
                 hargaJual: 1000,
+                hargaJualKg: 16000,
                 batches: [
                     {
                         lot: "Pecah Kandang A (12/06/2026)",
@@ -1401,6 +1407,7 @@
                 suhu: "Suhu Ruang",
                 hargaBeli: 0,
                 hargaJual: 35000,
+                hargaJualKg: 0,
                 batches: [
                     {
                         lot: "Afkir Kandang B (12/06/2026)",
@@ -1425,6 +1432,7 @@
                 suhu: "Suhu Dingin (4-10°C)",
                 hargaBeli: 0,
                 hargaJual: 2500,
+                hargaJualKg: 40000,
                 batches: [
                     {
                         lot: "Omega Premium (12/06/2026)",
@@ -1448,6 +1456,21 @@
             if (stored) {
                 try {
                     commodities = JSON.parse(stored);
+                    
+                    // Ensure our properties like hargaJualKg exist
+                    let updated = false;
+                    commodities.forEach(c => {
+                        if (typeof c.hargaJualKg === 'undefined') {
+                            if (c.id === "HSL-BFYUUV9W") c.hargaJualKg = 24000;
+                            else if (c.id === "HSL-3ZXOW3R6") c.hargaJualKg = 16000;
+                            else if (c.id === "HSL-BEKMNPCK") c.hargaJualKg = 40000;
+                            else c.hargaJualKg = 0;
+                            updated = true;
+                        }
+                    });
+                    if (updated) {
+                        saveData();
+                    }
                     
                     // Make sure our default production hasil items are present in loaded list
                     let hasHasilProduksi = commodities.some(c => c.category === "Hasil Produksi");
@@ -1922,6 +1945,14 @@
             document.getElementById('edit-hargajual').value = c.hargaJual || 0;
             document.getElementById('edit-hargajual-kg').value = c.hargaJualKg || 0;
 
+            let displayUnit = c.unitName;
+            if (c.unitName === "Pcs") displayUnit = "Pcs / Butir";
+            else if (c.unitName === "Zak") displayUnit = "Zak / Karung";
+            const editLabel = document.getElementById('edit-hargajual-label');
+            if (editLabel) {
+                editLabel.innerHTML = `Harga Jual per ${displayUnit} (Rp)`;
+            }
+
             openModal('edit-commodity-modal');
         }
 
@@ -1998,6 +2029,21 @@
 
         // Initialize Page
         initData();
+
+        // Dynamic labels for price input in forms
+        function updateAddHargaJualLabel() {
+            const selectEl = document.getElementById('add-unit');
+            const labelEl = document.getElementById('add-hargajual-label');
+            if (selectEl && labelEl) {
+                const selectedText = selectEl.options[selectEl.selectedIndex].text;
+                labelEl.innerHTML = `Harga Jual per ${selectedText} (Rp)`;
+            }
+        }
+        document.getElementById('add-unit').addEventListener('change', updateAddHargaJualLabel);
+        document.getElementById('add-commodity-form').addEventListener('reset', () => {
+            setTimeout(updateAddHargaJualLabel, 0);
+        });
+        updateAddHargaJualLabel();
     </script>
 </body>
 
