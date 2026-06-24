@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penerimaan Barang — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* sidebar */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            cursor: pointer;
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        .nav .bdg {
+            background: var(--rust);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* main */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tb-title {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .tb-sub {
+            font-size: 11px;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-family: 'DM Sans', sans-serif;
+            transition: .13s;
+            user-select: none;
+            text-decoration: none;
+        }
+
+        .btn-solid {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .btn-solid:hover {
+            background: #2e5640;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--bdr2);
+            color: var(--ink);
+            background: var(--surf2);
+        }
+
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+        }
+
+        /* filters */
+        .filters {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 240px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 12px 9px 33px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13.5px;
+            background: var(--surf);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--sage);
+            box-shadow: 0 0 0 2px var(--sage-l);
+        }
+
+        .si {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink3);
+            font-size: 13.5px;
+        }
+
+        .filter-btn {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink2);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: .12s;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--bdr2);
+            color: var(--ink);
+            background: var(--surf2);
+        }
+
+        .filter-btn.active {
+            background: var(--sage);
+            color: #fff;
+            border-color: var(--sage);
+        }
+
+        /* table */
+        .table-wrap {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .03);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--surf2);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+            white-space: nowrap;
+        }
+
+        tbody tr.main-row {
+            border-bottom: 1px solid var(--bdr);
+            transition: background .1s;
+        }
+
+        tbody tr.main-row:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr.main-row:hover {
+            background: #faf9f5;
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .cname {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .cmeta {
+            font-size: 11px;
+            color: var(--ink3);
+            margin-top: 2.5px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* tags */
+        .cat-tag {
+            display: inline-flex;
+            padding: 2.5px 7px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: .3px;
+            white-space: nowrap;
+        }
+
+        .cat-tag.pakan {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .cat-tag.produksi {
+            background: var(--sky-l);
+            color: var(--sky);
+        }
+
+        .cat-tag.vok {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+
+        .lot-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            background: var(--surf3);
+            padding: 2.5px 7.5px;
+            border-radius: 4px;
+            color: var(--ink);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .loc-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--sage-l);
+            color: var(--sage);
+            white-space: nowrap;
+        }
+
+        .stock-sub {
+            font-size: 11px;
+            color: var(--ink2);
+            font-weight: normal;
+            margin-left: 3px;
+        }
+
+        .exp-badge {
+            font-size: 10.5px;
+            background: var(--surf2);
+            color: var(--ink2);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .exp-badge.danger {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+
+        .exp-badge.warning {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+
+        .abt {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--ink3);
+            padding: 4px 5px;
+            border-radius: 4px;
+            transition: .1s;
+            font-size: 14px;
+        }
+
+        .abt:hover {
+            color: var(--sage);
+            background: var(--sage-l);
+        }
+
+        .abt.del:hover {
+            color: var(--rust);
+            background: var(--rust-l);
+        }
+
+        /* Modal Overlays */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 6, 2, .55);
+            z-index: 200;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-y: auto;
+            backdrop-filter: blur(1.5px);
+        }
+
+        .overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surf);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 580px;
+            box-shadow: 0 16px 48px rgba(8, 6, 2, .24);
+            animation: up .18s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin: auto;
+        }
+
+        @keyframes up {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .mh {
+            padding: 20px 24px 14px;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .mt {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ms {
+            font-size: 12px;
+            color: var(--ink2);
+            margin-top: 3px;
+        }
+
+        .mclose {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--ink3);
+            font-size: 16px;
+            padding: 4px;
+            transition: .1s;
+        }
+
+        .mclose:hover {
+            color: var(--ink);
+        }
+
+        .mb {
+            padding: 20px 24px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .fg {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .fg label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .fg label .req {
+            color: var(--rust);
+        }
+
+        .fg input[type="text"],
+        .fg input[type="number"],
+        .fg input[type="date"],
+        .fg select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--surf);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .12s;
+        }
+
+        .fg input:focus,
+        .fg select:focus {
+            border-color: var(--sage);
+            box-shadow: 0 0 0 2px var(--sage-l);
+        }
+
+        .fg .hint {
+            font-size: 10.5px;
+            color: var(--ink3);
+            margin-top: 1px;
+        }
+
+        .frow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo" onclick="location.href='index.html'">
+            <div class="sb-mark"><span style="cursor: pointer; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2) rotate(-10deg)'" onmouseout="this.style.transform='scale(1)'" onclick="resetAllData(event)" title="Klik untuk Reset Data">🐓</span> RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav" onclick="location.href='dashboard.html'"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav" onclick="location.href='pakan.html'"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav" onclick="location.href='penjualan.html'"><span class="ico">🛒</span><span class="lbl">Penjualan / Kasir</span></div>
+            <div class="nav" onclick="location.href='riwayat-penjualan.html'"><span class="ico">📋</span><span class="lbl">Riwayat Penjualan</span></div>
+            <div class="nav active" onclick="location.href='penerimaan-barang.html'"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
+            <div class="nav" onclick="location.href='stok-inventaris.html'"><span class="ico">🏭</span><span class="lbl">Stok Inventaris</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Penerimaan Barang</div>
+                <div class="tb-sub">Riwayat seluruh penerimaan komoditas — lot tracking, HPP, dan kadaluarsa.</div>
+            </div>
+            <button class="btn btn-solid" onclick="openModal('receive-modal')">➕ Catat Penerimaan</button>
+        </div>
+
+        <div class="content">
+
+            <!-- SEARCH AND FILTER ROW -->
+            <div class="filters">
+                <div class="search-box">
+                    <span class="si">🔍</span>
+                    <input type="text" id="search-input" oninput="renderTable()" placeholder="Cari no. lot, nama komoditas...">
+                </div>
+                <div class="category-filters">
+                    <button class="filter-btn active" data-cat="all" onclick="setCategoryFilter('all', this)">Semua</button>
+                    <button class="filter-btn" data-cat="Pakan" onclick="setCategoryFilter('Pakan', this)">🌾 Pakan</button>
+                    <button class="filter-btn" data-cat="VOK" onclick="setCategoryFilter('VOK', this)">💉 VOK</button>
+                    <button class="filter-btn" data-cat="Hasil Produksi" onclick="setCategoryFilter('Hasil Produksi', this)">🥚 Output</button>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No. Lot</th>
+                            <th>Komoditas</th>
+                            <th>Kategori</th>
+                            <th>Gudang</th>
+                            <th>Qty Masuk</th>
+                            <th>Sisa Stok</th>
+                            <th>HPP / Unit</th>
+                            <th>Tgl Masuk</th>
+                            <th>Kadaluarsa</th>
+                            <th style="width: 50px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipt-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======== MODAL: CATAT PENERIMAAN BARANG ======== -->
+    <div class="overlay" id="receive-modal">
+        <div class="modal">
+            <div class="mh">
+                <div>
+                    <div class="mt">Catat Penerimaan Barang</div>
+                    <div class="ms">Input stok masuk dari pengiriman/pembelian supplier atau hasil produksi.</div>
+                </div>
+                <button class="mclose" onclick="closeModal('receive-modal')">✕</button>
+            </div>
+            <form id="receive-form" onsubmit="handleSaveReceipt(event)">
+                <div class="mb">
+                    <div class="fg">
+                        <label>Pilih Komoditas <span class="req">*</span></label>
+                        <select id="rec-commodity" onchange="onCommodityChange()" required>
+                            <!-- loaded dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="fg">
+                        <label>Gudang / Lokasi Penyimpanan <span class="req">*</span></label>
+                        <select id="rec-gudang" required>
+                            <option value="Main Farm">Main Farm</option>
+                            <option value="Gudang Utama">Gudang Utama</option>
+                            <option value="Gudang Pakan Utama">Gudang Pakan Utama</option>
+                            <option value="Gudang Hasil Produksi">Gudang Hasil Produksi</option>
+                            <option value="Gudang Kandang A">Gudang Kandang A</option>
+                            <option value="Gudang Kandang B">Gudang Kandang B</option>
+                        </select>
+                    </div>
+
+                    <!-- Dynamic Input Group for Feed (Pakan) -->
+                    <div id="input-group-pakan" class="frow">
+                        <div class="fg">
+                            <label>Jumlah Kemasan Utuh (Zak) <span class="req">*</span></label>
+                            <input type="number" id="rec-qty-bags" min="0" placeholder="contoh: 10" oninput="updateCalculator()">
+                        </div>
+                        <div class="fg">
+                            <label>Sisa Pecahan Berat (Kg) <span class="req">*</span></label>
+                            <input type="number" id="rec-qty-kg-extra" min="0" step="0.1" placeholder="contoh: 20" oninput="updateCalculator()">
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Input Group for Others (Output / Eggs / etc.) -->
+                    <div id="input-group-pcs" class="frow" style="display: none;">
+                        <div class="fg">
+                            <label id="lbl-rec-qty-pcs">Jumlah Unit (Pcs/Butir) <span class="req">*</span></label>
+                            <input type="number" id="rec-qty-pcs" min="0" placeholder="contoh: 100" oninput="updateCalculator()">
+                        </div>
+                        <div class="fg">
+                            <label>Total Berat (Kg) <span class="req">*</span></label>
+                            <input type="number" id="rec-qty-kg-total" min="0" step="0.1" placeholder="contoh: 6.2" oninput="updateCalculator()">
+                        </div>
+                    </div>
+
+                    <div id="pakan-hint" style="margin-top: -8px; margin-bottom: 12px; font-size: 11px; color: var(--ink3);">
+                        <span class="hint">* Wajib mengisi minimal salah satu dari Jumlah Kemasan Utuh atau Sisa Pecahan Berat.</span>
+                    </div>
+
+                    <!-- Calculator Preview Card -->
+                    <div class="calc-preview" id="calc-preview-card" style="background: var(--bg); padding: 10px; border-radius: 6px; border: 1px solid var(--bdr); margin-bottom: 16px;">
+                        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink2); margin-bottom: 4px; font-weight: 600;">Estimasi Total Hasil Input:</div>
+                        <div id="calc-preview-text" style="font-size: 13px; color: var(--sage); font-weight: 700;">—</div>
+                    </div>
+
+                    <div class="fg">
+                        <label>No. Lot / Batch</label>
+                        <input type="text" id="rec-lot" placeholder="Otomatis jika dikosongkan">
+                        <span class="hint" id="lot-hint">Format auto-gen: PKN-YYYYMM-XXXX atau HSL-YYYYMM-XXXX</span>
+                    </div>
+
+                    <div class="frow">
+                        <div class="fg">
+                            <label>HPP / Harga Beli per Unit (Rp) <span class="req">*</span></label>
+                            <input type="number" id="rec-hpp" required placeholder="contoh: 450000">
+                        </div>
+                        <div class="fg">
+                            <label>Tanggal Masuk <span class="req">*</span></label>
+                            <input type="date" id="rec-date" required>
+                        </div>
+                    </div>
+
+                    <div class="frow">
+                        <div class="fg">
+                            <label>Tanggal Kadaluarsa</label>
+                            <input type="date" id="rec-expiry">
+                        </div>
+                        <div class="fg">
+                            <label>Catatan / Keterangan</label>
+                            <input type="text" id="rec-notes" placeholder="contoh: Supplier A, kondisi aman">
+                        </div>
+                    </div>
+                </div>
+                <div class="mfooter">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('receive-modal')">Batal</button>
+                    <button type="submit" class="btn btn-solid">Simpan Penerimaan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======== JAVASCRIPT SYSTEM ======== -->
+    <script>
+        let commodities = [];
+        let activeCategoryFilter = 'all';
+
+        // Initial Seed Commodities (fallback if not in localStorage)
+        const INITIAL_COMMODITIES = [
+            {
+                id: "PKN-AOGY3867",
+                name: "Pakan DOC Starter BR-1 (Japfa Comfeed)",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 50,
+                minAlert: 20,
+                nutrisi: "Protein 21%, Energi 2900 kkal/kg",
+                suhu: "Suhu Ruang (25-30°C)",
+                hargaBeli: 450000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: [
+                    {
+                        lot: "PKN-202606-0001",
+                        gudang: "Gudang Pakan Utama",
+                        qtyBags: 4,
+                        qtyBagsOriginal: 4,
+                        qtyKg: 220,
+                        qtyKgOriginal: 220,
+                        receiveDate: "2026-05-15",
+                        expiryDate: "2026-11-15",
+                        hpp: 450000,
+                        notes: "Penerimaan awal, kondisi baik"
+                    }
+                ]
+            },
+            {
+                id: "PKN-LYR8899A",
+                name: "Pakan Layer Premium (Japfa)",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 50,
+                minAlert: 15,
+                nutrisi: "Protein 17.5%, Kalsium 3.8%",
+                suhu: "Suhu Ruang (25-30°C)",
+                hargaBeli: 420000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: []
+            },
+            {
+                id: "PKN-CON7766B",
+                name: "Pakan Konsentrat Broiler (Cargill)",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 50,
+                minAlert: 10,
+                nutrisi: "Protein 38%, Serat 6%",
+                suhu: "Suhu Ruang (25-30°C)",
+                hargaBeli: 510000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: []
+            },
+            {
+                id: "PKN-JGN5544C",
+                name: "Pakan Jagung Giling Murni",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 50,
+                minAlert: 30,
+                nutrisi: "Karbohidrat Tinggi",
+                suhu: "Kering & Berventilasi Baik",
+                hargaBeli: 280000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: []
+            },
+            {
+                id: "HSL-BFYUUV9W",
+                name: "Telur Komersial / Normal (Grade A)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Telur segar kualitas premium",
+                suhu: "Suhu Dingin (4-10°C)",
+                hargaBeli: 0,
+                hargaJual: 1500,
+                hargaJualKg: 24000,
+                batches: [
+                    {
+                        lot: "Panen Pagi (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1500,
+                        qtyOriginal: 1500,
+                        qtyKg: 93.7,
+                        qtyKgOriginal: 93.7,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    },
+                    {
+                        lot: "Panen Kemarin (11/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1000,
+                        qtyOriginal: 1000,
+                        qtyKg: 62.5,
+                        qtyKgOriginal: 62.5,
+                        receiveDate: "2026-06-11",
+                        expiryDate: "2026-07-11",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-3ZXOW3R6",
+                name: "Telur Retak / Pecah (Grade B)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Telur retak untuk industri kue",
+                suhu: "Suhu Dingin (4-10°C)",
+                hargaBeli: 0,
+                hargaJual: 1000,
+                hargaJualKg: 16000,
+                batches: [
+                    {
+                        lot: "Pecah Kandang A (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 250,
+                        qtyOriginal: 250,
+                        qtyKg: 15.6,
+                        qtyKgOriginal: 15.6,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-YQRFIKJ6",
+                name: "Ayam Afkir (Spent Hens)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Ayam petelur afkir siap potong",
+                suhu: "Suhu Ruang",
+                hargaBeli: 0,
+                hargaJual: 35000,
+                hargaJualKg: 0,
+                batches: [
+                    {
+                        lot: "Afkir Kandang B (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 60,
+                        qtyOriginal: 60,
+                        qtyKg: 90.0,
+                        qtyKgOriginal: 90.0,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-BEKMNPCK",
+                name: "Omega 3",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Telur kaya Omega 3",
+                suhu: "Suhu Dingin (4-10°C)",
+                hargaBeli: 0,
+                hargaJual: 2500,
+                hargaJualKg: 40000,
+                batches: [
+                    {
+                        lot: "Omega Premium (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 500,
+                        qtyOriginal: 500,
+                        qtyKg: 31.2,
+                        qtyKgOriginal: 31.2,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            }
+        ];
+
+        function initData() {
+            const stored = localStorage.getItem('rayfarm_commodities');
+            if (stored) {
+                try {
+                    commodities = JSON.parse(stored);
+                } catch (e) {
+                    commodities = INITIAL_COMMODITIES;
+                }
+            } else {
+                commodities = INITIAL_COMMODITIES;
+            }
+
+            // Ensure Ekskreta exists
+            if (!commodities.find(c => c.id === 'HSL-EKSKRETA')) {
+                commodities.push({
+                    id: "HSL-EKSKRETA",
+                    name: "Ekskreta (Excreta)",
+                    category: "Hasil Produksi",
+                    unitName: "Pcs",
+                    weightPerUnit: 1,
+                    minAlert: 5,
+                    hargaBeli: 0,
+                    hargaJual: 0,
+                    hargaJualKg: 0,
+                    batches: []
+                });
+            }
+
+            // Ensure VOK item exists
+            if (!commodities.find(c => c.id === 'VOK-NDIB1000')) {
+                commodities.push({
+                    id: "VOK-NDIB1000",
+                    name: "Vaksin ND-IB Clone 45 (Intervet) - 1000 Dosis",
+                    category: "VOK",
+                    unitName: "Vial",
+                    weightPerUnit: 0.1,
+                    minAlert: 5,
+                    hargaBeli: 75000,
+                    hargaJual: 0,
+                    hargaJualKg: 0,
+                    batches: []
+                });
+            }
+
+            // Make sure we have the specific sample batches from the screenshot populated for a rich demo experience!
+            let hasSampleBatches = false;
+            commodities.forEach(c => {
+                if (c.batches && c.batches.some(b => b.lot.startsWith('daily-record-'))) {
+                    hasSampleBatches = true;
+                }
+            });
+
+            if (!hasSampleBatches) {
+                // Let's seed the screenshot batches
+                // 1. Omega 3
+                const omega = commodities.find(c => c.name.toLowerCase().includes('omega'));
+                if (omega) {
+                    omega.batches = omega.batches || [];
+                    if (!omega.batches.some(b => b.lot === 'daily-record-207')) {
+                        omega.batches.push({
+                            lot: "daily-record-207",
+                            gudang: "Main Farm",
+                            qty: 160,
+                            qtyOriginal: 160,
+                            qtyKg: 10,
+                            qtyKgOriginal: 10,
+                            receiveDate: "2026-06-18",
+                            expiryDate: "2026-07-18",
+                            hpp: 0,
+                            notes: "Panen harian omega"
+                        });
+                    }
+                }
+
+                // 2. Telur Retak / Pecah (Grade B)
+                const gradeB = commodities.find(c => c.id === 'HSL-3ZXOW3R6');
+                if (gradeB) {
+                    gradeB.batches = gradeB.batches || [];
+                    if (!gradeB.batches.some(b => b.lot === 'daily-record-206')) {
+                        gradeB.batches.push({
+                            lot: "daily-record-206",
+                            gudang: "Main Farm",
+                            qty: 160,
+                            qtyOriginal: 160,
+                            qtyKg: 10,
+                            qtyKgOriginal: 10,
+                            receiveDate: "2026-06-18",
+                            expiryDate: "2026-07-18",
+                            hpp: 0,
+                            notes: "Retak kandang"
+                        });
+                    }
+                    if (!gradeB.batches.some(b => b.lot === 'daily-record-172')) {
+                        gradeB.batches.push({
+                            lot: "daily-record-172",
+                            gudang: "Main Farm",
+                            qty: 160,
+                            qtyOriginal: 160,
+                            qtyKg: 10,
+                            qtyKgOriginal: 10,
+                            receiveDate: "2026-06-12",
+                            expiryDate: "2026-07-12",
+                            hpp: 0,
+                            notes: "Retak kandang B"
+                        });
+                    }
+                }
+
+                // 3. Telur Komersial / Normal (Grade A)
+                const gradeA = commodities.find(c => c.id === 'HSL-BFYUUV9W');
+                if (gradeA) {
+                    gradeA.batches = gradeA.batches || [];
+                    if (!gradeA.batches.some(b => b.lot === 'daily-record-205')) {
+                        gradeA.batches.push({
+                            lot: "daily-record-205",
+                            gudang: "Main Farm",
+                            qty: 160,
+                            qtyOriginal: 160,
+                            qtyKg: 10,
+                            qtyKgOriginal: 10,
+                            receiveDate: "2026-06-18",
+                            expiryDate: "2026-07-18",
+                            hpp: 0,
+                            notes: "Panen normal"
+                        });
+                    }
+                    if (!gradeA.batches.some(b => b.lot === 'daily-record-171')) {
+                        gradeA.batches.push({
+                            lot: "daily-record-171",
+                            gudang: "Main Farm",
+                            qty: 32,
+                            qtyOriginal: 32,
+                            qtyKg: 2,
+                            qtyKgOriginal: 2,
+                            receiveDate: "2026-06-12",
+                            expiryDate: "2026-07-12",
+                            hpp: 0,
+                            notes: "Panen normal"
+                        });
+                    }
+                    if (!gradeA.batches.some(b => b.lot === 'daily-record-147')) {
+                        gradeA.batches.push({
+                            lot: "daily-record-147",
+                            gudang: "Main Farm",
+                            qty: 10,
+                            qtyOriginal: 10,
+                            qtyKg: 0.6,
+                            qtyKgOriginal: 0.6,
+                            receiveDate: "2026-06-12",
+                            expiryDate: "2026-07-12",
+                            hpp: 0,
+                            notes: "Panen kandang A"
+                        });
+                    }
+                    if (!gradeA.batches.some(b => b.lot === 'daily-record-140')) {
+                        gradeA.batches.push({
+                            lot: "daily-record-140",
+                            gudang: "Main Farm",
+                            qty: 0,
+                            qtyOriginal: 800,
+                            qtyKg: 0,
+                            qtyKgOriginal: 50,
+                            receiveDate: "2026-06-11",
+                            expiryDate: "2026-07-11",
+                            hpp: 0,
+                            notes: "Habis terjual"
+                        });
+                    }
+                    if (!gradeA.batches.some(b => b.lot === 'daily-record-143')) {
+                        gradeA.batches.push({
+                            lot: "daily-record-143",
+                            gudang: "Main Farm",
+                            qty: 640,
+                            qtyOriginal: 640,
+                            qtyKg: 40,
+                            qtyKgOriginal: 40,
+                            receiveDate: "2026-06-11",
+                            expiryDate: "2026-07-11",
+                            hpp: 0,
+                            notes: "Panen kandang B"
+                        });
+                    }
+                }
+
+                // 4. Ekskreta
+                const ekskreta = commodities.find(c => c.id === 'HSL-EKSKRETA');
+                if (ekskreta) {
+                    ekskreta.batches = ekskreta.batches || [];
+                    if (!ekskreta.batches.some(b => b.lot === 'daily-record-141')) {
+                        ekskreta.batches.push({
+                            lot: "daily-record-141",
+                            gudang: "Main Farm",
+                            qty: 10,
+                            qtyOriginal: 10,
+                            qtyKg: 10,
+                            qtyKgOriginal: 10,
+                            receiveDate: "2026-06-11",
+                            expiryDate: "2026-07-11",
+                            hpp: 0,
+                            notes: "Kotoran kandang"
+                        });
+                    }
+                }
+
+                // 5. Konsentrat Layer KLK-36 (PKN-WNH6UKIZ or similar)
+                const klk36 = commodities.find(c => c.id === 'PKN-WNH6UKIZ');
+                if (klk36) {
+                    klk36.batches = klk36.batches || [];
+                    if (!klk36.batches.some(b => b.lot.startsWith('PKN-202606-'))) {
+                        klk36.batches.push({
+                            lot: "PKN-202606-0003",
+                            gudang: "Main Farm",
+                            qtyBags: 40,
+                            qtyBagsOriginal: 40,
+                            qtyKg: 1010,
+                            qtyKgOriginal: 1010,
+                            receiveDate: "2026-06-11",
+                            expiryDate: "2026-12-11",
+                            hpp: 150000,
+                            notes: "Konsentrat Layer KLK-36"
+                        });
+                    }
+                }
+
+                // 6. Vaksin ND-IB (VOK-NDIB1000)
+                const ndib = commodities.find(c => c.id === 'VOK-NDIB1000');
+                if (ndib) {
+                    ndib.batches = ndib.batches || [];
+                    if (!ndib.batches.some(b => b.lot.startsWith('VOK-202606-'))) {
+                        ndib.batches.push({
+                            lot: "VOK-202606-0009",
+                            gudang: "Gudang Utama",
+                            qty: 10,
+                            qtyOriginal: 10,
+                            qtyKg: 1,
+                            qtyKgOriginal: 1,
+                            receiveDate: "2026-06-05",
+                            expiryDate: "2026-12-05",
+                            hpp: 75000,
+                            notes: "Simpan dingin"
+                        });
+                    }
+                }
+
+                // Save back to local storage
+                localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+            }
+
+            renderTable();
+        }
+
+        function resetAllData(event) {
+            if (event) event.stopPropagation();
+            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik?")) {
+                localStorage.removeItem('coops');
+                localStorage.removeItem('rayfarm_commodities');
+                localStorage.removeItem('rayfarm_sales');
+                location.reload();
+            }
+        }
+
+        // Helper: calculate days to expiry
+        function daysToExpiry(dateStr) {
+            const diff = new Date(dateStr) - new Date();
+            return Math.ceil(diff / 86400000);
+        }
+
+        // Visual badges for expiry status
+        function getExpiryBadge(dateStr) {
+            const days = daysToExpiry(dateStr);
+            if (days <= 0) return `<span class="exp-badge danger">Kadaluarsa</span>`;
+            if (days <= 30) return `<span class="exp-badge danger">${days} hari lagi</span>`;
+            if (days <= 90) return `<span class="exp-badge warning">${days} hari lagi</span>`;
+            return `<span class="exp-badge">${days} hari</span>`;
+        }
+
+        // Format Quantity (e.g. "4 Zak + 20 Kg (220 Kg)" or "160 Butir (10 Kg)")
+        function formatQuantity(qty, qtyKg, c) {
+            if (c.category === 'Pakan' || c.unitName === 'Zak') {
+                const wPerUnit = c.weightPerUnit || 50;
+                const bags = Math.floor(qtyKg / wPerUnit);
+                const rem = Math.round((qtyKg % wPerUnit) * 10) / 10;
+                
+                let mainStr = `${bags.toLocaleString('id')} Zak`;
+                if (rem > 0) {
+                    mainStr += ` + ${rem.toLocaleString('id')} Kg`;
+                }
+                return `<strong>${mainStr}</strong> <span class="stock-sub">(${qtyKg.toLocaleString('id')} Kg)</span>`;
+            } else if (c.category === 'Hasil Produksi' && (c.name.toLowerCase().includes('telur') || c.unitName === 'Pcs')) {
+                const unit = c.name.toLowerCase().includes('telur') ? 'Butir' : c.unitName;
+                const pieces = qty || 0;
+                return `<strong>${pieces.toLocaleString('id')} ${unit}</strong> <span class="stock-sub">(${qtyKg.toLocaleString('id')} Kg)</span>`;
+            } else {
+                const unit = c.unitName || 'Pcs';
+                if (qty > 0) {
+                    return `<strong>${qty.toLocaleString('id')} ${unit}</strong> <span class="stock-sub">(${qtyKg.toLocaleString('id')} Kg)</span>`;
+                } else {
+                    return `<strong>${qtyKg.toLocaleString('id')} Kg</strong>`;
+                }
+            }
+        }
+
+        // Set category filter from tabs
+        function setCategoryFilter(cat, btn) {
+            activeCategoryFilter = cat;
+            
+            // Toggle active class on filter buttons
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            renderTable();
+        }
+
+        // Render intake records table
+        function renderTable() {
+            const tbody = document.getElementById('receipt-tbody');
+            tbody.innerHTML = '';
+
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+
+            // Assemble unified batch list
+            let list = [];
+            commodities.forEach(c => {
+                if (c.batches) {
+                    c.batches.forEach(b => {
+                        list.push({
+                            commodity: c,
+                            batch: b
+                        });
+                    });
+                }
+            });
+
+            // Filter by Category
+            if (activeCategoryFilter !== 'all') {
+                list = list.filter(item => item.commodity.category === activeCategoryFilter);
+            }
+
+            // Filter by Search
+            if (searchVal !== '') {
+                list = list.filter(item => {
+                    return item.batch.lot.toLowerCase().includes(searchVal) ||
+                           item.commodity.name.toLowerCase().includes(searchVal) ||
+                           item.commodity.id.toLowerCase().includes(searchVal);
+                });
+            }
+
+            // Sort by Date Descending
+            list.sort((a, b) => {
+                const dateA = new Date(a.batch.receiveDate || 0);
+                const dateB = new Date(b.batch.receiveDate || 0);
+                return dateB - dateA;
+            });
+
+            // Render Rows
+            if (list.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" style="text-align: center; color: var(--ink3); padding: 30px; font-style: italic;">
+                            Tidak ada data penerimaan barang ditemukan.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            list.forEach(item => {
+                const c = item.commodity;
+                const b = item.batch;
+
+                // Format Category Tag
+                let catClass = 'produksi';
+                let catLabel = '🥚 Hasil Produksi';
+                if (c.category === 'Pakan') {
+                    catClass = 'pakan';
+                    catLabel = '🌾 Pakan';
+                } else if (c.category === 'VOK') {
+                    catClass = 'vok';
+                    catLabel = '💉 VOK';
+                }
+
+                // Format Expiry Date / Badge
+                let expiryDisplay = '—';
+                if (b.expiryDate) {
+                    expiryDisplay = getExpiryBadge(b.expiryDate);
+                }
+
+                // Format Date Received (DD/MM/YYYY)
+                let dateDisplay = '—';
+                if (b.receiveDate) {
+                    const parts = b.receiveDate.split('-');
+                    if (parts.length === 3) {
+                        dateDisplay = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                    } else {
+                        dateDisplay = b.receiveDate;
+                    }
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = 'main-row';
+                tr.innerHTML = `
+                    <td><span class="lot-tag">${b.lot}</span></td>
+                    <td>
+                        <div class="cname">${c.name}</div>
+                        <div class="cmeta">ID: ${c.id}</div>
+                    </td>
+                    <td>
+                        <span class="cat-tag ${catClass}">${catLabel}</span>
+                    </td>
+                    <td>
+                        <span class="loc-chip">${b.gudang}</span>
+                    </td>
+                    <td>
+                        ${formatQuantity(b.qtyOriginal || b.qty, b.qtyKgOriginal || b.qtyKg, c)}
+                    </td>
+                    <td>
+                        ${formatQuantity(b.qty || 0, b.qtyKg || 0, c)}
+                    </td>
+                    <td>
+                        Rp ${(b.hpp || 0).toLocaleString('id')}
+                    </td>
+                    <td>
+                        ${dateDisplay}
+                    </td>
+                    <td>
+                        ${expiryDisplay}
+                    </td>
+                    <td>
+                        <button class="abt del" onclick="deleteBatch('${c.id}', '${b.lot}')" title="Hapus Lot">
+                            🗑️
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Delete specific batch lot
+        function deleteBatch(commodityId, lotName) {
+            if (confirm(`Apakah Anda yakin ingin menghapus catatan penerimaan untuk Lot: ${lotName}?`)) {
+                const c = commodities.find(item => item.id === commodityId);
+                if (c) {
+                    c.batches = c.batches.filter(b => b.lot !== lotName);
+                    localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+                    renderTable();
+                    alert(`Berhasil menghapus penerimaan Lot: ${lotName}`);
+                }
+            }
+        }
+
+        // Modal Operations
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+            if (id === 'receive-modal') {
+                populateCommodityDropdown();
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function populateCommodityDropdown() {
+            const select = document.getElementById('rec-commodity');
+            select.innerHTML = '';
+            commodities.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.id;
+                option.textContent = `${c.name} (${c.id})`;
+                select.appendChild(option);
+            });
+            onCommodityChange();
+        }
+
+        // Handle dynamic inputs when changing commodity in modal
+        function onCommodityChange() {
+            const commId = document.getElementById('rec-commodity').value;
+            const c = commodities.find(item => item.id === commId);
+            if (!c) return;
+
+            const grpPakan = document.getElementById('input-group-pakan');
+            const grpPcs = document.getElementById('input-group-pcs');
+            const pakanHint = document.getElementById('pakan-hint');
+            const lotHint = document.getElementById('lot-hint');
+            const lblPcs = document.getElementById('lbl-rec-qty-pcs');
+
+            // Reset inputs
+            document.getElementById('rec-qty-bags').value = '';
+            document.getElementById('rec-qty-kg-extra').value = '';
+            document.getElementById('rec-qty-pcs').value = '';
+            document.getElementById('rec-qty-kg-total').value = '';
+
+            if (c.category === 'Pakan') {
+                grpPakan.style.display = 'grid';
+                grpPcs.style.display = 'none';
+                if (pakanHint) pakanHint.style.display = 'block';
+                lotHint.textContent = "Format auto-gen: PKN-YYYYMM-XXXX";
+                document.getElementById('rec-gudang').value = "Gudang Pakan Utama";
+            } else {
+                grpPakan.style.display = 'none';
+                grpPcs.style.display = 'grid';
+                if (pakanHint) pakanHint.style.display = 'none';
+                
+                if (c.category === 'VOK') {
+                    lotHint.textContent = "Format auto-gen: VOK-YYYYMM-XXXX";
+                    lblPcs.innerHTML = `Jumlah Unit (${c.unitName || 'Vial'}) <span class="req">*</span>`;
+                    document.getElementById('rec-gudang').value = "Gudang Utama";
+                } else {
+                    lotHint.textContent = "Format auto-gen: HSL-YYYYMM-XXXX";
+                    const unit = c.name.toLowerCase().includes('telur') ? 'Butir' : (c.unitName || 'Pcs');
+                    lblPcs.innerHTML = `Jumlah Unit (${unit}) <span class="req">*</span>`;
+                    document.getElementById('rec-gudang').value = "Gudang Hasil Produksi";
+                }
+            }
+
+            // Prefill HPP
+            document.getElementById('rec-hpp').value = c.hargaBeli || 0;
+
+            // Set default date to today
+            const today = new Date().toISOString().substring(0, 10);
+            document.getElementById('rec-date').value = today;
+
+            // Prefill expiry date based on category
+            if (c.category === 'Pakan') {
+                const expDate = new Date(Date.now() + 180 * 86400000).toISOString().substring(0, 10);
+                document.getElementById('rec-expiry').value = expDate;
+            } else if (c.category === 'Hasil Produksi') {
+                const expDate = new Date(Date.now() + 30 * 86400000).toISOString().substring(0, 10);
+                document.getElementById('rec-expiry').value = expDate;
+            } else {
+                document.getElementById('rec-expiry').value = '';
+            }
+
+            updateCalculator();
+        }
+
+        // Live calculator preview inside modal
+        function updateCalculator() {
+            const commId = document.getElementById('rec-commodity').value;
+            const c = commodities.find(item => item.id === commId);
+            if (!c) return;
+
+            const previewText = document.getElementById('calc-preview-text');
+
+            if (c.category === 'Pakan') {
+                const bags = parseFloat(document.getElementById('rec-qty-bags').value) || 0;
+                const extraKg = parseFloat(document.getElementById('rec-qty-kg-extra').value) || 0;
+                const wPerUnit = c.weightPerUnit || 50;
+                const totalKg = (bags * wPerUnit) + extraKg;
+                
+                let detailStr = `${bags} Zak`;
+                if (extraKg > 0) detailStr += ` + ${extraKg} Kg`;
+                
+                if (totalKg === 0) {
+                    previewText.textContent = "—";
+                } else {
+                    previewText.innerHTML = `${detailStr} <span style="font-size:11.5px; color:var(--ink2); font-weight:normal">(${totalKg.toLocaleString('id')} Kg)</span>`;
+                }
+            } else {
+                const pcs = parseFloat(document.getElementById('rec-qty-pcs').value) || 0;
+                const totalKg = parseFloat(document.getElementById('rec-qty-kg-total').value) || 0;
+                const unit = c.name.toLowerCase().includes('telur') ? 'Butir' : (c.unitName || 'Pcs');
+
+                if (pcs === 0 && totalKg === 0) {
+                    previewText.textContent = "—";
+                } else {
+                    previewText.innerHTML = `${pcs.toLocaleString('id')} ${unit} <span style="font-size:11.5px; color:var(--ink2); font-weight:normal">(${totalKg.toLocaleString('id')} Kg)</span>`;
+                }
+            }
+        }
+
+        // Save the new receipt batch
+        function handleSaveReceipt(e) {
+            e.preventDefault();
+
+            const commId = document.getElementById('rec-commodity').value;
+            const c = commodities.find(item => item.id === commId);
+            if (!c) return;
+
+            const gudang = document.getElementById('rec-gudang').value;
+            const hpp = parseFloat(document.getElementById('rec-hpp').value) || 0;
+            const date = document.getElementById('rec-date').value;
+            const expiry = document.getElementById('rec-expiry').value;
+            const notes = document.getElementById('rec-notes').value || 'Penerimaan barang';
+            const customLot = document.getElementById('rec-lot').value.trim();
+
+            let lot = customLot;
+            const datePart = date.replace(/-/g, '').substring(0, 6);
+
+            let newBatch = {
+                gudang: gudang,
+                receiveDate: date,
+                expiryDate: expiry || null,
+                hpp: hpp,
+                notes: notes
+            };
+
+            if (c.category === 'Pakan') {
+                const bagsInput = parseFloat(document.getElementById('rec-qty-bags').value) || 0;
+                const extraKg = parseFloat(document.getElementById('rec-qty-kg-extra').value) || 0;
+
+                if (bagsInput < 0 || extraKg < 0) {
+                    alert("Jumlah input tidak boleh bernilai negatif!");
+                    return;
+                }
+                if (bagsInput === 0 && extraKg === 0) {
+                    alert("Mohon isi minimal salah satu dari Jumlah Kemasan Utuh atau Sisa Pecahan Berat!");
+                    return;
+                }
+
+                const totalKg = (bagsInput * c.weightPerUnit) + extraKg;
+                const realBags = Math.floor(totalKg / c.weightPerUnit);
+
+                newBatch.qtyBags = realBags;
+                newBatch.qtyBagsOriginal = realBags;
+                newBatch.qtyKg = totalKg;
+                newBatch.qtyKgOriginal = totalKg;
+
+                if (!lot) {
+                    lot = `PKN-${datePart}-${Math.floor(1000 + Math.random() * 9000)}`;
+                }
+            } else {
+                const pcs = parseFloat(document.getElementById('rec-qty-pcs').value) || 0;
+                const totalKg = parseFloat(document.getElementById('rec-qty-kg-total').value) || 0;
+
+                if (pcs < 0 || totalKg < 0) {
+                    alert("Jumlah input tidak boleh bernilai negatif!");
+                    return;
+                }
+                if (pcs === 0 && totalKg === 0) {
+                    alert("Mohon isi Jumlah Unit dan Total Berat!");
+                    return;
+                }
+
+                newBatch.qty = pcs;
+                newBatch.qtyOriginal = pcs;
+                newBatch.qtyKg = totalKg;
+                newBatch.qtyKgOriginal = totalKg;
+
+                if (!lot) {
+                    const prefix = c.category === 'VOK' ? 'VOK' : 'HSL';
+                    lot = `${prefix}-${datePart}-${Math.floor(1000 + Math.random() * 9000)}`;
+                }
+            }
+
+            newBatch.lot = lot;
+
+            // Ensure batches array exists
+            c.batches = c.batches || [];
+            c.batches.unshift(newBatch);
+
+            // Save to local storage
+            localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+
+            // Refresh UI
+            closeModal('receive-modal');
+            renderTable();
+            document.getElementById('receive-form').reset();
+            alert(`Penerimaan barang berhasil disimpan dengan Lot: ${lot}`);
+        }
+
+        window.onload = initData;
+    </script>
+</body>
+
+</html>
