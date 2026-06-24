@@ -897,7 +897,7 @@
             <div class="nav" onclick="location.href='riwayat-penjualan.html'"><span class="ico">📋</span><span class="lbl">Riwayat Penjualan</span></div>
             <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
             <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
-            <div class="nav"><span class="ico">🏭</span><span class="lbl">Stok per Gudang</span></div>
+            <div class="nav" onclick="location.href='stok-inventaris.html'"><span class="ico">🏭</span><span class="lbl">Stok Inventaris</span></div>
         </div>
     </aside>
 
@@ -1286,7 +1286,7 @@
                         lot: "PKN-202606-0001",
                         gudang: "Gudang Pakan Utama",
                         qtyBags: 4,
-                        qtyKg: 200,
+                        qtyKg: 220,
                         receiveDate: "2026-05-15",
                         expiryDate: "2026-11-15",
                         hpp: 450000,
@@ -1457,6 +1457,22 @@
             if (stored) {
                 try {
                     commodities = JSON.parse(stored);
+                    
+                    // Auto-migration: Update PKN-AOGY3867 batch qtyKg to 220 if it is still 200
+                    let migrated = false;
+                    commodities.forEach(c => {
+                        if (c.id === "PKN-AOGY3867" && c.batches && c.batches.length > 0) {
+                            c.batches.forEach(b => {
+                                if (b.lot === "PKN-202606-0001" && b.qtyKg === 200) {
+                                    b.qtyKg = 220;
+                                    migrated = true;
+                                }
+                            });
+                        }
+                    });
+                    if (migrated) {
+                        saveData();
+                    }
                     
                     // Ensure our properties like hargaJualKg exist
                     let updated = false;

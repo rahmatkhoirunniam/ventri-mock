@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stok Inventaris — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* sidebar */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            cursor: pointer;
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        .nav .bdg {
+            background: var(--rust);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* main */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tb-title {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .tb-sub {
+            font-size: 11px;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+        }
+
+        /* filters */
+        .filters {
+            display: flex;
+            gap: 9px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 240px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 12px 9px 33px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13.5px;
+            background: var(--surf);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--sage);
+            box-shadow: 0 0 0 2px var(--sage-l);
+        }
+
+        .si {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink3);
+            font-size: 13.5px;
+        }
+
+        .sel {
+            padding: 9px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13.5px;
+            background: var(--surf);
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            outline: none;
+            transition: .12s;
+        }
+
+        .sel:focus {
+            border-color: var(--sage);
+        }
+
+        /* table */
+        .table-wrap {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .03);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--surf2);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+            white-space: nowrap;
+        }
+
+        tbody tr.main-row {
+            border-bottom: 1px solid var(--bdr);
+            transition: background .1s;
+        }
+
+        tbody tr.main-row:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr.main-row:hover {
+            background: #faf9f5;
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 13.5px;
+            vertical-align: middle;
+        }
+
+        .cname {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .cmeta {
+            font-size: 11px;
+            color: var(--ink3);
+            margin-top: 2.5px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* tags */
+        .cat-tag {
+            display: inline-flex;
+            padding: 2.5px 7px;
+            border-radius: 4px;
+            font-size: 10.5px;
+            font-weight: 500;
+            letter-spacing: .3px;
+        }
+
+        .cat-tag.pakan {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .cat-tag.produksi {
+            background: var(--sky-l);
+            color: var(--sky);
+        }
+
+        /* status badges */
+        .status-badge {
+            display: inline-flex;
+            padding: 3.5px 9px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .status-available {
+            background: #e6f1ec;
+            color: #2e5640;
+        }
+
+        .status-low {
+            background: #fdf0e3;
+            color: #b8621a;
+        }
+
+        .status-empty {
+            background: #fcecea;
+            color: #b02b1e;
+        }
+
+        .stock-sub {
+            font-size: 11.5px;
+            color: var(--ink2);
+            font-weight: normal;
+            margin-left: 4px;
+        }
+
+        /* expand lot list */
+        .exp-btn {
+            background: none;
+            border: 1px solid var(--bdr);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: var(--ink2);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: .13s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .exp-btn:hover,
+        .exp-btn.open {
+            border-color: var(--sage);
+            color: var(--sage);
+            background: var(--sage-l);
+        }
+
+        /* batch sub-row */
+        .lot-subrow {
+            display: none;
+        }
+
+        .lot-subrow.show {
+            display: table-row;
+        }
+
+        .lot-subrow > td {
+            background: #fcfbf9;
+            padding: 0;
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .lot-inner {
+            padding: 12px 16px 18px 52px;
+        }
+
+        .lot-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .lot-head-title {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: var(--ink2);
+        }
+
+        .lot-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12.5px;
+        }
+
+        .lot-table thead tr {
+            background: #ece9df;
+        }
+
+        .lot-table th {
+            padding: 8px 12px;
+            font-size: 9.5px;
+            font-weight: 600;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        .lot-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e1d6;
+        }
+
+        .lot-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .lot-table tr:hover td {
+            background: #ede9df;
+        }
+
+        .lot-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            background: var(--surf3);
+            padding: 2px 7px;
+            border-radius: 4px;
+            color: var(--ink2);
+            font-weight: 500;
+        }
+
+        .loc-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .exp-badge {
+            font-size: 10.5px;
+            background: var(--surf2);
+            color: var(--ink2);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .exp-badge.danger {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+
+        .exp-badge.warning {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo" onclick="location.href='index.html'">
+            <div class="sb-mark"><span style="cursor: pointer; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2) rotate(-10deg)'" onmouseout="this.style.transform='scale(1)'" onclick="resetAllData(event)" title="Klik untuk Reset Data">🐓</span> RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav" onclick="location.href='dashboard.html'"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav" onclick="location.href='pakan.html'"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav" onclick="location.href='penjualan.html'"><span class="ico">🛒</span><span class="lbl">Penjualan / Kasir</span></div>
+            <div class="nav" onclick="location.href='riwayat-penjualan.html'"><span class="ico">📋</span><span class="lbl">Riwayat Penjualan</span></div>
+            <div class="nav"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
+            <div class="nav active" onclick="location.href='stok-inventaris.html'"><span class="ico">🏭</span><span class="lbl">Stok Inventaris</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Stok Inventaris</div>
+                <div class="tb-sub"><span>🏭</span> Main Farm • Gudang</div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- SEARCH AND FILTER ROW -->
+            <div class="filters">
+                <div class="search-box">
+                    <span class="si">🔍</span>
+                    <input type="text" id="search-input" oninput="renderTable()" placeholder="Cari produk, SKU, atau barcode...">
+                </div>
+                <select class="sel" id="filter-category" onchange="renderTable()">
+                    <option value="all">Semua Kategori</option>
+                    <option value="Pakan">Pakan</option>
+                    <option value="Hasil Produksi">Hasil Produksi</option>
+                </select>
+                <select class="sel" id="filter-status" onchange="renderTable()">
+                    <option value="all">Semua Status</option>
+                    <option value="Tersedia">Tersedia</option>
+                    <option value="Menipis">Menipis</option>
+                    <option value="Habis">Habis</option>
+                </select>
+                <select class="sel" id="filter-gudang" onchange="renderTable()">
+                    <option value="all">Main Farm • Gudang (Semua)</option>
+                    <option value="Gudang Utama">Gudang Utama</option>
+                    <option value="Gudang Hasil Produksi">Gudang Hasil Produksi</option>
+                    <option value="Gudang Pakan Utama">Gudang Pakan Utama</option>
+                    <option value="Gudang Kandang A">Gudang Kandang A</option>
+                    <option value="Gudang Kandang B">Gudang Kandang B</option>
+                </select>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"></th>
+                            <th>Produk</th>
+                            <th>SKU</th>
+                            <th>Barcode</th>
+                            <th>Kategori</th>
+                            <th>Stok</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======== JAVASCRIPT SYSTEM ======== -->
+    <script>
+        // Seed data in case localStorage is empty
+        const INITIAL_COMMODITIES = [
+            {
+                id: "PKN-AOGY3867",
+                name: "Pakan DOC Starter BR-1 (Japfa Comfeed) - 50kg",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 50,
+                minAlert: 20,
+                nutrisi: "Protein 21%, Energi 2900 kkal/kg",
+                suhu: "Suhu Ruang (25-30°C)",
+                hargaBeli: 450000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: [
+                    {
+                        lot: "PKN-202606-0001",
+                        gudang: "Gudang Pakan Utama",
+                        qtyBags: 4,
+                        qtyKg: 220,
+                        receiveDate: "2026-05-15",
+                        expiryDate: "2026-11-15",
+                        hpp: 450000,
+                        notes: "Penerimaan awal, kondisi baik"
+                    }
+                ]
+            },
+            {
+                id: "PKN-U4P2E5YT",
+                name: "Pakan Pullet Grower L-22 (Charoen Pokphand) - 100kg",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 100,
+                minAlert: 15,
+                hargaBeli: 780000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: [
+                    {
+                        lot: "PKN-202606-0002",
+                        gudang: "Gudang Pakan Utama",
+                        qtyBags: 10,
+                        qtyKg: 1000,
+                        receiveDate: "2026-06-01",
+                        expiryDate: "2026-12-01",
+                        hpp: 780000,
+                        notes: "Premium pullet feed"
+                    }
+                ]
+            },
+            {
+                id: "PKN-WNH6UKIZ",
+                name: "Konsentrat Layer KLK-36 Super - 25kg",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 25,
+                minAlert: 30,
+                hargaBeli: 310000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: [
+                    {
+                        lot: "PKN-202606-0003",
+                        gudang: "Gudang Pakan Utama",
+                        qtyBags: 40,
+                        qtyKg: 1000,
+                        receiveDate: "2026-06-10",
+                        expiryDate: "2026-12-10",
+                        hpp: 310000,
+                        notes: "High calcium protein blend"
+                    }
+                ]
+            },
+            {
+                id: "HSL-BFYUUV9W",
+                name: "Telur Komersial / Normal (Grade A)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 100,
+                hargaBeli: 0,
+                hargaJual: 1500,
+                hargaJualKg: 24000,
+                batches: [
+                    {
+                        lot: "Panen Pagi (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1500,
+                        qtyKg: 93.7,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    },
+                    {
+                        lot: "Panen Kemarin (11/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1000,
+                        qtyKg: 62.5,
+                        receiveDate: "2026-06-11",
+                        expiryDate: "2026-07-11",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-3ZXOW3R6",
+                name: "Telur Retak / Pecah (Grade B)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 50,
+                hargaBeli: 0,
+                hargaJual: 1000,
+                hargaJualKg: 16000,
+                batches: [
+                    {
+                        lot: "Pecah Kandang A (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 250,
+                        qtyKg: 15.6,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-YQRFIKJ6",
+                name: "Ayam Afkir (Spent Hens)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1.5,
+                minAlert: 20,
+                hargaBeli: 0,
+                hargaJual: 35000,
+                hargaJualKg: 0,
+                batches: [
+                    {
+                        lot: "Afkir Kandang B (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 9,
+                        qtyKg: 13.5,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            }
+        ];
+
+        let commodities = [];
+        const expandedRows = new Set();
+
+        // Load data on page load
+        function initData() {
+            const stored = localStorage.getItem('rayfarm_commodities');
+            if (stored) {
+                try {
+                    commodities = JSON.parse(stored);
+                    
+                    // Auto-migration: Update PKN-AOGY3867 batch qtyKg to 220 if it is still 200
+                    let migrated = false;
+                    commodities.forEach(c => {
+                        if (c.id === "PKN-AOGY3867" && c.batches && c.batches.length > 0) {
+                            c.batches.forEach(b => {
+                                if (b.lot === "PKN-202606-0001" && b.qtyKg === 200) {
+                                    b.qtyKg = 220;
+                                    migrated = true;
+                                }
+                            });
+                        }
+                    });
+                    if (migrated) {
+                        localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+                    }
+                } catch (e) {
+                    commodities = INITIAL_COMMODITIES;
+                }
+            } else {
+                commodities = INITIAL_COMMODITIES;
+                localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+            }
+            renderTable();
+        }
+
+        function resetAllData(event) {
+            if (event) event.stopPropagation();
+            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik?")) {
+                localStorage.removeItem('coops');
+                localStorage.removeItem('rayfarm_commodities');
+                localStorage.removeItem('rayfarm_sales');
+                location.reload();
+            }
+        }
+
+        // Helper: calculate days to expiry
+        function daysToExpiry(dateStr) {
+            const diff = new Date(dateStr) - new Date();
+            return Math.ceil(diff / 86400000);
+        }
+
+        // Visual badges for expiry status
+        function getExpiryBadge(dateStr) {
+            const days = daysToExpiry(dateStr);
+            if (days <= 0) return `<span class="exp-badge danger">Kadaluarsa</span>`;
+            if (days <= 30) return `<span class="exp-badge danger">${days} hari lagi</span>`;
+            if (days <= 90) return `<span class="exp-badge warning">${days} hari lagi</span>`;
+            return `<span class="exp-badge">${days} hari</span>`;
+        }
+
+        function toggleLotRow(id) {
+            if (expandedRows.has(id)) {
+                expandedRows.delete(id);
+            } else {
+                expandedRows.add(id);
+            }
+            renderTable();
+        }
+
+        // Format Stock Detail (e.g. "100 Zak (5.000 Kg)" or "1.178 Butir (73,6 Kg)")
+        function formatStockDetail(c, filteredBatches) {
+            let totalQty = 0;
+            let totalWeight = 0;
+            filteredBatches.forEach(b => {
+                totalQty += (b.qty || 0);
+                totalWeight += (b.qtyKg || 0);
+            });
+
+            const formattedWeight = totalWeight.toLocaleString('id', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+
+            if (c.category === 'Pakan' || c.unitName === 'Zak') {
+                const wPerUnit = c.weightPerUnit || 50;
+                const bags = Math.floor(totalWeight / wPerUnit);
+                const rem = (totalWeight % wPerUnit).toFixed(1) * 1;
+                
+                let mainStr = `${bags.toLocaleString('id')} Zak`;
+                if (rem > 0) {
+                    mainStr += ` + ${rem.toLocaleString('id')} Kg`;
+                }
+                return `<strong>${mainStr}</strong><span class="stock-sub">(${formattedWeight} Kg)</span>`;
+            } else if (c.category === 'Hasil Produksi' && (c.name.toLowerCase().includes('telur') || c.unitName === 'Pcs')) {
+                const unit = c.name.toLowerCase().includes('telur') ? 'Butir' : c.unitName;
+                return `<strong>${totalQty.toLocaleString('id')} ${unit}</strong><span class="stock-sub">(${formattedWeight} Kg)</span>`;
+            } else {
+                // Fallback / Other categories
+                const unit = c.unitName || 'Pcs';
+                if (totalQty > 0) {
+                    return `<strong>${totalQty.toLocaleString('id')} ${unit}</strong><span class="stock-sub">(${formattedWeight} Kg)</span>`;
+                } else {
+                    return `<strong>${formattedWeight} Kg</strong>`;
+                }
+            }
+        }
+
+        // Format single batch stock
+        function formatBatchStock(b, c) {
+            const qty = b.qty || 0;
+            const qtyKg = b.qtyKg || 0;
+            const formattedWeight = qtyKg.toLocaleString('id', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+
+            if (c.category === 'Pakan' || c.unitName === 'Zak') {
+                const wPerUnit = c.weightPerUnit || 50;
+                const bags = Math.floor(qtyKg / wPerUnit);
+                const rem = (qtyKg % wPerUnit).toFixed(1) * 1;
+                
+                let mainStr = `${bags.toLocaleString('id')} Zak`;
+                if (rem > 0) {
+                    mainStr += ` + ${rem.toLocaleString('id')} Kg`;
+                }
+                return `<strong>${mainStr}</strong> <span style="font-size:11px; color:var(--ink2)">(${formattedWeight} Kg)</span>`;
+            } else if (c.category === 'Hasil Produksi' && (c.name.toLowerCase().includes('telur') || c.unitName === 'Pcs')) {
+                const unit = c.name.toLowerCase().includes('telur') ? 'Butir' : c.unitName;
+                return `<strong>${qty.toLocaleString('id')} ${unit}</strong> <span style="font-size:11px; color:var(--ink2)">(${formattedWeight} Kg)</span>`;
+            } else {
+                const unit = c.unitName || 'Pcs';
+                if (qty > 0) {
+                    return `<strong>${qty.toLocaleString('id')} ${unit}</strong> <span style="font-size:11px; color:var(--ink2)">(${formattedWeight} Kg)</span>`;
+                } else {
+                    return `<strong>${formattedWeight} Kg</strong>`;
+                }
+            }
+        }
+
+        // Render table rows based on filters
+        function renderTable() {
+            const tbody = document.getElementById('inventory-tbody');
+            tbody.innerHTML = '';
+
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const filterCategory = document.getElementById('filter-category').value;
+            const filterStatus = document.getElementById('filter-status').value;
+            const filterGudang = document.getElementById('filter-gudang').value;
+
+            commodities.forEach(c => {
+                // Category Filter
+                if (filterCategory !== 'all' && c.category !== filterCategory) return;
+
+                // Search Filter
+                const matchesSearch = c.name.toLowerCase().includes(searchVal) || 
+                                     c.id.toLowerCase().includes(searchVal) || 
+                                     (c.barcode && c.barcode.toLowerCase().includes(searchVal));
+                if (searchVal !== '' && !matchesSearch) return;
+
+                // Filter Batches by Warehouse
+                const filteredBatches = (c.batches || []).filter(b => {
+                    if (filterGudang !== 'all' && b.gudang !== filterGudang) return false;
+                    return true;
+                });
+
+                // Calculate stock metrics
+                let totalQty = 0;
+                let totalWeight = 0;
+                let nearestExpDate = '';
+                let minExpDays = 9999;
+
+                filteredBatches.forEach(b => {
+                    totalQty += (b.qty || 0);
+                    totalWeight += (b.qtyKg || 0);
+                    if (b.expiryDate) {
+                        const days = daysToExpiry(b.expiryDate);
+                        if (days < minExpDays) {
+                            minExpDays = days;
+                            nearestExpDate = b.expiryDate;
+                        }
+                    }
+                });
+
+                // Status calculation
+                let statusText = 'Tersedia';
+                let statusClass = 'status-available';
+
+                if (c.category === 'Pakan') {
+                    const wPerUnit = c.weightPerUnit || 50;
+                    const bags = Math.floor(totalWeight / wPerUnit);
+                    if (totalWeight === 0) {
+                        statusText = 'Habis';
+                        statusClass = 'status-empty';
+                    } else if (bags < (c.minAlert || 10)) {
+                        statusText = 'Menipis';
+                        statusClass = 'status-low';
+                    }
+                } else {
+                    if (totalQty === 0 && totalWeight === 0) {
+                        statusText = 'Habis';
+                        statusClass = 'status-empty';
+                    } else if (totalQty < (c.minAlert || 10)) {
+                        statusText = 'Menipis';
+                        statusClass = 'status-low';
+                    }
+                }
+
+                // Status Filter
+                if (filterStatus !== 'all' && statusText !== filterStatus) return;
+
+                // Create main row
+                const tr = document.createElement('tr');
+                tr.className = 'main-row';
+                tr.innerHTML = `
+                    <td>
+                        <button class="exp-btn ${expandedRows.has(c.id) ? 'open' : ''}" onclick="toggleLotRow('${c.id}')">
+                            📋
+                        </button>
+                    </td>
+                    <td>
+                        <div class="cname">${c.name}</div>
+                        <div class="cmeta">Kategori: ${c.category}</div>
+                    </td>
+                    <td><span class="cmeta">${c.id}</span></td>
+                    <td><span class="cmeta">${c.barcode || '-'}</span></td>
+                    <td>
+                        <span class="cat-tag ${c.category === 'Pakan' ? 'pakan' : 'produksi'}">
+                            ${c.category === 'Pakan' ? '🌾 Pakan' : '🥚 Hasil Produksi'}
+                        </span>
+                    </td>
+                    <td>
+                        ${formatStockDetail(c, filteredBatches)}
+                    </td>
+                    <td>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // Create subtable row for expanded lots
+                const subTr = document.createElement('tr');
+                subTr.className = `lot-subrow ${expandedRows.has(c.id) ? 'show' : ''}`;
+                
+                const lotRows = filteredBatches.map(b => {
+                    return `
+                        <tr>
+                            <td><span class="lot-tag">${b.lot}</span></td>
+                            <td><span class="loc-chip">${b.gudang}</span></td>
+                            <td>${formatBatchStock(b, c)}</td>
+                            <td>${b.receiveDate || '—'}</td>
+                            <td>${b.expiryDate ? getExpiryBadge(b.expiryDate) : '—'}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                subTr.innerHTML = `
+                    <td colspan="7">
+                        <div class="lot-inner">
+                            <div class="lot-head">
+                                <span class="lot-head-title">📋 Rincian Lot / Batch — ${c.name}</span>
+                            </div>
+                            ${filteredBatches.length === 0 
+                                ? `<div style="padding: 10px; color: var(--ink3); font-style: italic; background:#ece9df; text-align:center; border-radius:6px">Tidak ada lot aktif di lokasi terpilih</div>`
+                                : `
+                                <table class="lot-table">
+                                    <thead>
+                                        <tr>
+                                            <th>No. Lot</th>
+                                            <th>Lokasi Gudang</th>
+                                            <th>Stok Utama</th>
+                                            <th>Tanggal Masuk</th>
+                                            <th>Kadaluarsa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${lotRows}
+                                    </tbody>
+                                </table>
+                                `
+                            }
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(subTr);
+            });
+        }
+
+        window.onload = initData;
+    </script>
+</body>
+
+</html>
