@@ -820,6 +820,7 @@
             <div class="nav" onclick="location.href='penerimaan-barang.html'"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
             <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
             <div class="nav" onclick="location.href='stok-inventaris.html'"><span class="ico">🏭</span><span class="lbl">Stok Inventaris</span></div>
+            <div class="nav" onclick="location.href='log-stok.html'"><span class="ico">📜</span><span class="lbl">Log Stok</span></div>
         </div>
     </aside>
 
@@ -1177,6 +1178,47 @@
             const payInput = document.getElementById('amount-paid');
             if (payInput) payInput.value = '';
         });
+
+        function addStockLog(productId, productName, lot, gudang, type, changeQty, changeQtyKg, prevQty, prevQtyKg, afterQty, afterQtyKg, category, unitName, operator) {
+            const storedLogs = localStorage.getItem('rayfarm_stock_logs');
+            let logs = [];
+            if (storedLogs) {
+                try {
+                    logs = JSON.parse(storedLogs);
+                } catch (e) {
+                    logs = [];
+                }
+            }
+            const now = new Date();
+            const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+            const dd = String(now.getDate());
+            const mmm = months[now.getMonth()];
+            const yyyy = now.getFullYear();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const formattedDate = `${dd} ${mmm} ${yyyy} ${hh}.${min}`;
+
+            const newLog = {
+                id: 'LOG-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                timestamp: formattedDate,
+                productId: productId,
+                productName: productName,
+                lot: lot || '—',
+                gudang: gudang || 'Main Farm',
+                type: type,
+                changeQty: changeQty,
+                changeQtyKg: changeQtyKg,
+                prevQty: prevQty,
+                prevQtyKg: prevQtyKg,
+                afterQty: afterQty,
+                afterQtyKg: afterQtyKg,
+                category: category,
+                unitName: unitName,
+                operator: operator || 'Farm Test'
+            };
+            logs.unshift(newLog);
+            localStorage.setItem('rayfarm_stock_logs', JSON.stringify(logs));
+        }
 
         function initData() {
             const storedComm = localStorage.getItem('rayfarm_commodities');
@@ -1826,6 +1868,9 @@
                 if (c) {
                     const b = c.batches.find(batch => batch.lot === cartItem.lotSelected);
                     if (b) {
+                        const prevQty = b.qty;
+                        const prevQtyKg = b.qtyKg;
+
                         // Deduct stock proportionally
                         b.qty = Math.max(0, b.qty - cartItem.qtySold);
                         b.qtyKg = Math.max(0, b.qtyKg - cartItem.weightSold);
@@ -1835,9 +1880,28 @@
                             b.qty = 0;
                             b.qtyKg = 0;
                         }
+
+                        const afterQty = b.qty;
+                        const afterQtyKg = b.qtyKg;
+
+                        // Log the stock change!
+                        addStockLog(
+                            c.id, 
+                            c.name, 
+                            b.lot, 
+                            b.gudang, 
+                            "Penjualan", 
+                            -cartItem.qtySold, 
+                            -cartItem.weightSold, 
+                            prevQty, 
+                            prevQtyKg, 
+                            afterQty, 
+                            afterQtyKg, 
+                            c.category, 
+                            c.unitName, 
+                            "Kasir-RayFarm"
+                        );
                     }
-                    // Keep completely empty batches to preserve log history for goods receipt
-                    // c.batches = c.batches.filter(b => b.qty > 0 || b.qtyKg > 0);
                 }
             });
 

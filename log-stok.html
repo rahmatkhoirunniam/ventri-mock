@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Stok — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* sidebar */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            cursor: pointer;
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        .nav .bdg {
+            background: var(--rust);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* main */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tb-title-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tb-icon-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--sage-l);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--sage);
+        }
+
+        .tb-title {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .tb-sub {
+            font-size: 11px;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+        }
+
+        /* filters area */
+        .filter-panel {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 2;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 12px 9px 33px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13.5px;
+            background: var(--surf);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--sage);
+            box-shadow: 0 0 0 2px var(--sage-l);
+        }
+
+        .si {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink3);
+            font-size: 13.5px;
+        }
+
+        .sel {
+            padding: 9px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13.5px;
+            background: var(--surf);
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            outline: none;
+            transition: .12s;
+            min-width: 130px;
+            flex: 1;
+        }
+
+        .sel:focus {
+            border-color: var(--sage);
+        }
+
+        .date-range-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--ink2);
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 5px 12px;
+            background: var(--surf);
+            height: 38px;
+        }
+
+        .date-range-box input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ink);
+            font-size: 13px;
+            cursor: pointer;
+            width: 115px;
+        }
+
+        /* table styling */
+        .table-wrap {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .03);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--surf2);
+        }
+
+        th {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--bdr);
+            transition: background .1s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #faf9f5;
+        }
+
+        td {
+            padding: 16px 18px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .waktu-col {
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .waktu-sub {
+            font-size: 10.5px;
+            color: var(--ink3);
+            margin-top: 3px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .prod-title {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .prod-sku {
+            font-size: 10.5px;
+            color: var(--ink3);
+            margin-top: 3.5px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .lot-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--surf2);
+            color: var(--ink2);
+            border: 1px solid var(--bdr);
+            font-family: 'DM Mono', monospace;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .gudang-name {
+            color: var(--ink2);
+            font-weight: 400;
+        }
+
+        /* badges for adjustment types */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: .2px;
+            white-space: nowrap;
+        }
+
+        .type-penerimaan {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .type-hapus {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+
+        .type-koreksi-plus {
+            background: var(--sky-l);
+            color: var(--sky);
+        }
+
+        .type-koreksi-minus {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+
+        .type-penjualan {
+            background: #f6ecfc;
+            color: #8a1eaf;
+        }
+
+        /* Stock columns */
+        .stok-val {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .change-val {
+            font-weight: 700;
+        }
+
+        .change-val.plus {
+            color: var(--sage);
+        }
+
+        .change-val.minus {
+            color: var(--rust);
+        }
+
+        .operator-col {
+            color: var(--ink2);
+            font-weight: 500;
+        }
+
+        .sub-unit {
+            font-size: 11px;
+            color: var(--ink3);
+            margin-top: 2px;
+            font-weight: 400;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: var(--ink3);
+            font-style: italic;
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 1px solid var(--bdr);
+            color: var(--rust);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: .15s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .reset-btn:hover {
+            background: var(--rust-l);
+            border-color: var(--rust);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo" onclick="location.href='dashboard.html'">
+            <div class="sb-mark"><span style="cursor: pointer; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2) rotate(-10deg)'" onmouseout="this.style.transform='scale(1)'" onclick="resetAllData(event)" title="Klik untuk Reset Data">🐓</span> RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav" onclick="location.href='dashboard.html'"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav" onclick="location.href='pakan.html'"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav" onclick="location.href='penjualan.html'"><span class="ico">🛒</span><span class="lbl">Penjualan / Kasir</span></div>
+            <div class="nav" onclick="location.href='riwayat-penjualan.html'"><span class="ico">📋</span><span class="lbl">Riwayat Penjualan</span></div>
+            <div class="nav" onclick="location.href='penerimaan-barang.html'"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
+            <div class="nav" onclick="location.href='stok-inventaris.html'"><span class="ico">🏭</span><span class="lbl">Stok Inventaris</span></div>
+            <div class="nav active" onclick="location.href='log-stok.html'"><span class="ico">📜</span><span class="lbl">Log Stok</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div class="tb-title-container">
+                <div class="tb-icon-circle">🔄</div>
+                <div>
+                    <div class="tb-title">Log Stok</div>
+                    <div class="tb-sub">Riwayat perubahan stok dari batch — penerimaan, koreksi, dan penghapusan</div>
+                </div>
+            </div>
+            <div>
+                <button class="reset-btn" onclick="resetLogsOnly()">
+                    🗑️ Reset Log Saja
+                </button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- FILTER PANEL -->
+            <div class="filter-panel">
+                <div class="filters-row">
+                    <div class="search-box">
+                        <span class="si">🔍</span>
+                        <input type="text" id="search-input" oninput="renderTable()" placeholder="Cari produk atau LOT...">
+                    </div>
+                    
+                    <select class="sel" id="filter-type" onchange="renderTable()">
+                        <option value="all">Semua Tipe</option>
+                        <option value="Penerimaan">Penerimaan</option>
+                        <option value="Hapus Batch">Hapus Batch</option>
+                        <option value="Koreksi (+)">Koreksi (+)</option>
+                        <option value="Koreksi (-)">Koreksi (-)</option>
+                        <option value="Penjualan">Penjualan</option>
+                    </select>
+
+                    <select class="sel" id="filter-product" onchange="renderTable()">
+                        <option value="all">Semua Produk</option>
+                        <!-- Loaded dynamically -->
+                    </select>
+
+                    <select class="sel" id="filter-gudang" onchange="renderTable()">
+                        <option value="all">Semua Gudang</option>
+                        <option value="Gudang Utama">Gudang Utama</option>
+                        <option value="Gudang Hasil Produksi">Gudang Hasil Produksi</option>
+                        <option value="Gudang Pakan Utama">Gudang Pakan Utama</option>
+                        <option value="Main Farm">Main Farm</option>
+                    </select>
+
+                    <div class="date-range-box">
+                        <span>Rentang Tanggal</span>
+                        <input type="date" id="date-start" onchange="renderTable()">
+                        <span>s.d.</span>
+                        <input type="date" id="date-end" onchange="renderTable()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 140px;">Waktu</th>
+                            <th>Produk</th>
+                            <th>Lot / Batch</th>
+                            <th>Gudang</th>
+                            <th style="width: 120px; text-align: center;">Tipe</th>
+                            <th style="width: 130px; text-align: right;">Stok Sebelum</th>
+                            <th style="width: 130px; text-align: right;">Perubahan</th>
+                            <th style="width: 130px; text-align: right;">Stok Sesudah</th>
+                            <th style="width: 130px;">Operator</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SYSTEM -->
+    <script>
+        const SEED_LOGS = [
+            {
+                id: "LOG-0001",
+                timestamp: "19 Jun 2026 11.16",
+                productId: "PKN-AOGY3867",
+                productName: "Pakan DOC Starter BR-1 (Japfa Comfeed) - 50kg",
+                lot: "—",
+                gudang: "Main Farm",
+                type: "Hapus Batch",
+                changeQty: -1,
+                changeQtyKg: -50,
+                prevQty: 1,
+                prevQtyKg: 50,
+                afterQty: 0,
+                afterQtyKg: 0,
+                category: "Pakan",
+                unitName: "Zak",
+                operator: "Farm Test"
+            },
+            {
+                id: "LOG-0002",
+                timestamp: "19 Jun 2026 10.56",
+                productId: "PKN-AOGY3867",
+                productName: "Pakan DOC Starter BR-1 (Japfa Comfeed) - 50kg",
+                lot: "—",
+                gudang: "Main Farm",
+                type: "Penerimaan",
+                changeQty: 1,
+                changeQtyKg: 50,
+                prevQty: 0,
+                prevQtyKg: 0,
+                afterQty: 1,
+                afterQtyKg: 50,
+                category: "Pakan",
+                unitName: "Zak",
+                operator: "Farm Test"
+            },
+            {
+                id: "LOG-0003",
+                timestamp: "19 Jun 2026 10.47",
+                productId: "PKN-AOGY3867",
+                productName: "Pakan DOC Starter BR-1 (Japfa Comfeed) - 50kg",
+                lot: "PKN-202606-0002",
+                gudang: "Main Farm",
+                type: "Hapus Batch",
+                changeQty: -150,
+                changeQtyKg: -7500,
+                prevQty: 150,
+                prevQtyKg: 7500,
+                afterQty: 0,
+                afterQtyKg: 0,
+                category: "Pakan",
+                unitName: "Zak",
+                operator: "Farm Test"
+            },
+            {
+                id: "LOG-0004",
+                timestamp: "19 Jun 2026 10.46",
+                productId: "PKN-AOGY3867",
+                productName: "Pakan DOC Starter BR-1 (Japfa Comfeed) - 50kg",
+                lot: "PKN-202606-0002",
+                gudang: "Main Farm",
+                type: "Koreksi (-)",
+                changeQty: -2,
+                changeQtyKg: -100,
+                prevQty: 152,
+                prevQtyKg: 7600,
+                afterQty: 150,
+                afterQtyKg: 7500,
+                category: "Pakan",
+                unitName: "Zak",
+                operator: "Farm Test"
+            },
+            {
+                id: "LOG-0005",
+                timestamp: "19 Jun 2026 10.45",
+                productId: "PKN-AOGY3867",
+                productName: "Pakan DOC Starter BR-1 (Japfa Comfeed) - 50kg",
+                lot: "PKN-202606-0002",
+                gudang: "Main Farm",
+                type: "Koreksi (+)",
+                changeQty: 2,
+                changeQtyKg: 100,
+                prevQty: 150,
+                prevQtyKg: 7500,
+                afterQty: 152,
+                afterQtyKg: 7600,
+                category: "Pakan",
+                unitName: "Zak",
+                operator: "Farm Test"
+            },
+            {
+                id: "LOG-0006",
+                timestamp: "19 Jun 2026 10.43",
+                productId: "PKN-AOGY3867",
+                productName: "Pakan DOC Starter BR-1 (Japfa Comfeed) - 50kg",
+                lot: "PKN-202606-0002",
+                gudang: "Main Farm",
+                type: "Penerimaan",
+                changeQty: 150,
+                changeQtyKg: 7500,
+                prevQty: 0,
+                prevQtyKg: 0,
+                afterQty: 150,
+                afterQtyKg: 7500,
+                category: "Pakan",
+                unitName: "Zak",
+                operator: "Farm Test"
+            },
+            {
+                id: "LOG-0007",
+                timestamp: "18 Jun 2026 16.37",
+                productId: "PKN-AOGY3867",
+                productName: "Pakan DOC Starter BR-1 (Japfa Comfeed) - 50kg",
+                lot: "PKN-202606-0001",
+                gudang: "Main Farm",
+                type: "Penerimaan",
+                changeQty: 100,
+                changeQtyKg: 5000,
+                prevQty: 0,
+                prevQtyKg: 0,
+                afterQty: 100,
+                afterQtyKg: 5000,
+                category: "Pakan",
+                unitName: "Zak",
+                operator: "Farm Test"
+            },
+            {
+                id: "LOG-0008",
+                timestamp: "18 Jun 2026 14.15",
+                productId: "HSL-BFYUUV9W",
+                productName: "Telur Komersial / Normal (Grade A)",
+                lot: "Panen Pagi (12/06/2026)",
+                gudang: "Gudang Hasil Produksi",
+                type: "Penjualan",
+                changeQty: -150,
+                changeQtyKg: -9.3,
+                prevQty: 1500,
+                prevQtyKg: 93.7,
+                afterQty: 1350,
+                afterQtyKg: 84.4,
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                operator: "Kasir-RayFarm"
+            },
+            {
+                id: "LOG-0009",
+                timestamp: "17 Jun 2026 09.30",
+                productId: "HSL-YQRFIKJ6",
+                productName: "Ayam Afkir (Spent Hens)",
+                lot: "Afkir Kandang B (12/06/2026)",
+                gudang: "Gudang Hasil Produksi",
+                type: "Penjualan",
+                changeQty: -1,
+                changeQtyKg: -1.5,
+                prevQty: 10,
+                prevQtyKg: 15.0,
+                afterQty: 9,
+                afterQtyKg: 13.5,
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                operator: "Kasir-RayFarm"
+            },
+            {
+                id: "LOG-0010",
+                timestamp: "17 Jun 2026 08.00",
+                productId: "HSL-BFYUUV9W",
+                productName: "Telur Komersial / Normal (Grade A)",
+                lot: "Panen Pagi (17/06/2026)",
+                gudang: "Gudang Hasil Produksi",
+                type: "Penerimaan",
+                changeQty: 1200,
+                changeQtyKg: 75.0,
+                prevQty: 0,
+                prevQtyKg: 0,
+                afterQty: 1200,
+                afterQtyKg: 75.0,
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                operator: "Pencatatan Harian Kandang: Kandang A"
+            }
+        ];
+
+        let stockLogs = [];
+        let commodities = [];
+
+        function initPage() {
+            const storedComm = localStorage.getItem('rayfarm_commodities');
+            if (storedComm) {
+                try {
+                    commodities = JSON.parse(storedComm);
+                } catch(e) {
+                    commodities = [];
+                }
+            }
+
+            const storedLogs = localStorage.getItem('rayfarm_stock_logs');
+            if (storedLogs) {
+                try {
+                    stockLogs = JSON.parse(storedLogs);
+                } catch(e) {
+                    stockLogs = SEED_LOGS;
+                    localStorage.setItem('rayfarm_stock_logs', JSON.stringify(stockLogs));
+                }
+            } else {
+                stockLogs = SEED_LOGS;
+                localStorage.setItem('rayfarm_stock_logs', JSON.stringify(stockLogs));
+            }
+
+            populateProductDropdown();
+            renderTable();
+        }
+
+        function populateProductDropdown() {
+            const selectEl = document.getElementById('filter-product');
+            const productMap = new Map();
+            
+            commodities.forEach(c => productMap.set(c.id, c.name));
+            
+            stockLogs.forEach(log => {
+                if (log.productId && log.productName) {
+                    productMap.set(log.productId, log.productName);
+                }
+            });
+
+            productMap.forEach((name, id) => {
+                const opt = document.createElement('option');
+                opt.value = id;
+                opt.textContent = name.length > 40 ? name.substring(0, 37) + '...' : name;
+                selectEl.appendChild(opt);
+            });
+        }
+
+        function parseLogDate(dateStr) {
+            const months = {
+                "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "Mei": 4, "Jun": 5,
+                "Jul": 6, "Agt": 7, "Sep": 8, "Okt": 9, "Nov": 10, "Des": 11
+            };
+            try {
+                const parts = dateStr.split(" ");
+                if (parts.length < 3) return new Date(0);
+                const day = parseInt(parts[0]);
+                const month = months[parts[1]] || 0;
+                const year = parseInt(parts[2]);
+                let hour = 0;
+                let min = 0;
+                if (parts.length >= 4) {
+                    const timeParts = parts[3].split(".");
+                    hour = parseInt(timeParts[0]) || 0;
+                    min = parseInt(timeParts[1]) || 0;
+                }
+                return new Date(year, month, day, hour, min);
+            } catch(e) {
+                return new Date(0);
+            }
+        }
+
+        function formatStockValue(qty, qtyKg, category, unitName, isChange = false) {
+            let label = unitName || 'Pcs';
+            if (category === 'Hasil Produksi' && label === 'Pcs') {
+                label = 'Butir';
+            }
+            if (category === 'Hasil Produksi' && unitName === 'Pcs' && qtyKg > 0 && qtyKg < 5) {
+                label = 'Ekor';
+            }
+            if (label === 'Pcs' && (unitName === 'Pcs' || category === 'Hasil Produksi') && qtyKg > 0 && Math.abs(qtyKg/qty - 1.5) < 0.1) {
+                label = 'Ekor';
+            }
+
+            const formattedQty = qty.toLocaleString('id');
+            const sign = isChange && qty > 0 ? '+' : '';
+            
+            let weightStr = '';
+            if (qtyKg !== 0) {
+                const formattedWeight = qtyKg.toLocaleString('id', { minimumFractionDigits: 0, maximumFractionDigits: 1 });
+                const weightSign = isChange && qtyKg > 0 ? '+' : '';
+                weightStr = `<div class="sub-unit">(${weightSign}${formattedWeight} Kg)</div>`;
+            }
+
+            return `<strong>${sign}${formattedQty} ${label}</strong>${weightStr}`;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('logs-tbody');
+            tbody.innerHTML = '';
+
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const typeFilter = document.getElementById('filter-type').value;
+            const productFilter = document.getElementById('filter-product').value;
+            const gudangFilter = document.getElementById('filter-gudang').value;
+            const dateStartVal = document.getElementById('date-start').value;
+            const dateEndVal = document.getElementById('date-end').value;
+
+            const startLimit = dateStartVal ? new Date(dateStartVal + 'T00:00:00') : null;
+            const endLimit = dateEndVal ? new Date(dateEndVal + 'T23:59:59') : null;
+
+            const filteredLogs = stockLogs.filter(log => {
+                const matchSearch = !searchVal || 
+                    (log.productName && log.productName.toLowerCase().includes(searchVal)) ||
+                    (log.productId && log.productId.toLowerCase().includes(searchVal)) ||
+                    (log.lot && log.lot.toLowerCase().includes(searchVal));
+
+                const matchType = typeFilter === 'all' || log.type === typeFilter;
+                const matchProduct = productFilter === 'all' || log.productId === productFilter;
+                
+                const matchGudang = gudangFilter === 'all' || 
+                    (log.gudang && log.gudang.toLowerCase().includes(gudangFilter.toLowerCase()));
+
+                let matchDate = true;
+                if (startLimit || endLimit) {
+                    const logDate = parseLogDate(log.timestamp);
+                    if (startLimit && logDate < startLimit) matchDate = false;
+                    if (endLimit && logDate > endLimit) matchDate = false;
+                }
+
+                return matchSearch && matchType && matchProduct && matchGudang && matchDate;
+            });
+
+            if (filteredLogs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="no-data">Tidak ada riwayat log stok yang cocok dengan filter.</td></tr>`;
+                return;
+            }
+
+            filteredLogs.forEach(log => {
+                const tr = document.createElement('tr');
+                
+                let badgeClass = 'type-default';
+                if (log.type === 'Penerimaan') badgeClass = 'type-penerimaan';
+                else if (log.type === 'Hapus Batch') badgeClass = 'type-hapus';
+                else if (log.type === 'Koreksi (+)') badgeClass = 'type-koreksi-plus';
+                else if (log.type === 'Koreksi (-)') badgeClass = 'type-koreksi-minus';
+                else if (log.type === 'Penjualan') badgeClass = 'type-penjualan';
+
+                const isPositive = log.changeQty > 0 || (log.changeQty === 0 && log.changeQtyKg > 0);
+                const changeClass = isPositive ? 'change-val plus' : (log.changeQty === 0 && log.changeQtyKg === 0 ? 'change-val' : 'change-val minus');
+
+                const dateParts = log.timestamp.split(" ");
+                const timeStr = dateParts.length >= 4 ? dateParts[3] : '';
+                const dateStr = dateParts.slice(0, 3).join(" ");
+
+                tbody.appendChild(tr);
+
+                tr.innerHTML = `
+                    <td class="waktu-col">
+                        <div>${dateStr}</div>
+                        <div class="waktu-sub">${timeStr}</div>
+                    </td>
+                    <td>
+                        <div class="prod-title">${log.productName}</div>
+                        <div class="prod-sku">${log.productId}</div>
+                    </td>
+                    <td>
+                        ${log.lot !== '—' ? `<span class="lot-badge">${log.lot}</span>` : `<span style="color:var(--ink3);">—</span>`}
+                    </td>
+                    <td class="gudang-name">${log.gudang}</td>
+                    <td style="text-align: center;">
+                        <span class="type-badge ${badgeClass}">${log.type}</span>
+                    </td>
+                    <td style="text-align: right;" class="stok-val">
+                        ${formatStockValue(log.prevQty, log.prevQtyKg, log.category, log.unitName)}
+                    </td>
+                    <td style="text-align: right;" class="${changeClass}">
+                        ${formatStockValue(log.changeQty, log.changeQtyKg, log.category, log.unitName, true)}
+                    </td>
+                    <td style="text-align: right;" class="stok-val">
+                        ${formatStockValue(log.afterQty, log.afterQtyKg, log.category, log.unitName)}
+                    </td>
+                    <td class="operator-col">${log.operator}</td>
+                `;
+            });
+        }
+
+        function resetLogsOnly() {
+            if (confirm("Apakah Anda yakin ingin menghapus SEMUA riwayat log stok saja? Data komoditas dan penjualan aktif akan tetap dipertahankan.")) {
+                localStorage.setItem('rayfarm_stock_logs', JSON.stringify([]));
+                stockLogs = [];
+                renderTable();
+            }
+        }
+
+        function resetAllData(event) {
+            if (event) event.stopPropagation();
+            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik?")) {
+                localStorage.removeItem('coops');
+                localStorage.removeItem('rayfarm_commodities');
+                localStorage.removeItem('rayfarm_sales');
+                localStorage.removeItem('rayfarm_stock_logs');
+                location.reload();
+            }
+        }
+
+        window.onload = initPage;
+    </script>
+</body>
+
+</html>
