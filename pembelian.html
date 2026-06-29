@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembelian — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* sidebar */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            cursor: pointer;
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        .nav .bdg {
+            background: var(--rust);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* main */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tb-title {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .tb-sub {
+            font-size: 11px;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-family: 'DM Sans', sans-serif;
+            transition: .13s;
+            user-select: none;
+            text-decoration: none;
+        }
+
+        .btn-solid {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .btn-solid:hover {
+            background: #2e5640;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--bdr);
+            color: var(--ink2);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--bdr2);
+            color: var(--ink);
+            background: var(--surf2);
+        }
+
+        .btn-danger {
+            background: var(--rust-l);
+            color: var(--rust);
+            border: 1px solid rgba(176, 43, 30, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: var(--rust);
+            color: #fff;
+        }
+
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+        }
+
+        /* banner info */
+        .banner-info {
+            background: var(--sage-l);
+            color: var(--sage);
+            border: 1px solid rgba(58, 107, 80, 0.15);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Filters panel styles */
+        .filter-panel {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .01);
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1.5;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--surf);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .12s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--sage);
+            box-shadow: 0 0 0 2px var(--sage-l);
+        }
+
+        .si {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ink3);
+            font-size: 13px;
+        }
+
+        .sel {
+            padding: 8px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--ink);
+            background: var(--surf);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            min-width: 140px;
+            cursor: pointer;
+        }
+
+        .sel:focus {
+            border-color: var(--sage);
+        }
+
+        .date-range-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            color: var(--ink2);
+        }
+
+        .date-range-box input {
+            padding: 7px 10px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            background: var(--surf);
+            color: var(--ink);
+        }
+
+        .date-range-box input:focus {
+            border-color: var(--sage);
+        }
+
+        /* Back Button & Topbar styling */
+        .topbar-left-wrap {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-back {
+            background: var(--surf2);
+            border: none;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink2);
+            margin-right: 12px;
+            transition: .15s;
+        }
+
+        .btn-back:hover {
+            background: var(--surf3);
+            color: var(--ink);
+        }
+
+        /* Status Badges */
+        .status-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-tag.selesai {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .status-tag.tempo {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+
+        /* Pagination style */
+        .pag-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            padding: 0 4px;
+            font-size: 12.5px;
+            color: var(--ink2);
+        }
+
+        .pag-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pag-btn {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: .12s;
+            user-select: none;
+        }
+
+        .pag-btn:hover {
+            background: var(--surf2);
+            color: var(--ink);
+        }
+
+        .pag-num {
+            background: var(--sage);
+            color: #fff;
+            border-color: var(--sage);
+            font-weight: 600;
+        }
+
+        /* card */
+        .card {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .02);
+        }
+
+        .card-title {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--bdr);
+            padding-bottom: 10px;
+        }
+
+        /* form fields */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .grid-1 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .fg {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .fg label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink2);
+        }
+
+        .fg label .req {
+            color: var(--rust);
+        }
+
+        .fg input,
+        .fg select,
+        .fg textarea {
+            padding: 9px 12px;
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--ink);
+            background: var(--surf);
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: .13s;
+            width: 100%;
+        }
+
+        .fg input:focus,
+        .fg select:focus,
+        .fg textarea:focus {
+            border-color: var(--sage);
+            box-shadow: 0 0 0 2px var(--sage-l);
+        }
+
+        .fg .hint {
+            font-size: 11px;
+            color: var(--ink3);
+            margin-top: 2px;
+            font-style: italic;
+        }
+
+        /* product preview panel */
+        .prod-preview {
+            background: var(--surf2);
+            border: 1px solid var(--bdr2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12.5px;
+        }
+
+        .prod-preview-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prod-tag {
+            background: var(--sage-l);
+            color: var(--sage);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .prod-subtotal {
+            font-family: 'DM Mono', monospace;
+            font-weight: 700;
+            color: var(--sage);
+            font-size: 14px;
+        }
+
+        /* batch block styles */
+        .batch-block {
+            background: #faf9f5;
+            border: 1px dashed var(--bdr2);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 14px;
+            margin-bottom: 14px;
+        }
+
+        .batch-block-title {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--ink2);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* table styles */
+        .table-wrap {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .02);
+            margin-top: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--surf2);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--bdr);
+            transition: background .1s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #faf9f5;
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .item-meta {
+            font-size: 11px;
+            color: var(--ink3);
+            font-family: 'DM Mono', monospace;
+            margin-top: 2px;
+        }
+
+        .item-batch-info {
+            font-size: 11px;
+            color: var(--amber);
+            margin-top: 3px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .item-batch-chip {
+            background: var(--amber-l);
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .subtotal-col {
+            font-family: 'DM Mono', monospace;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        /* empty state */
+        .empty-row {
+            text-align: center;
+            color: var(--ink3);
+            padding: 40px !important;
+            font-style: italic;
+        }
+
+        /* summary panel */
+        .summary-panel {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            border-top: 1px solid var(--bdr);
+            padding-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            gap: 40px;
+            font-size: 14px;
+            color: var(--ink2);
+        }
+
+        .summary-row.total {
+            font-size: 18px;
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .summary-row .val {
+            font-family: 'DM Mono', monospace;
+            text-align: right;
+            width: 140px;
+        }
+
+        /* tag/badge */
+        .lot-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            background: var(--surf3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--ink);
+        }
+
+        .cat-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .cat-tag.pakan {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .cat-tag.vok {
+            background: var(--amber-l);
+            color: var(--amber);
+        }
+
+        /* modal details overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 6, 2, .55);
+            z-index: 200;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-y: auto;
+            backdrop-filter: blur(1.5px);
+        }
+
+        .overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surf);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 16px 48px rgba(8, 6, 2, .24);
+            animation: up .18s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin: auto;
+            overflow: hidden;
+        }
+
+        @keyframes up {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .mh {
+            padding: 20px 24px 14px;
+            border-bottom: 1px solid var(--bdr);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mh-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .mclose {
+            background: var(--surf2);
+            border: none;
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink2);
+        }
+
+        .mclose:hover {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+
+        .mb {
+            padding: 24px;
+        }
+
+        .detail-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+            background: var(--surf2);
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .detail-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-info-lbl {
+            font-size: 11px;
+            color: var(--ink2);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: .3px;
+        }
+
+        .detail-info-val {
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        /* delete button on row */
+        .btn-row-del {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--ink3);
+            padding: 4px;
+            border-radius: 4px;
+            transition: .1s;
+        }
+
+        .btn-row-del:hover {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo">
+            <div class="sb-mark"><span style="cursor: pointer; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2) rotate(-10deg)'" onmouseout="this.style.transform='scale(1)'" onclick="resetAllData(event)" title="Klik untuk Reset Data">🐓</span> RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav" onclick="location.href='dashboard.html'"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav" onclick="location.href='pakan.html'"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav" onclick="location.href='penjualan.html'"><span class="ico">🛒</span><span class="lbl">Penjualan / Kasir</span></div>
+            <div class="nav" onclick="location.href='riwayat-penjualan.html'"><span class="ico">📋</span><span class="lbl">Riwayat Penjualan</span></div>
+            <div class="nav active" onclick="location.href='pembelian.html'"><span class="ico">💰</span><span class="lbl">Pembelian</span></div>
+            <div class="nav" onclick="location.href='penerimaan-barang.html'"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
+            <div class="nav" onclick="location.href='stok-inventaris.html'"><span class="ico">🏭</span><span class="lbl">Stok Inventaris</span></div>
+            <div class="nav" onclick="location.href='log-stok.html'"><span class="ico">📜</span><span class="lbl">Log Stok</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Pembelian Baru</div>
+                <div class="tb-sub">Pencatatan pembelian komoditas dari supplier</div>
+            </div>
+            <div class="tb-right" id="topbar-actions">
+                <!-- Dynamic actions based on tab -->
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- VIEW: LIST PEMBELIAN (STOK MASUK) -->
+            <div id="view-list">
+                <!-- FILTER PANEL -->
+                <div class="filter-panel">
+                    <div class="filters-row">
+                        <div class="search-box">
+                            <span class="si">🔍</span>
+                            <input type="text" id="search-input" oninput="renderHistoryTable()" placeholder="Cari No. Ref...">
+                        </div>
+                        
+                        <select class="sel" id="filter-supplier" onchange="renderHistoryTable()">
+                            <option value="all">Semua Supplier</option>
+                            <option value="PT. Charoen Pokphand Indonesia">PT. Charoen Pokphand Indonesia</option>
+                            <option value="PT. Japfa Comfeed Indonesia">PT. Japfa Comfeed Indonesia</option>
+                            <option value="PT. Cargill Indonesia">PT. Cargill Indonesia</option>
+                            <option value="PT. Malindo Feedmill">PT. Malindo Feedmill</option>
+                            <option value="PT. Wonokoyo Jaya Corporindo">PT. Wonokoyo Jaya Corporindo</option>
+                            <option value="Apotek Ternak Sehat">Apotek Ternak Sehat</option>
+                            <option value="Medion Ardhika Bhakti">Medion Ardhika Bhakti</option>
+                        </select>
+
+                        <select class="sel" id="filter-lokasi" onchange="renderHistoryTable()">
+                            <option value="all">Semua Lokasi</option>
+                            <option value="Gudang Pakan Utama">Gudang Pakan Utama</option>
+                            <option value="Gudang Utama">Gudang Utama</option>
+                            <option value="Main Farm">Main Farm</option>
+                        </select>
+
+                        <select class="sel" id="filter-status" onchange="renderHistoryTable()">
+                            <option value="all">Semua Status</option>
+                            <option value="Selesai">Selesai</option>
+                            <option value="Tempo">Tempo</option>
+                        </select>
+
+                        <div class="date-range-box">
+                            <input type="date" id="filter-date-start" onchange="renderHistoryTable()">
+                            <span>s.d.</span>
+                            <input type="date" id="filter-date-end" onchange="renderHistoryTable()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLE CARD -->
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <div class="table-wrap" style="border: none; box-shadow: none; border-radius: 0; margin-top: 0;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>NO. REF</th>
+                                    <th>TANGGAL</th>
+                                    <th>SUPPLIER</th>
+                                    <th>LOKASI</th>
+                                    <th>ITEM</th>
+                                    <th style="text-align: right;">TOTAL</th>
+                                    <th style="text-align: center;">STATUS</th>
+                                    <th style="text-align: center;">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody">
+                                <!-- Populate dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: FORM PEMBELIAN BARU -->
+            <div id="view-form" style="display: none;">
+                <!-- BANNER WARNING -->
+                <div class="banner-info">
+                    <span>⚠️</span>
+                    <span>Hanya dapat melakukan pembelian <strong>PAKAN & OBAT (VOK)</strong> saja.</span>
+                </div>
+
+                <!-- CARD 1: INFORMASI PEMBELIAN -->
+                <div class="card">
+                    <div class="card-title">📝 Informasi Pembelian</div>
+                    
+                    <div class="grid-3">
+                        <div class="fg">
+                            <label>Supplier <span class="req">*</span></label>
+                            <select id="pemb-supplier">
+                                <option value="">-- Pilih Supplier --</option>
+                                <option value="PT. Charoen Pokphand Indonesia">PT. Charoen Pokphand Indonesia</option>
+                                <option value="PT. Japfa Comfeed Indonesia">PT. Japfa Comfeed Indonesia</option>
+                                <option value="PT. Cargill Indonesia">PT. Cargill Indonesia</option>
+                                <option value="PT. Malindo Feedmill">PT. Malindo Feedmill</option>
+                                <option value="PT. Wonokoyo Jaya Corporindo">PT. Wonokoyo Jaya Corporindo</option>
+                                <option value="Apotek Ternak Sehat">Apotek Ternak Sehat</option>
+                                <option value="Medion Ardhika Bhakti">Medion Ardhika Bhakti</option>
+                            </select>
+                        </div>
+                        <div class="fg">
+                            <label>Lokasi (Gudang/Toko) <span class="req">*</span></label>
+                            <select id="pemb-lokasi">
+                                <option value="">-- Pilih Lokasi --</option>
+                                <option value="Gudang Pakan Utama">Gudang Pakan Utama</option>
+                                <option value="Gudang Utama">Gudang Utama</option>
+                                <option value="Main Farm">Main Farm</option>
+                            </select>
+                        </div>
+                        <div class="fg">
+                            <label>No. Referensi (Invoice/PO) <span class="req">*</span></label>
+                            <input type="text" id="pemb-ref" placeholder="Contoh: PO-12345">
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="fg">
+                            <label>Metode Pembayaran <span class="req">*</span></label>
+                            <select id="pemb-paymethod">
+                                <option value="Cash">Cash (Tunai)</option>
+                                <option value="Transfer Bank">Transfer Bank</option>
+                                <option value="QRIS">QRIS</option>
+                                <option value="Tempo">Tempo (Hutang)</option>
+                            </select>
+                        </div>
+                        <div class="fg">
+                            <label>Tanggal Pembelian <span class="req">*</span></label>
+                            <input type="date" id="pemb-date">
+                        </div>
+                    </div>
+
+                    <div class="grid-1">
+                        <div class="fg">
+                            <label>Catatan</label>
+                            <textarea id="pemb-catatan" rows="2" placeholder="Catatan pembelian..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: TAMBAH ITEM -->
+                <div class="card">
+                    <div class="card-title">🛒 Tambah Item</div>
+
+                    <div class="grid-3">
+                        <div class="fg" style="grid-column: span 1;">
+                            <label>Produk <span class="req">*</span></label>
+                            <select id="item-product" onchange="onProductChange()">
+                                <option value="">-- Pilih Produk --</option>
+                                <!-- Populate dynamically -->
+                            </select>
+                        </div>
+                        <div class="fg">
+                            <label id="lbl-item-qty">Jumlah <span class="req">*</span></label>
+                            <input type="number" id="item-qty" min="1" value="1" oninput="updateItemSubtotal()">
+                        </div>
+                        <div class="fg">
+                            <label>Harga Satuan (Rp) <span class="req">*</span></label>
+                            <input type="number" id="item-price" min="0" oninput="updateItemSubtotal()">
+                        </div>
+                    </div>
+
+                    <!-- Dynamic preview showing SKU and subtotal -->
+                    <div id="product-preview-container" style="display: none;">
+                        <div class="prod-preview">
+                            <div class="prod-preview-left">
+                                <span class="prod-tag" id="prod-preview-tag">Category</span>
+                                <span id="prod-preview-sku" style="font-family: 'DM Mono', monospace; color: var(--ink2);">SKU</span>
+                                <span style="color: var(--ink3);">|</span>
+                                <span id="prod-preview-conversion" style="color: var(--ink2);">Detail unit</span>
+                            </div>
+                            <div class="prod-subtotal" id="prod-preview-subtotal">Subtotal: Rp 0</div>
+                        </div>
+                    </div>
+
+                    <!-- BATCH INFO BLOCK -->
+                    <div class="batch-block">
+                        <div class="batch-block-title">📦 Informasi Batch & Kadaluarsa</div>
+                        <p style="font-size: 11px; color: var(--ink2); margin-bottom: 10px; font-style: italic;">
+                            Info batch wajib diisi untuk setiap item pembelian agar stok masuk tercatat sebagai inventory layer dan dapat dimutasi per batch.
+                        </p>
+                        
+                        <div class="grid-3">
+                            <div class="fg">
+                                <label>No. Lot / Batch</label>
+                                <input type="text" id="batch-lot" placeholder="Kosongkan untuk generate otomatis">
+                            </div>
+                            <div class="fg">
+                                <label>Tanggal Kadaluarsa</label>
+                                <input type="date" id="batch-expiry">
+                            </div>
+                            <div class="fg">
+                                <label>No. Registrasi Batch</label>
+                                <input type="text" id="batch-reg" placeholder="Nomor registrasi produk">
+                            </div>
+                        </div>
+                        <div class="grid-2" style="margin-bottom: 0;">
+                            <div class="fg">
+                                <label>Sumber Flock</label>
+                                <input type="text" id="batch-flock" placeholder="Contoh: Flock A">
+                            </div>
+                            <div class="fg">
+                                <label>Catatan Batch</label>
+                                <input type="text" id="batch-notes" placeholder="Catatan tambahan untuk batch ini">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-solid" style="background-color: var(--sage); color: white;" onclick="addItemToCart()">＋ Tambah Item</button>
+                </div>
+
+                <!-- CARD 3: DAFTAR ITEM -->
+                <div class="card">
+                    <div class="card-title">📋 Daftar Item</div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Produk</th>
+                                    <th style="width: 140px;">Jumlah</th>
+                                    <th style="width: 160px; text-align: right;">Harga Satuan</th>
+                                    <th style="width: 160px; text-align: right;">Subtotal</th>
+                                    <th style="width: 80px; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-tbody">
+                                <!-- Tr generated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Summary and Checkout -->
+                    <div class="summary-panel">
+                        <div class="summary-row">
+                            <div>Total Item</div>
+                            <div class="val" id="summary-items">0 Item</div>
+                        </div>
+                        <div class="summary-row total">
+                            <div>Grand Total</div>
+                            <div class="val" id="summary-total">Rp 0</div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button class="btn btn-solid" style="padding: 12px 24px; font-size: 14px;" onclick="savePurchase()">💾 Simpan Pembelian</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== MODAL: DETAIL RIWAYAT PEMBELIAN ======== -->
+    <div id="detail-modal" class="overlay">
+        <div class="modal">
+            <div class="mh">
+                <div class="mh-title" id="m-title">Detail Transaksi Pembelian</div>
+                <button class="mclose" onclick="closeModal('detail-modal')">×</button>
+            </div>
+            <div class="mb">
+                <div class="detail-info-grid">
+                    <div class="detail-info-item">
+                        <span class="detail-info-lbl">No. Referensi / PO</span>
+                        <span class="detail-info-val" id="m-ref">—</span>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="detail-info-lbl">Tanggal Pembelian</span>
+                        <span class="detail-info-val" id="m-date">—</span>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="detail-info-lbl">Supplier</span>
+                        <span class="detail-info-val" id="m-supplier">—</span>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="detail-info-lbl">Lokasi (Gudang/Toko)</span>
+                        <span class="detail-info-val" id="m-location">—</span>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="detail-info-lbl">Metode Pembayaran</span>
+                        <span class="detail-info-val" id="m-paymethod">—</span>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="detail-info-lbl">Catatan</span>
+                        <span class="detail-info-val" id="m-notes">—</span>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produk & Batch</th>
+                                <th style="width: 120px;">Jumlah</th>
+                                <th style="width: 140px; text-align: right;">Harga Satuan</th>
+                                <th style="width: 140px; text-align: right;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-tbody">
+                            <!-- Populate dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; border-top: 1px solid var(--bdr); padding-top: 16px;">
+                    <div>
+                        <button class="btn btn-danger" id="m-delete-btn">🗑️ Hapus Transaksi</button>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 12px; color: var(--ink2); text-transform: uppercase; font-weight:600; display:block; margin-bottom: 2px;">Grand Total</span>
+                        <span style="font-family: 'Fraunces', serif; font-size: 20px; font-weight:700; color: var(--sage);" id="m-total">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SYSTEM -->
+    <script>
+        // State variables
+        let commodities = [];
+        let cartItems = [];
+        let purchaseHistory = [];
+
+        // Seed data for purchase history if empty
+        const SEED_PURCHASES = [
+            {
+                id: "PO-20260611-0001",
+                refNo: "PO-202606-0003",
+                supplier: "PT. Wonokoyo Jaya Corporindo",
+                location: "Gudang Pakan Utama",
+                paymentMethod: "Transfer Bank",
+                purchaseDate: "2026-06-11",
+                notes: "Pakan Konsentrat KLK-36 rutin bulanan",
+                items: [
+                    {
+                        productId: "PKN-WNH6UKIZ",
+                        productName: "Konsentrat Layer KLK-36 (Wonokoyo) - 50kg",
+                        category: "Pakan",
+                        qty: 40,
+                        qtyKg: 2000,
+                        price: 150000,
+                        lot: "PKN-202606-0003",
+                        expiryDate: "2026-12-11",
+                        regNo: "REG-WNK-7788",
+                        flockSource: "Flock A & B",
+                        batchNotes: "Simpan kering di palet bawah"
+                    }
+                ],
+                totalAmount: 6000000
+            },
+            {
+                id: "PO-20260605-0002",
+                refNo: "PO-202606-0009",
+                supplier: "Medion Ardhika Bhakti",
+                location: "Gudang Utama",
+                paymentMethod: "Cash",
+                purchaseDate: "2026-06-05",
+                notes: "Vaksin dingin ND-IB",
+                items: [
+                    {
+                        productId: "VOK-NDIB1000",
+                        productName: "Vaksin ND-IB Clone 45 (Intervet) - 1000 Dosis",
+                        category: "VOK",
+                        qty: 10,
+                        qtyKg: 1.0,
+                        price: 75000,
+                        lot: "VOK-202606-0009",
+                        expiryDate: "2026-12-05",
+                        regNo: "DEPTAN-RI-I-9988",
+                        flockSource: "Flock C",
+                        batchNotes: "Simpan dingin dalam kulkas obat"
+                    }
+                ],
+                totalAmount: 750000
+            }
+        ];
+
+        // Format dates & currencies
+        function formatRupiah(num) {
+            return 'Rp ' + (num || 0).toLocaleString('id');
+        }
+
+        // Initial Seed Commodities (fallback if not in localStorage)
+        const INITIAL_COMMODITIES = [
+            {
+                id: "PKN-AOGY3867",
+                name: "Pakan DOC Starter BR-1 (Japfa Comfeed)",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 50,
+                minAlert: 20,
+                nutrisi: "Protein 21%, Energi 2900 kkal/kg",
+                suhu: "Suhu Ruang (25-30°C)",
+                hargaBeli: 450000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: [
+                    {
+                        lot: "PKN-202606-0001",
+                        gudang: "Gudang Pakan Utama",
+                        qtyBags: 4,
+                        qtyBagsOriginal: 4,
+                        qtyKg: 220,
+                        qtyKgOriginal: 220,
+                        receiveDate: "2026-05-15",
+                        expiryDate: "2026-11-15",
+                        hpp: 450000,
+                        notes: "Penerimaan awal, kondisi baik"
+                    }
+                ]
+            },
+            {
+                id: "PKN-LYR8899A",
+                name: "Pakan Layer Premium (Japfa)",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 50,
+                minAlert: 15,
+                nutrisi: "Protein 17.5%, Kalsium 3.8%",
+                suhu: "Suhu Ruang (25-30°C)",
+                hargaBeli: 420000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: []
+            },
+            {
+                id: "PKN-CON7766B",
+                name: "Pakan Konsentrat Broiler (Cargill)",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 50,
+                minAlert: 10,
+                nutrisi: "Protein 38%, Serat 6%",
+                suhu: "Suhu Ruang (25-30°C)",
+                hargaBeli: 510000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: []
+            },
+            {
+                id: "PKN-JGN5544C",
+                name: "Pakan Jagung Giling Murni",
+                category: "Pakan",
+                unitName: "Zak",
+                weightPerUnit: 50,
+                minAlert: 30,
+                nutrisi: "Karbohidrat Tinggi",
+                suhu: "Kering & Berventilasi Baik",
+                hargaBeli: 280000,
+                hargaJual: 0,
+                hargaJualKg: 0,
+                batches: []
+            },
+            {
+                id: "HSL-BFYUUV9W",
+                name: "Telur Komersial / Normal (Grade A)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Telur segar kualitas premium",
+                suhu: "Suhu Dingin (4-10°C)",
+                hargaBeli: 0,
+                hargaJual: 1500,
+                hargaJualKg: 24000,
+                batches: [
+                    {
+                        lot: "Panen Pagi (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1500,
+                        qtyOriginal: 1500,
+                        qtyKg: 93.7,
+                        qtyKgOriginal: 93.7,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    },
+                    {
+                        lot: "Panen Kemarin (11/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 1000,
+                        qtyOriginal: 1000,
+                        qtyKg: 62.5,
+                        qtyKgOriginal: 62.5,
+                        receiveDate: "2026-06-11",
+                        expiryDate: "2026-07-11",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-3ZXOW3R6",
+                name: "Telur Retak / Pecah (Grade B)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Telur retak untuk industri kue",
+                suhu: "Suhu Dingin (4-10°C)",
+                hargaBeli: 0,
+                hargaJual: 1000,
+                hargaJualKg: 16000,
+                batches: [
+                    {
+                        lot: "Pecah Kandang A (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 250,
+                        qtyOriginal: 250,
+                        qtyKg: 15.6,
+                        qtyKgOriginal: 15.6,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-YQRFIKJ6",
+                name: "Ayam Afkir (Spent Hens)",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Ayam petelur afkir siap potong",
+                suhu: "Suhu Ruang",
+                hargaBeli: 0,
+                hargaJual: 35000,
+                hargaJualKg: 0,
+                batches: [
+                    {
+                        lot: "Afkir Kandang B (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 60,
+                        qtyOriginal: 60,
+                        qtyKg: 90.0,
+                        qtyKgOriginal: 90.0,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            },
+            {
+                id: "HSL-BEKMNPCK",
+                name: "Omega 3",
+                category: "Hasil Produksi",
+                unitName: "Pcs",
+                weightPerUnit: 1,
+                minAlert: 10,
+                nutrisi: "Telur kaya Omega 3",
+                suhu: "Suhu Dingin (4-10°C)",
+                hargaBeli: 0,
+                hargaJual: 2500,
+                hargaJualKg: 40000,
+                batches: [
+                    {
+                        lot: "Omega Premium (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 500,
+                        qtyOriginal: 500,
+                        qtyKg: 31.2,
+                        qtyKgOriginal: 31.2,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-07-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
+            }
+        ];
+
+        // Initialize App data
+        function initData() {
+            // Load commodities
+            const storedComm = localStorage.getItem('rayfarm_commodities');
+            if (storedComm) {
+                try {
+                    commodities = JSON.parse(storedComm);
+                } catch (e) {
+                    commodities = INITIAL_COMMODITIES;
+                }
+            } else {
+                commodities = INITIAL_COMMODITIES;
+                localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+            }
+
+            // Ensure Ekskreta exists
+            if (!commodities.find(c => c.id === 'HSL-EKSKRETA')) {
+                commodities.push({
+                    id: "HSL-EKSKRETA",
+                    name: "Ekskreta (Excreta)",
+                    category: "Hasil Produksi",
+                    unitName: "Pcs",
+                    weightPerUnit: 1,
+                    minAlert: 5,
+                    hargaBeli: 0,
+                    hargaJual: 0,
+                    hargaJualKg: 0,
+                    batches: []
+                });
+            }
+
+            // Ensure VOK item exists
+            if (!commodities.find(c => c.id === 'VOK-NDIB1000')) {
+                commodities.push({
+                    id: "VOK-NDIB1000",
+                    name: "Vaksin ND-IB Clone 45 (Intervet) - 1000 Dosis",
+                    category: "VOK",
+                    unitName: "Vial",
+                    weightPerUnit: 0.1,
+                    minAlert: 5,
+                    hargaBeli: 75000,
+                    hargaJual: 0,
+                    hargaJualKg: 0,
+                    batches: []
+                });
+                localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+            }
+
+            // Load purchases
+            const storedPurchases = localStorage.getItem('rayfarm_purchases');
+            if (storedPurchases) {
+                try {
+                    purchaseHistory = JSON.parse(storedPurchases);
+                } catch (e) {
+                    purchaseHistory = SEED_PURCHASES;
+                    localStorage.setItem('rayfarm_purchases', JSON.stringify(purchaseHistory));
+                }
+            } else {
+                purchaseHistory = SEED_PURCHASES;
+                localStorage.setItem('rayfarm_purchases', JSON.stringify(purchaseHistory));
+            }
+
+            // Prefill Purchase Date and Auto PO number
+            resetFormInfo();
+
+            // Populate Product dropdown
+            populateProductDropdown();
+
+            // Render views
+            showView('list');
+        }
+
+        function resetFormInfo() {
+            const today = new Date().toISOString().substring(0, 10);
+            document.getElementById('pemb-date').value = today;
+
+            // Generate auto PO number
+            const dateStr = today.replace(/-/g, '');
+            const rand = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('pemb-ref').value = `PO-${dateStr}-${rand}`;
+        }
+
+        // Populate dropdown with category filter: Pakan & VOK only
+        function populateProductDropdown() {
+            const select = document.getElementById('item-product');
+            select.innerHTML = '<option value="">-- Pilih Produk --</option>';
+
+            commodities.forEach(c => {
+                if (c.category === 'Pakan' || c.category === 'VOK') {
+                    const option = document.createElement('option');
+                    option.value = c.id;
+                    option.textContent = `${c.name} (${c.id})`;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        // Handle active product changing
+        function onProductChange() {
+            const prodId = document.getElementById('item-product').value;
+            const previewContainer = document.getElementById('product-preview-container');
+            
+            if (!prodId) {
+                previewContainer.style.display = 'none';
+                return;
+            }
+
+            const c = commodities.find(item => item.id === prodId);
+            if (!c) return;
+
+            // Update label qty unit based on product type
+            const lblQty = document.getElementById('lbl-item-qty');
+            lblQty.innerHTML = `Jumlah (${c.unitName || 'Pcs'}) <span class="req">*</span>`;
+
+            // Prefill price with commodity hargaBeli
+            document.getElementById('item-price').value = c.hargaBeli || 0;
+
+            // Generate batch expiry prefill
+            const batchExpiry = document.getElementById('batch-expiry');
+            if (c.category === 'Pakan') {
+                const expDate = new Date(Date.now() + 180 * 86400000).toISOString().substring(0, 10); // 6 months
+                batchExpiry.value = expDate;
+            } else {
+                batchExpiry.value = '';
+            }
+
+            // Update preview details
+            document.getElementById('prod-preview-tag').className = `prod-tag ${c.category.toLowerCase()}`;
+            document.getElementById('prod-preview-tag').textContent = c.category;
+            document.getElementById('prod-preview-sku').textContent = `SKU: ${c.id}`;
+            
+            const conversionText = c.category === 'Pakan' 
+                ? `1 Zak = ${c.weightPerUnit || 50} Kg` 
+                : `Satuan: ${c.unitName || 'Unit'} (±${c.weightPerUnit || 1} Kg)`;
+            document.getElementById('prod-preview-conversion').textContent = conversionText;
+
+            previewContainer.style.display = 'block';
+            updateItemSubtotal();
+        }
+
+        // Subtotal in Item Form
+        function updateItemSubtotal() {
+            const qty = parseFloat(document.getElementById('item-qty').value) || 0;
+            const price = parseFloat(document.getElementById('item-price').value) || 0;
+            const subtotal = qty * price;
+            
+            document.getElementById('prod-preview-subtotal').textContent = `Subtotal: ${formatRupiah(subtotal)}`;
+        }
+
+        // Add item to local cart
+        function addItemToCart() {
+            const prodId = document.getElementById('item-product').value;
+            const qty = parseFloat(document.getElementById('item-qty').value) || 0;
+            const price = parseFloat(document.getElementById('item-price').value) || 0;
+
+            if (!prodId) {
+                alert("Silakan pilih produk terlebih dahulu!");
+                return;
+            }
+            if (qty <= 0) {
+                alert("Jumlah harus lebih dari 0!");
+                return;
+            }
+            if (price < 0) {
+                alert("Harga tidak boleh negatif!");
+                return;
+            }
+
+            const c = commodities.find(item => item.id === prodId);
+            if (!c) return;
+
+            // Batch fields
+            const lotInput = document.getElementById('batch-lot').value.trim();
+            const expiry = document.getElementById('batch-expiry').value;
+            const regNo = document.getElementById('batch-reg').value.trim();
+            const flockSource = document.getElementById('batch-flock').value.trim();
+            const batchNotes = document.getElementById('batch-notes').value.trim();
+
+            // Generate auto lot name if empty
+            let lot = lotInput;
+            if (!lot) {
+                const dateStr = new Date().toISOString().substring(0, 10).replace(/-/g, '').substring(0, 6);
+                const rand = Math.floor(1000 + Math.random() * 9000);
+                const prefix = c.category === 'Pakan' ? 'PKN' : 'VOK';
+                lot = `${prefix}-${dateStr}-${rand}`;
+            }
+
+            // Check duplicate lot in cart
+            if (cartItems.some(item => item.lot === lot)) {
+                alert(`Nomor lot "${lot}" sudah ada di daftar belanja. Silakan gunakan nomor lot yang berbeda.`);
+                return;
+            }
+
+            // Calculate Kg
+            let qtyKg = qty * (c.weightPerUnit || 1);
+
+            const cartItem = {
+                productId: c.id,
+                productName: c.name,
+                category: c.category,
+                unitName: c.unitName,
+                qty: qty,
+                qtyKg: qtyKg,
+                price: price,
+                lot: lot,
+                expiryDate: expiry || null,
+                regNo: regNo || '—',
+                flockSource: flockSource || '—',
+                batchNotes: batchNotes || '—'
+            };
+
+            cartItems.push(cartItem);
+            renderCart();
+
+            // Reset Item Selection Form
+            document.getElementById('item-product').value = '';
+            document.getElementById('item-qty').value = '1';
+            document.getElementById('item-price').value = '';
+            document.getElementById('batch-lot').value = '';
+            document.getElementById('batch-expiry').value = '';
+            document.getElementById('batch-reg').value = '';
+            document.getElementById('batch-flock').value = '';
+            document.getElementById('batch-notes').value = '';
+            document.getElementById('product-preview-container').style.display = 'none';
+        }
+
+        // Delete item from cart
+        function removeItemFromCart(index) {
+            cartItems.splice(index, 1);
+            renderCart();
+        }
+
+        // Render Cart table
+        function renderCart() {
+            const tbody = document.getElementById('cart-tbody');
+            tbody.innerHTML = '';
+
+            if (cartItems.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-row">Keranjang belanja kosong. Silakan tambah item di atas.</td>
+                    </tr>
+                `;
+                document.getElementById('summary-items').textContent = '0 Item';
+                document.getElementById('summary-total').textContent = formatRupiah(0);
+                return;
+            }
+
+            let totalItems = 0;
+            let grandTotal = 0;
+
+            cartItems.forEach((item, index) => {
+                const subtotal = item.qty * item.price;
+                totalItems += item.qty;
+                grandTotal += subtotal;
+
+                // Format qty representation
+                let qtyRepr = `${item.qty} ${item.unitName}`;
+                if (item.category === 'Pakan') {
+                    qtyRepr = `${item.qty} Zak (${item.qtyKg} Kg)`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="item-name">${item.productName}</div>
+                        <div class="item-meta">SKU: ${item.productId} <span style="color:#ccc;">|</span> Kategori: <span class="cat-tag ${item.category.toLowerCase()}">${item.category}</span></div>
+                        <div class="item-batch-info">
+                            <span>Lot: <strong class="lot-tag">${item.lot}</strong></span>
+                            ${item.expiryDate ? `<span>Exp: <strong class="lot-tag">${item.expiryDate}</strong></span>` : ''}
+                            ${item.regNo && item.regNo !== '—' ? `<span>Reg: <strong class="lot-tag">${item.regNo}</strong></span>` : ''}
+                            ${item.flockSource && item.flockSource !== '—' ? `<span>Flock: <strong class="lot-tag">${item.flockSource}</strong></span>` : ''}
+                        </div>
+                    </td>
+                    <td>${qtyRepr}</td>
+                    <td style="text-align: right; font-family: 'DM Mono', monospace;">${formatRupiah(item.price)}</td>
+                    <td style="text-align: right;" class="subtotal-col">${formatRupiah(subtotal)}</td>
+                    <td style="text-align: center;">
+                        <button class="btn-row-del" onclick="removeItemFromCart(${index})" title="Hapus Item">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('summary-items').textContent = `${cartItems.length} Produk (${totalItems} Unit)`;
+            document.getElementById('summary-total').textContent = formatRupiah(grandTotal);
+        }
+
+        // Save entire purchase
+        function savePurchase() {
+            const supplier = document.getElementById('pemb-supplier').value;
+            const location = document.getElementById('pemb-lokasi').value;
+            const refNo = document.getElementById('pemb-ref').value.trim();
+            const payMethod = document.getElementById('pemb-paymethod').value;
+            const date = document.getElementById('pemb-date').value;
+            const notes = document.getElementById('pemb-catatan').value.trim();
+
+            if (!supplier) {
+                alert("Silakan pilih Supplier!");
+                return;
+            }
+            if (!location) {
+                alert("Silakan pilih Lokasi Gudang!");
+                return;
+            }
+            if (!refNo) {
+                alert("Silakan isi No. Referensi!");
+                return;
+            }
+            if (!date) {
+                alert("Silakan pilih Tanggal Pembelian!");
+                return;
+            }
+            if (cartItems.length === 0) {
+                alert("Keranjang belanja kosong! Tambahkan minimal 1 item terlebih dahulu.");
+                return;
+            }
+
+            if (!confirm(`Konfirmasi simpan pembelian dengan No. PO: ${refNo}?`)) {
+                return;
+            }
+
+            // Calculate total amount
+            let totalAmount = 0;
+            cartItems.forEach(item => {
+                totalAmount += item.qty * item.price;
+            });
+
+            // Create purchase transaction object
+            const purchaseId = `PO-${date.replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
+            const newPurchase = {
+                id: purchaseId,
+                refNo: refNo,
+                supplier: supplier,
+                location: location,
+                paymentMethod: payMethod,
+                purchaseDate: date,
+                notes: notes || 'Pembelian Baru',
+                items: JSON.parse(JSON.stringify(cartItems)),
+                totalAmount: totalAmount
+            };
+
+            // 1. Save to purchase history list
+            purchaseHistory.unshift(newPurchase);
+            localStorage.setItem('rayfarm_purchases', JSON.stringify(purchaseHistory));
+
+            // 2. Add batches to commodities and add stock logs
+            cartItems.forEach(item => {
+                const c = commodities.find(prod => prod.id === item.productId);
+                if (c) {
+                    c.batches = c.batches || [];
+                    
+                    let newBatch = {
+                        lot: item.lot,
+                        gudang: location,
+                        receiveDate: date,
+                        expiryDate: item.expiryDate || null,
+                        hpp: item.price,
+                        notes: `Pembelian PO: ${refNo}. ${item.batchNotes || ''}`,
+                        regNo: item.regNo,
+                        flockSource: item.flockSource
+                    };
+
+                    if (c.category === 'Pakan') {
+                        newBatch.qtyBags = item.qty;
+                        newBatch.qtyBagsOriginal = item.qty;
+                        newBatch.qtyKg = item.qtyKg;
+                        newBatch.qtyKgOriginal = item.qtyKg;
+                    } else {
+                        newBatch.qty = item.qty;
+                        newBatch.qtyOriginal = item.qty;
+                        newBatch.qtyKg = item.qtyKg;
+                        newBatch.qtyKgOriginal = item.qtyKg;
+                    }
+
+                    // Prepend new batch
+                    c.batches.unshift(newBatch);
+
+                    // Add Stock Log
+                    const changeQty = item.qty;
+                    const changeQtyKg = item.qtyKg;
+                    addStockLog(
+                        c.id,
+                        c.name,
+                        item.lot,
+                        location,
+                        "Penerimaan",
+                        changeQty,
+                        changeQtyKg,
+                        0,
+                        0,
+                        changeQty,
+                        changeQtyKg,
+                        c.category,
+                        c.unitName,
+                        "Operator-RayFarm"
+                    );
+                }
+            });
+
+            // Save updated commodities
+            localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+
+            // Reset cart and form
+            cartItems = [];
+            document.getElementById('pemb-catatan').value = '';
+            resetFormInfo();
+            renderCart();
+
+            alert(`Pembelian berhasil disimpan! Stok inventaris telah ditambahkan dengan lot bersangkutan.`);
+            
+            // Switch to history list view
+            showView('list');
+        }
+
+        // Add Stock Log Helper (Matches other mock files)
+        function addStockLog(productId, productName, lot, gudang, type, changeQty, changeQtyKg, prevQty, prevQtyKg, afterQty, afterQtyKg, category, unitName, operator) {
+            const storedLogs = localStorage.getItem('rayfarm_stock_logs');
+            let logs = [];
+            if (storedLogs) {
+                try {
+                    logs = JSON.parse(storedLogs);
+                } catch (e) {
+                    logs = [];
+                }
+            }
+            const now = new Date();
+            const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+            const dd = String(now.getDate());
+            const mmm = months[now.getMonth()];
+            const yyyy = now.getFullYear();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const formattedDate = `${dd} ${mmm} ${yyyy} ${hh}.${min}`;
+
+            const newLog = {
+                id: 'LOG-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                timestamp: formattedDate,
+                productId: productId,
+                productName: productName,
+                lot: lot || '—',
+                gudang: gudang || 'Main Farm',
+                type: type,
+                changeQty: changeQty,
+                changeQtyKg: changeQtyKg,
+                prevQty: prevQty,
+                prevQtyKg: prevQtyKg,
+                afterQty: afterQty,
+                afterQtyKg: afterQtyKg,
+                category: category,
+                unitName: unitName,
+                operator: operator || 'Farm Test'
+            };
+            logs.unshift(newLog);
+            localStorage.setItem('rayfarm_stock_logs', JSON.stringify(logs));
+        }
+
+        // View switcher (Daftar vs Form)
+        let filterOnlyDebt = false;
+        function showView(viewName) {
+            const viewList = document.getElementById('view-list');
+            const viewForm = document.getElementById('view-form');
+            const topbarWrap = document.querySelector('.topbar');
+            
+            if (viewName === 'form') {
+                viewList.style.display = 'none';
+                viewForm.style.display = 'block';
+                
+                // Set topbar HTML to Form view style
+                topbarWrap.innerHTML = `
+                    <div class="topbar-left-wrap">
+                        <button class="btn-back" onclick="showView('list')" title="Kembali ke Daftar">←</button>
+                        <div>
+                            <div class="tb-title">Pembelian Baru</div>
+                            <div class="tb-sub">Pencatatan pembelian komoditas pakan & obat dari supplier</div>
+                        </div>
+                    </div>
+                    <div class="tb-right">
+                        <button class="btn btn-ghost" onclick="showView('list')">Batal</button>
+                        <button class="btn btn-solid" style="background-color: var(--sage); color: white;" onclick="savePurchase()">💾 Simpan Pembelian</button>
+                    </div>
+                `;
+                
+                // Reset form PO and dates
+                resetFormInfo();
+                cartItems = [];
+                renderCart();
+            } else {
+                viewList.style.display = 'block';
+                viewForm.style.display = 'none';
+                
+                // Set topbar HTML to List view style
+                topbarWrap.innerHTML = `
+                    <div>
+                        <div class="tb-title">Pembelian (Stok Masuk)</div>
+                        <div class="tb-sub">Kelola pembelian dari supplier</div>
+                    </div>
+                    <div class="tb-right">
+                        <button class="btn btn-ghost" id="debt-toggle-btn" onclick="toggleDebtFilter()" style="color: var(--amber); border-color: rgba(217, 119, 6, 0.2); background: rgba(217, 119, 6, 0.05); font-weight: 600;">
+                            📋 Utang Pembelian
+                        </button>
+                        <button class="btn btn-solid" style="background-color: #1e6b43; color: white;" onclick="showView('form')">＋ Pembelian Baru</button>
+                    </div>
+                `;
+                
+                renderHistoryTable();
+            }
+        }
+
+        function toggleDebtFilter() {
+            filterOnlyDebt = !filterOnlyDebt;
+            const btn = document.getElementById('debt-toggle-btn');
+            if (filterOnlyDebt) {
+                btn.style.background = 'var(--amber)';
+                btn.style.color = '#fff';
+                btn.style.borderColor = 'var(--amber)';
+            } else {
+                btn.style.color = 'var(--amber)';
+                btn.style.borderColor = 'rgba(217, 119, 6, 0.2)';
+                btn.style.background = 'rgba(217, 119, 6, 0.05)';
+            }
+            renderHistoryTable();
+        }
+
+        // Render history table with filters
+        function renderHistoryTable() {
+            const tbody = document.getElementById('history-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const searchInputEl = document.getElementById('search-input');
+            const searchVal = searchInputEl ? searchInputEl.value.trim().toLowerCase() : '';
+            
+            const filterSupplierEl = document.getElementById('filter-supplier');
+            const supplierVal = filterSupplierEl ? filterSupplierEl.value : 'all';
+            
+            const filterLokasiEl = document.getElementById('filter-lokasi');
+            const lokasiVal = filterLokasiEl ? filterLokasiEl.value : 'all';
+            
+            const filterStatusEl = document.getElementById('filter-status');
+            const statusVal = filterStatusEl ? filterStatusEl.value : 'all';
+            
+            const filterDateStartEl = document.getElementById('filter-date-start');
+            const dateStartVal = filterDateStartEl ? filterDateStartEl.value : '';
+            
+            const filterDateEndEl = document.getElementById('filter-date-end');
+            const dateEndVal = filterDateEndEl ? filterDateEndEl.value : '';
+
+            let filtered = purchaseHistory.filter(tx => {
+                // Search query filter
+                if (searchVal) {
+                    const matchRef = tx.refNo.toLowerCase().includes(searchVal);
+                    const matchSupplier = tx.supplier.toLowerCase().includes(searchVal);
+                    if (!matchRef && !matchSupplier) return false;
+                }
+
+                // Supplier filter
+                if (supplierVal !== 'all' && tx.supplier !== supplierVal) {
+                    return false;
+                }
+
+                // Lokasi filter
+                if (lokasiVal !== 'all' && tx.location !== lokasiVal) {
+                    return false;
+                }
+
+                // Status filter
+                const isTempo = tx.paymentMethod === 'Tempo';
+                if (statusVal === 'Selesai' && isTempo) return false;
+                if (statusVal === 'Tempo' && !isTempo) return false;
+
+                // Debt toggle filter
+                if (filterOnlyDebt && !isTempo) return false;
+
+                // Date start filter
+                if (dateStartVal && tx.purchaseDate < dateStartVal) {
+                    return false;
+                }
+
+                // Date end filter
+                if (dateEndVal && tx.purchaseDate > dateEndVal) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-row" style="text-align: center; padding: 24px; color: var(--ink3);">Tidak ada data pembelian yang sesuai filter.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            filtered.forEach(tx => {
+                // Calculate item quantity sum
+                let totalItems = 0;
+                tx.items.forEach(item => totalItems += item.qty);
+
+                // Format Date
+                let dateDisplay = tx.purchaseDate;
+                const parts = tx.purchaseDate.split('-');
+                if (parts.length === 3) {
+                    const monthsMap = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+                    const day = parseInt(parts[2]);
+                    const monthIdx = parseInt(parts[1]) - 1;
+                    const year = parts[0];
+                    dateDisplay = `${day} ${monthsMap[monthIdx]} ${year}`;
+                }
+
+                const isTempo = tx.paymentMethod === 'Tempo';
+                const statusBadge = isTempo 
+                    ? `<span class="status-tag tempo">Tempo</span>` 
+                    : `<span class="status-tag selesai">Selesai</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong class="lot-tag" style="background-color: var(--sage-l); color: var(--sage); font-size:12px; font-weight:700;">#${tx.refNo.replace('PO-', '')}</strong></td>
+                    <td>${dateDisplay}</td>
+                    <td><span style="font-weight:600;">${tx.supplier}</span></td>
+                    <td><span class="loc-chip" style="background-color: var(--surf2); color: var(--ink);">${tx.location}</span></td>
+                    <td><span class="loc-chip" style="background: #e6f5ff; color: #0284c7; font-weight: 500;">${tx.items.length} Item</span></td>
+                    <td style="text-align: right; font-family: 'DM Mono', monospace; font-weight: 700; color: var(--sage); font-size: 14px;">${formatRupiah(tx.totalAmount)}</td>
+                    <td style="text-align: center;">${statusBadge}</td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-ghost" style="padding: 4px 8px; font-size:12px; border-radius: 6px;" onclick="openDetailModal('${tx.id}')">👁️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Modal Operations
+        function openDetailModal(txId) {
+            const tx = purchaseHistory.find(item => item.id === txId);
+            if (!tx) return;
+
+            document.getElementById('m-ref').textContent = tx.refNo;
+            
+            // Format Date (DD/MM/YYYY)
+            let dateDisplay = tx.purchaseDate;
+            const parts = tx.purchaseDate.split('-');
+            if (parts.length === 3) {
+                dateDisplay = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            document.getElementById('m-date').textContent = dateDisplay;
+            document.getElementById('m-supplier').textContent = tx.supplier;
+            document.getElementById('m-location').textContent = tx.location;
+            document.getElementById('m-paymethod').textContent = tx.paymentMethod;
+            document.getElementById('m-notes').textContent = tx.notes || '—';
+            document.getElementById('m-total').textContent = formatRupiah(tx.totalAmount);
+
+            // Populate Modal Table
+            const tbody = document.getElementById('modal-tbody');
+            tbody.innerHTML = '';
+
+            tx.items.forEach(item => {
+                const subtotal = item.qty * item.price;
+                let qtyRepr = `${item.qty} ${item.unitName}`;
+                if (item.category === 'Pakan') {
+                    qtyRepr = `${item.qty} Zak (${item.qtyKg} Kg)`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="item-name">${item.productName}</div>
+                        <div class="item-meta">SKU: ${item.productId} <span style="color:#ccc;">|</span> Kategori: <span class="cat-tag ${item.category.toLowerCase()}">${item.category}</span></div>
+                        <div class="item-batch-info">
+                            <span>Lot: <strong class="lot-tag">${item.lot}</strong></span>
+                            ${item.expiryDate ? `<span>Exp: <strong class="lot-tag">${item.expiryDate}</strong></span>` : ''}
+                            ${item.regNo && item.regNo !== '—' ? `<span>Reg: <strong class="lot-tag">${item.regNo}</strong></span>` : ''}
+                            ${item.flockSource && item.flockSource !== '—' ? `<span>Flock: <strong class="lot-tag">${item.flockSource}</strong></span>` : ''}
+                        </div>
+                    </td>
+                    <td>${qtyRepr}</td>
+                    <td style="text-align: right; font-family: 'DM Mono', monospace;">${formatRupiah(item.price)}</td>
+                    <td style="text-align: right; font-family: 'DM Mono', monospace; font-weight:700;">${formatRupiah(subtotal)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Set delete button handler
+            const deleteBtn = document.getElementById('m-delete-btn');
+            deleteBtn.onclick = function() {
+                deletePurchase(tx.id);
+            };
+
+            document.getElementById('detail-modal').classList.add('open');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        // Delete purchase transaction and corresponding batches
+        function deletePurchase(txId) {
+            const tx = purchaseHistory.find(item => item.id === txId);
+            if (!tx) return;
+
+            if (!confirm(`⚠️ PERINGATAN!\nApakah Anda yakin ingin membatalkan & menghapus transaksi Pembelian dengan PO: ${tx.refNo}?\n\nIni akan menghapus seluruh data batch lot terkait dari Stok Inventaris dan mencatat log pengurangan di Log Stok.`)) {
+                return;
+            }
+
+            // 1. Remove batches from commodities and add logs
+            tx.items.forEach(item => {
+                const c = commodities.find(prod => prod.id === item.productId);
+                if (c && c.batches) {
+                    const batchToRemove = c.batches.find(b => b.lot === item.lot);
+                    
+                    // Filter out this batch
+                    c.batches = c.batches.filter(b => b.lot !== item.lot);
+
+                    // Add Stock Log for cancellation (negative change)
+                    const prevQty = item.qty;
+                    const prevQtyKg = item.qtyKg;
+                    
+                    addStockLog(
+                        c.id,
+                        c.name,
+                        item.lot,
+                        tx.location,
+                        "Hapus Batch",
+                        -prevQty,
+                        -prevQtyKg,
+                        prevQty,
+                        prevQtyKg,
+                        0,
+                        0,
+                        c.category,
+                        c.unitName,
+                        "Operator-RayFarm"
+                    );
+                }
+            });
+
+            // Save updated commodities
+            localStorage.setItem('rayfarm_commodities', JSON.stringify(commodities));
+
+            // 2. Remove from purchase history
+            purchaseHistory = purchaseHistory.filter(item => item.id !== txId);
+            localStorage.setItem('rayfarm_purchases', JSON.stringify(purchaseHistory));
+
+            closeModal('detail-modal');
+            renderHistoryTable();
+            alert(`Transaksi Pembelian PO: ${tx.refNo} berhasil dibatalkan dan dihapus.`);
+        }
+
+        function resetAllData(event) {
+            if (event) event.stopPropagation();
+            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik?")) {
+                localStorage.removeItem('coops');
+                localStorage.removeItem('rayfarm_commodities');
+                localStorage.removeItem('rayfarm_sales');
+                localStorage.removeItem('rayfarm_purchases');
+                localStorage.removeItem('rayfarm_stock_logs');
+                location.reload();
+            }
+        }
+
+        // Run init
+        window.onload = initData;
+    </script>
+</body>
+
+</html>
