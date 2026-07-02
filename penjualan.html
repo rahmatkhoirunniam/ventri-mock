@@ -1161,6 +1161,31 @@
                         notes: "Stok default awal"
                     }
                 ]
+            },
+            {
+                id: "HSL-EKSKRETA",
+                name: "Ekskreta (Excreta)",
+                category: "Hasil Produksi",
+                unitName: "Karung",
+                weightPerUnit: 25,
+                minAlert: 10,
+                nutrisi: "Pupuk organik dari kotoran ayam",
+                suhu: "Suhu Ruang",
+                hargaBeli: 0,
+                hargaJual: 15000,
+                hargaJualKg: 600,
+                batches: [
+                    {
+                        lot: "Ekskreta Kandang A (12/06/2026)",
+                        gudang: "Gudang Hasil Produksi",
+                        qty: 50,
+                        qtyKg: 1250,
+                        receiveDate: "2026-06-12",
+                        expiryDate: "2026-12-12",
+                        hpp: 0,
+                        notes: "Stok default awal"
+                    }
+                ]
             }
         ];
 
@@ -1414,23 +1439,23 @@
             const prodId = document.getElementById('modal-product-id').value;
             const lotId = document.getElementById('modal-lot-select').value;
             
+            const c = commodities.find(item => item.id === prodId);
+            const unitLabel = (c && c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'Butir' : ((c && c.unitName) ? c.unitName : 'Pcs');
+
             let ratio = 1;
             let maxStock = Infinity;
-            if (prodId && lotId) {
-                const c = commodities.find(item => item.id === prodId);
-                if (c) {
-                    const b = c.batches.find(item => item.lot === lotId);
-                    if (b && b.qty > 0 && b.qtyKg > 0) {
-                        ratio = b.qtyKg / b.qty; // Kg per Pcs
-                        maxStock = (unit === 'Pcs') ? b.qty : b.qtyKg;
-                    }
+            if (c && lotId) {
+                const b = c.batches.find(item => item.lot === lotId);
+                if (b && b.qty > 0 && b.qtyKg > 0) {
+                    ratio = b.qtyKg / b.qty; // Kg per Pcs
+                    maxStock = (unit === 'Pcs') ? b.qty : b.qtyKg;
                 }
             }
 
             const currentVal = parseFloat(qtyInp.value) || 0;
 
             if (unit === 'Pcs') {
-                qtyLabel.textContent = "Jumlah (Butir / Pcs)";
+                qtyLabel.textContent = `Jumlah (${unitLabel})`;
                 qtyInp.step = "1";
                 if (prevUnit && currentVal > 0) {
                     // convert from Kg to Pcs
@@ -1468,7 +1493,8 @@
             const b = c.batches.find(item => item.lot === lotId);
 
             if (b) {
-                hintSpan.textContent = `Stok lot aktif: ${b.qty.toLocaleString('id')} Butir / ${b.qtyKg.toFixed(2)} Kg`;
+                const unitLabel = (c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'Butir' : (c.unitName || 'Pcs');
+                hintSpan.textContent = `Stok lot aktif: ${b.qty.toLocaleString('id')} ${unitLabel} / ${b.qtyKg.toFixed(2)} Kg`;
                 
                 const val = parseFloat(qtyInput.value) || 0;
                 if (currentSaleUnit === 'Pcs') {
@@ -1523,11 +1549,12 @@
             if (!prodId) return;
 
             const c = commodities.find(item => item.id === prodId);
+            const unitText = (c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'Butir' : (c.unitName || 'Pcs');
             let unitPrice = 0;
 
             if (currentSaleUnit === 'Pcs') {
                 unitPrice = c.hargaJual;
-                priceDisp.textContent = `Rp ${unitPrice.toLocaleString('id')} / Butir`;
+                priceDisp.textContent = `Rp ${unitPrice.toLocaleString('id')} / ${unitText}`;
             } else {
                 unitPrice = c.hargaJualKg;
                 priceDisp.textContent = `Rp ${unitPrice.toLocaleString('id')} / Kg`;
@@ -1547,7 +1574,8 @@
                     } else {
                         const ratio = b.qty / b.qtyKg;
                         const convertedPcs = Math.round(qtyVal * ratio);
-                        conversionHint.textContent = `🥚 Estimasi Jumlah: ± ${convertedPcs.toLocaleString('id')} Butir`;
+                        const emoji = c.name.toLowerCase().includes('telur') ? '🥚' : '📦';
+                        conversionHint.textContent = `${emoji} Estimasi Jumlah: ± ${convertedPcs.toLocaleString('id')} ${unitText}`;
                     }
                 } else {
                     conversionHint.textContent = '';
@@ -1672,13 +1700,16 @@
             if (payInp) payInp.readOnly = false;
 
             cart.forEach((item, idx) => {
+                const c = commodities.find(itemC => itemC.id === item.commodityId);
+                const unit = (c && c.unitName) ? ((c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'Butir' : c.unitName) : 'Pcs';
+
                 const qtyDisp = item.sellMethod === 'Pcs' 
-                    ? `${item.qtySold.toLocaleString('id')} Butir`
+                    ? `${item.qtySold.toLocaleString('id')} ${unit}`
                     : `${item.weightSold.toFixed(2)} Kg`;
                 
                 const mathDisp = item.sellMethod === 'Pcs'
                     ? `(${item.weightSold.toFixed(2)} kg proporsional)`
-                    : `(${item.qtySold} butir proporsional)`;
+                    : `(${item.qtySold} ${unit.toLowerCase()} proporsional)`;
 
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item';
@@ -1692,7 +1723,7 @@
                     </div>
                     <div class="cart-item-body">
                         <span class="cart-item-meta">
-                            <strong>${qtyDisp}</strong> ${mathDisp} x Rp ${item.pricePerUnit.toLocaleString('id')}/${item.sellMethod === 'Pcs' ? 'butir' : 'kg'}
+                            <strong>${qtyDisp}</strong> ${mathDisp} x Rp ${item.pricePerUnit.toLocaleString('id')}/${item.sellMethod === 'Pcs' ? unit.toLowerCase() : 'kg'}
                         </span>
                         <span class="cart-item-total">Rp ${item.subtotal.toLocaleString('id')}</span>
                     </div>
@@ -1969,8 +2000,10 @@
 
             let itemsHtml = '';
             tx.items.forEach(item => {
+                const c = commodities.find(itemC => itemC.id === item.commodityId);
+                const unit = (c && c.unitName) ? ((c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'btr' : c.unitName.substring(0, 3).toLowerCase()) : 'pcs';
                 const qtyDisp = item.sellMethod === 'Pcs'
-                    ? `${item.qtySold} btr`
+                    ? `${item.qtySold} ${unit}`
                     : `${item.weightSold.toFixed(2)} kg`;
                 
                 itemsHtml += `

@@ -1601,19 +1601,30 @@
             const tbody = document.getElementById('detail-items-tbody');
             tbody.innerHTML = '';
 
+            // Load commodities list dynamically to retrieve unitName
+            const storedComm = localStorage.getItem('rayfarm_commodities');
+            let commList = [];
+            if (storedComm) {
+                try { commList = JSON.parse(storedComm); } catch(e) {}
+            }
+
             if (tx.items && Array.isArray(tx.items)) {
                 tx.items.forEach(item => {
                     const tr = document.createElement('tr');
                     
+                    const c = commList.find(itemC => itemC.id === item.commodityId || itemC.name === item.commodityName);
+                    const unit = (c && c.unitName) ? ((c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'Butir' : c.unitName) : 'Pcs';
+                    const unitAbbr = (c && c.unitName) ? ((c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'btr' : c.unitName.substring(0, 3).toLowerCase()) : 'pcs';
+
                     // Show quantity sold formatted nicely based on sellMethod
                     const qtySoldDisp = item.sellMethod === 'Pcs'
-                        ? `${item.qtySold.toLocaleString('id')} Pcs`
+                        ? `${item.qtySold.toLocaleString('id')} ${unit}`
                         : `${item.weightSold.toFixed(2)} Kg`;
                     
                     // Show unit conversion detail in parentheses for detail clarity
                     const subDetail = item.sellMethod === 'Pcs'
                         ? `(${item.weightSold.toFixed(2)} kg)`
-                        : `(${item.qtySold.toLocaleString('id')} btr)`;
+                        : `(${item.qtySold.toLocaleString('id')} ${unitAbbr})`;
 
                     tr.innerHTML = `
                         <td style="padding-left: 0; font-weight: 500;">
@@ -1624,7 +1635,7 @@
                             <strong>${qtySoldDisp}</strong>
                             <div style="font-size: 11px; color: var(--ink2);">${subDetail}</div>
                         </td>
-                        <td style="text-align: right; font-family: 'DM Mono', monospace;">Rp ${item.pricePerUnit.toLocaleString('id')} / ${item.sellMethod === 'Pcs' ? 'butir' : 'kg'}</td>
+                        <td style="text-align: right; font-family: 'DM Mono', monospace;">Rp ${item.pricePerUnit.toLocaleString('id')} / ${item.sellMethod === 'Pcs' ? unit.toLowerCase() : 'kg'}</td>
                         <td style="text-align: right; padding-right: 0; font-family: 'DM Mono', monospace; font-weight: 700; color: var(--sage);">Rp ${item.subtotal.toLocaleString('id')}</td>
                     `;
                     tbody.appendChild(tr);
@@ -1671,10 +1682,20 @@
             const visual = document.getElementById('receipt-visual');
             if (!visual) return;
 
+            // Load commodities list dynamically to retrieve unitName
+            const storedComm = localStorage.getItem('rayfarm_commodities');
+            let commList = [];
+            if (storedComm) {
+                try { commList = JSON.parse(storedComm); } catch(e) {}
+            }
+
             let itemsHtml = '';
             tx.items.forEach(item => {
+                const c = commList.find(itemC => itemC.id === item.commodityId || itemC.name === item.commodityName);
+                const unit = (c && c.unitName) ? ((c.unitName === 'Pcs' && c.name.toLowerCase().includes('telur')) ? 'btr' : c.unitName.substring(0, 3).toLowerCase()) : 'pcs';
+
                 const qtyDisp = item.sellMethod === 'Pcs'
-                    ? `${item.qtySold} btr`
+                    ? `${item.qtySold} ${unit}`
                     : `${item.weightSold.toFixed(2)} kg`;
                 
                 itemsHtml += `

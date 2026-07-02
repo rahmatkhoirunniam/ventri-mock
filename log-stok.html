@@ -858,14 +858,16 @@
             }
         }
 
-        function formatStockValue(qty, qtyKg, category, unitName, isChange = false) {
+        function formatStockValue(qty, qtyKg, category, unitName, isChange = false, productId = '') {
             let label = unitName || 'Pcs';
-            if (category === 'Hasil Produksi' && label === 'Pcs') {
+            
+            // Force 'Ekor' for spent hens or if specifically matching the spent hens SKU
+            if (productId === 'HSL-YQRFIKJ6' || (productId && productId.includes('YQRFIKJ6'))) {
+                label = 'Ekor';
+            } else if (category === 'Hasil Produksi' && label === 'Pcs') {
                 label = 'Butir';
             }
-            if (category === 'Hasil Produksi' && unitName === 'Pcs' && qtyKg > 0 && qtyKg < 5) {
-                label = 'Ekor';
-            }
+            
             if (label === 'Pcs' && (unitName === 'Pcs' || category === 'Hasil Produksi') && qtyKg > 0 && Math.abs(qtyKg/qty - 1.5) < 0.1) {
                 label = 'Ekor';
             }
@@ -960,13 +962,13 @@
                         <span class="type-badge ${badgeClass}">${log.type}</span>
                     </td>
                     <td style="text-align: right;" class="stok-val">
-                        ${formatStockValue(log.prevQty, log.prevQtyKg, log.category, log.unitName)}
+                        ${formatStockValue(log.prevQty, log.prevQtyKg, log.category, log.unitName, false, log.productId)}
                     </td>
                     <td style="text-align: right;" class="${changeClass}">
-                        ${formatStockValue(log.changeQty, log.changeQtyKg, log.category, log.unitName, true)}
+                        ${formatStockValue(log.changeQty, log.changeQtyKg, log.category, log.unitName, true, log.productId)}
                     </td>
                     <td style="text-align: right;" class="stok-val">
-                        ${formatStockValue(log.afterQty, log.afterQtyKg, log.category, log.unitName)}
+                        ${formatStockValue(log.afterQty, log.afterQtyKg, log.category, log.unitName, false, log.productId)}
                     </td>
                     <td class="operator-col">${log.operator}</td>
                 `;
