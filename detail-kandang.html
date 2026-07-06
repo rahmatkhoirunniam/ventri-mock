@@ -1182,6 +1182,9 @@
             <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span
                     class="bdg">3</span></div>
             <div class="nav" onclick="location.href='stok-inventaris.html'"><span class="ico">🏭</span><span class="lbl">Stok Inventaris</span></div>
+            <!-- START NEW COST FEATURE -->
+            <div class="nav" onclick="location.href='laba-rugi.html'"><span class="ico">📈</span><span class="lbl">Laporan Laba Rugi</span></div>
+            <!-- END -->
             <div class="nav" onclick="location.href='log-stok.html'"><span class="ico">📜</span><span class="lbl">Log Stok</span></div>
         </div>
     </aside>
@@ -1342,6 +1345,9 @@
                     <button class="tab-btn" onclick="switchRecordTab('produksi', this)">Produksi</button>
                     <button class="tab-btn" onclick="switchRecordTab('deplesi', this)">Deplesi</button>
                     <button class="tab-btn" onclick="switchRecordTab('catatan', this)">Foto & Catatan</button>
+                    <!-- START NEW COST FEATURE -->
+                    <button class="tab-btn" onclick="switchRecordTab('labarugi', this)">Laba Rugi Periode</button>
+                    <!-- END -->
                 </div>
 
                 <!-- Empty state visual block -->
@@ -1424,6 +1430,56 @@
                             <tbody id="tbody-catatan"></tbody>
                         </table>
                     </div>
+
+                    <!-- START NEW COST FEATURE -->
+                    <!-- Tab Pane Laba Rugi Periode -->
+                    <div id="pane-labarugi" class="tab-pane">
+                        <div style="padding: 24px; background: #faf9f6; border-radius: 12px; border: 1px solid var(--bdr); display: flex; flex-direction: column; gap: 20px;">
+                            <div style="border-bottom: 1px solid var(--bdr); padding-bottom: 12px;">
+                                <h3 style="font-family: 'Fraunces', serif; font-size: 18px; color: var(--ink); margin-bottom: 4px;">Analisis Laba Rugi Periode Aktif</h3>
+                                <p style="font-size: 12px; color: var(--ink2);">Kalkulasi perkiraan performa keuangan dari siklus kandang yang sedang berjalan.</p>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                                <!-- Biaya Pakan Card -->
+                                <div style="background: var(--surf); border: 1px solid var(--bdr); border-radius: 10px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--amber); letter-spacing: 0.5px;">Total Pengeluaran Pakan</span>
+                                            <span style="font-size: 16px;">🌾</span>
+                                        </div>
+                                        <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--ink);" id="lr-total-pakan">Rp 0</div>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--ink2); margin-top: 8px;" id="lr-pakan-detail">0 Kg pakan × Rp 9.000/Kg</div>
+                                </div>
+                                
+                                <!-- Pendapatan Telur Card -->
+                                <div style="background: var(--surf); border: 1px solid var(--bdr); border-radius: 10px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--sage); letter-spacing: 0.5px;">Estimasi Pendapatan Telur</span>
+                                            <span style="font-size: 16px;">🥚</span>
+                                        </div>
+                                        <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--ink);" id="lr-total-pendapatan">Rp 0</div>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--ink2); margin-top: 8px;" id="lr-pendapatan-detail">0 Kg telur × Rp 24.000/Kg</div>
+                                </div>
+                                
+                                <!-- Laba Rugi Bersih Card -->
+                                <div id="lr-net-box" style="background: var(--surf); border: 1px solid var(--bdr); border-radius: 10px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--ink2); letter-spacing: 0.5px;" id="lr-net-title">Laba/Rugi Bersih Siklus</span>
+                                            <span style="font-size: 16px;" id="lr-net-icon">📊</span>
+                                        </div>
+                                        <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--ink);" id="lr-net-value">Rp 0</div>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--ink2); margin-top: 8px;" id="lr-net-status">Status: Stabil</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END -->
 
                 </div>
             </div>
@@ -2278,6 +2334,14 @@
             document.getElementById('today-hdp-sub').textContent = `Tanggal: ${todayHdpDate}`;
             document.getElementById('today-fcr-val').textContent = todayFcrVal;
             document.getElementById('today-fcr-sub').textContent = `Tanggal: ${todayFcrDate}`;
+            
+            // START NEW COST FEATURE
+            try {
+                calculateLabaRugi();
+            } catch (e) {
+                console.error("Error in calculateLabaRugi:", e);
+            }
+            // END
         }
 
         // Tab Switchers
@@ -3840,6 +3904,97 @@
             // Clear the form
             event.target.reset();
         }
+
+        // START NEW COST FEATURE
+        function calculateLabaRugi() {
+            try {
+                let totalPakanKg = 0;
+                let totalTelurKg = 0;
+
+                if (coop && coop.history && Array.isArray(coop.history)) {
+                    coop.history.forEach(log => {
+                        if (log) {
+                            if (log.type === 'pakan') {
+                                totalPakanKg += log.pakan || 0;
+                            } else if (log.type === 'produksi' && log.komoditas && log.komoditas.includes('Telur')) {
+                                totalTelurKg += log.total_kg || log.telur || 0;
+                            }
+                        }
+                    });
+                }
+
+                const feedHPP = 9000; // HPP tetap pakan Rp 9.000/Kg
+                const eggMarketPrice = 24000; // Harga pasar telur Rp 24.000/Kg
+
+                const totalFeedCost = totalPakanKg * feedHPP;
+                const totalEggRevenue = totalTelurKg * eggMarketPrice;
+                const netProfit = totalEggRevenue - totalFeedCost;
+
+                // Format values as Rupiah
+                const formatRupiah = (val) => {
+                    return 'Rp ' + Math.round(val).toLocaleString('id');
+                };
+
+                const elLrTotalPakan = document.getElementById('lr-total-pakan');
+                if (elLrTotalPakan) elLrTotalPakan.textContent = formatRupiah(totalFeedCost);
+                
+                const elLrPakanDetail = document.getElementById('lr-pakan-detail');
+                if (elLrPakanDetail) elLrPakanDetail.textContent = `${totalPakanKg.toLocaleString('id')} Kg pakan × Rp ${feedHPP.toLocaleString('id')}/Kg`;
+
+                const elLrTotalPendapatan = document.getElementById('lr-total-pendapatan');
+                if (elLrTotalPendapatan) elLrTotalPendapatan.textContent = formatRupiah(totalEggRevenue);
+                
+                const elLrPendapatanDetail = document.getElementById('lr-pendapatan-detail');
+                if (elLrPendapatanDetail) elLrPendapatanDetail.textContent = `${totalTelurKg.toLocaleString('id')} Kg telur × Rp ${eggMarketPrice.toLocaleString('id')}/Kg`;
+
+                const netValEl = document.getElementById('lr-net-value');
+                const netBoxEl = document.getElementById('lr-net-box');
+                const netStatusEl = document.getElementById('lr-net-status');
+                const netTitleEl = document.getElementById('lr-net-title');
+                const netIconEl = document.getElementById('lr-net-icon');
+
+                if (netValEl && netBoxEl && netStatusEl) {
+                    netValEl.textContent = formatRupiah(netProfit);
+                    if (netProfit > 0) {
+                        netValEl.style.color = 'var(--sage)';
+                        netBoxEl.style.backgroundColor = 'var(--sage-l)';
+                        netBoxEl.style.borderColor = 'rgba(58, 107, 80, 0.2)';
+                        netStatusEl.textContent = 'Status: Surplus (Untung)';
+                        netStatusEl.style.color = 'var(--sage)';
+                        if (netTitleEl) {
+                            netTitleEl.style.color = 'var(--sage)';
+                            netTitleEl.textContent = 'Laba Bersih Siklus';
+                        }
+                        if (netIconEl) netIconEl.textContent = '📈';
+                    } else if (netProfit < 0) {
+                        netValEl.style.color = 'var(--rust)';
+                        netBoxEl.style.backgroundColor = 'var(--rust-l)';
+                        netBoxEl.style.borderColor = 'rgba(176, 43, 30, 0.2)';
+                        netStatusEl.textContent = 'Status: Defisit (Rugi)';
+                        netStatusEl.style.color = 'var(--rust)';
+                        if (netTitleEl) {
+                            netTitleEl.style.color = 'var(--rust)';
+                            netTitleEl.textContent = 'Rugi Bersih Siklus';
+                        }
+                        if (netIconEl) netIconEl.textContent = '📉';
+                    } else {
+                        netValEl.style.color = 'var(--ink)';
+                        netBoxEl.style.backgroundColor = 'var(--surf)';
+                        netBoxEl.style.borderColor = 'var(--bdr)';
+                        netStatusEl.textContent = 'Status: Seimbang (Break Event)';
+                        netStatusEl.style.color = 'var(--ink2)';
+                        if (netTitleEl) {
+                            netTitleEl.style.color = 'var(--ink2)';
+                            netTitleEl.textContent = 'Laba/Rugi Bersih Siklus';
+                        }
+                        if (netIconEl) netIconEl.textContent = '📊';
+                    }
+                }
+            } catch (err) {
+                console.error("Error in calculateLabaRugi:", err);
+            }
+        }
+        // END
 
         // Initialize Page
         initPage();

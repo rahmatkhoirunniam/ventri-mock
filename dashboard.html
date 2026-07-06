@@ -746,6 +746,9 @@
             <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span
                     class="bdg">3</span></div>
             <div class="nav" onclick="location.href='stok-inventaris.html'"><span class="ico">🏭</span><span class="lbl">Stok Inventaris</span></div>
+            <!-- START NEW COST FEATURE -->
+            <div class="nav" onclick="location.href='laba-rugi.html'"><span class="ico">📈</span><span class="lbl">Laporan Laba Rugi</span></div>
+            <!-- END -->
             <div class="nav" onclick="location.href='log-stok.html'"><span class="ico">📜</span><span class="lbl">Log Stok</span></div>
         </div>
     </aside>
@@ -831,6 +834,53 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- START NEW COST FEATURE -->
+                <!-- Card 5: Total Pendapatan Bulan Ini -->
+                <div class="dc-card">
+                    <div class="dc-header">
+                        <span class="dc-title">Total Pendapatan Bulan Ini</span>
+                        <div class="dc-icon-container green">💰</div>
+                    </div>
+                    <div>
+                        <div class="dc-val" style="color: var(--sage);">Rp 124.500.000</div>
+                        <div class="dc-footer">
+                            <span class="dc-trend pos">↑ 8.4%</span>
+                            <span class="dc-meta">vs bulan lalu</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6: Total Pengeluaran Pakan & Operasional -->
+                <div class="dc-card">
+                    <div class="dc-header">
+                        <span class="dc-title">Total Pengeluaran Bulan Ini</span>
+                        <div class="dc-icon-container orange">💸</div>
+                    </div>
+                    <div>
+                        <div class="dc-val" style="color: var(--amber);">Rp 82.400.000</div>
+                        <div class="dc-footer">
+                            <span class="dc-trend neg">↓ 2.1%</span>
+                            <span class="dc-meta">vs bulan lalu</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 7: Laba Bersih Global -->
+                <div class="dc-card" style="background: var(--sage-l); border-color: rgba(58, 107, 80, 0.2);">
+                    <div class="dc-header">
+                        <span class="dc-title" style="color: var(--sage);">Laba Bersih Global</span>
+                        <div class="dc-icon-container green" style="background: var(--sage); color: #fff;">📈</div>
+                    </div>
+                    <div>
+                        <div class="dc-val" style="color: var(--sage);">Rp 42.100.000</div>
+                        <div class="dc-footer">
+                            <span class="dc-trend pos">↑ 12.5%</span>
+                            <span class="dc-meta" style="color: var(--sage);">vs bulan lalu</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- END -->
 
             </div>
 

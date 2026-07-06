@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Laba Rugi — RayFarm</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --surf: #ffffff;
+            --surf2: #eeebe2;
+            --surf3: #e6e2d7;
+            --bdr: #dbd7cb;
+            --bdr2: #ccc8bb;
+            --ink: #1b1813;
+            --ink2: #706960;
+            --ink3: #afa89e;
+            --sage: #3a6b50;
+            --sage-l: #e6f1ec;
+            --sage-m: #7eba97;
+            --amber: #b8621a;
+            --amber-l: #fdf0e3;
+            --rust: #b02b1e;
+            --rust-l: #fcecea;
+            --sky: #1a5490;
+            --sky-l: #e6eef8;
+            --clay: #8a4a20;
+            --clay-l: #f7ece3;
+            --sw: 224px;
+            --r: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* sidebar */
+        .sb {
+            width: var(--sw);
+            background: #18160f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset: 0 auto 0 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sb-logo {
+            padding: 22px 18px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+        }
+
+        .sb-mark {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.3px;
+        }
+
+        .sb-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .3);
+            margin-top: 2px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .sb-sec {
+            padding: 14px 10px 4px;
+        }
+
+        .sb-lbl {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            padding: 0 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            transition: .12s;
+            margin-bottom: 1px;
+            user-select: none;
+        }
+
+        .nav:hover {
+            background: rgba(255, 255, 255, .07);
+            color: #fff;
+        }
+
+        .nav.active {
+            background: var(--sage);
+            color: #fff;
+        }
+
+        .nav .ico {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav .lbl {
+            flex: 1;
+        }
+
+        /* main */
+        .main {
+            margin-left: var(--sw);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* topbar */
+        .topbar {
+            background: var(--surf);
+            border-bottom: 1px solid var(--bdr);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tb-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .tb-sub {
+            font-size: 12px;
+            color: var(--ink2);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            margin-top: 1px;
+        }
+
+        /* content */
+        .content {
+            padding: 24px 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Metric Grid */
+        .grid-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .card-metric {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 120px;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .card-metric:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+
+        .card-metric-title {
+            font-size: 11.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--ink2);
+            margin-bottom: 8px;
+        }
+
+        .card-metric-val {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .card-metric-sub {
+            font-size: 11px;
+            color: var(--ink3);
+            margin-top: 6px;
+        }
+
+        /* Table Design */
+        .box-section {
+            background: var(--surf);
+            border: 1px solid var(--bdr);
+            border-radius: var(--r);
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .box-title {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+
+        .box-sub {
+            font-size: 12px;
+            color: var(--ink2);
+            margin-bottom: 16px;
+        }
+
+        .table-wrap {
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--surf2);
+        }
+
+        th {
+            padding: 10px 15px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+            color: var(--ink2);
+            border-bottom: 1px solid var(--bdr);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--bdr);
+            transition: background 0.1s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #faf9f6;
+        }
+
+        td {
+            padding: 12px 15px;
+            font-size: 13px;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            padding: 2.5px 7px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-status.profit {
+            background: var(--sage-l);
+            color: var(--sage);
+        }
+
+        .badge-status.loss {
+            background: var(--rust-l);
+            color: var(--rust);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sb">
+        <div class="sb-logo" onclick="location.href='dashboard.html'">
+            <div class="sb-mark"><span style="cursor: pointer; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2) rotate(-10deg)'" onmouseout="this.style.transform='scale(1)'" onclick="resetAllData(event)" title="Klik untuk Reset Data">🐓</span> RayFarm</div>
+            <div class="sb-sub">Sistem Inventaris</div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Utama</div>
+            <div class="nav" onclick="location.href='dashboard.html'"><span class="ico">📊</span><span class="lbl">Dashboard</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Katalog Komoditas</div>
+            <div class="nav"><span class="ico">📦</span><span class="lbl">Semua Komoditas</span></div>
+            <div class="nav" onclick="location.href='pakan.html'"><span class="ico">🌾</span><span class="lbl">Pakan</span></div>
+            <div class="nav"><span class="ico">💉</span><span class="lbl">Vaksin, Obat & Alkes</span></div>
+            <div class="nav" onclick="location.href='hasil-produksi.html'"><span class="ico">🥚</span><span class="lbl">Hasil Produksi</span></div>
+            <div class="nav" onclick="location.href='index.html'"><span class="ico">🐔</span><span class="lbl">Flock / Hewan</span></div>
+        </div>
+        <div class="sb-sec">
+            <div class="sb-lbl">Operasional</div>
+            <div class="nav" onclick="location.href='monitoring-kandang.html'"><span class="ico">🏠</span><span class="lbl">Monitoring Kandang</span></div>
+            <div class="nav" onclick="location.href='penjualan.html'"><span class="ico">🛒</span><span class="lbl">Penjualan / Kasir</span></div>
+            <div class="nav" onclick="location.href='riwayat-penjualan.html'"><span class="ico">📋</span><span class="lbl">Riwayat Penjualan</span></div>
+            <div class="nav" onclick="location.href='pembelian.html'"><span class="ico">💰</span><span class="lbl">Pembelian</span></div>
+            <div class="nav" onclick="location.href='penerimaan-barang.html'"><span class="ico">📥</span><span class="lbl">Penerimaan Barang</span></div>
+            <div class="nav"><span class="ico">⚠️</span><span class="lbl">Monitor Kadaluarsa</span><span class="bdg">3</span></div>
+            <div class="nav" onclick="location.href='stok-inventaris.html'"><span class="ico">🏭</span><span class="lbl">Stok Inventaris</span></div>
+            <div class="nav active" onclick="location.href='laba-rugi.html'"><span class="ico">📈</span><span class="lbl">Laporan Laba Rugi</span></div>
+            <div class="nav" onclick="location.href='log-stok.html'"><span class="ico">📜</span><span class="lbl">Log Stok</span></div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Laporan Laba Rugi Global</div>
+                <div class="tb-sub">Rekapitulasi performa keuangan operasional peternakan RayFarm</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Global Metrics Cards -->
+            <div class="grid-metrics">
+                <!-- Pendapatan POS -->
+                <div class="card-metric" style="border-left: 4px solid var(--sage);">
+                    <div>
+                        <div class="card-metric-title" style="color: var(--sage);">Pendapatan Kasir (POS)</div>
+                        <div class="card-metric-val" id="global-pos-revenue">Rp 0</div>
+                    </div>
+                    <div class="card-metric-sub">Berdasarkan data riwayat kasir</div>
+                </div>
+
+                <!-- Estimasi Pendapatan Produksi -->
+                <div class="card-metric" style="border-left: 4px solid var(--sky);">
+                    <div>
+                        <div class="card-metric-title" style="color: var(--sky);">Estimasi Hasil Panen</div>
+                        <div class="card-metric-val" id="global-egg-revenue">Rp 0</div>
+                    </div>
+                    <div class="card-metric-sub" id="global-egg-weight">0 Kg telur terproduksi</div>
+                </div>
+
+                <!-- Biaya Pakan -->
+                <div class="card-metric" style="border-left: 4px solid var(--amber);">
+                    <div>
+                        <div class="card-metric-title" style="color: var(--amber);">Biaya Pakan Kandang</div>
+                        <div class="card-metric-val" id="global-feed-cost" style="color: var(--rust);">Rp 0</div>
+                    </div>
+                    <div class="card-metric-sub" id="global-feed-weight">0 Kg pakan terkonsumsi</div>
+                </div>
+
+                <!-- Net Laba Rugi -->
+                <div class="card-metric" id="global-net-card" style="border-left: 4px solid var(--bdr);">
+                    <div>
+                        <div class="card-metric-title" id="global-net-title">Laba Rugi Bersih</div>
+                        <div class="card-metric-val" id="global-net-value">Rp 0</div>
+                    </div>
+                    <div class="card-metric-sub" id="global-net-status">Status operasional stabil</div>
+                </div>
+            </div>
+
+            <!-- Kandang Breakdown Section -->
+            <div class="box-section">
+                <div class="box-title">Analisis Keuangan per Kandang</div>
+                <div class="box-sub">Tabel performa pengeluaran pakan, estimasi hasil panen, dan laba rugi bersih per kandang.</div>
+                
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Kandang</th>
+                                <th>Periode / Flock</th>
+                                <th>Total Pakan Terpakai</th>
+                                <th>Biaya Pakan (HPP)</th>
+                                <th>Total Panen Telur</th>
+                                <th>Estimasi Nilai Panen</th>
+                                <th>Laba/Rugi Bersih</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coop-breakdown-tbody">
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const formatRupiah = (val) => {
+            return 'Rp ' + Math.round(val).toLocaleString('id');
+        };
+
+        function resetAllData(event) {
+            if (event) event.stopPropagation();
+            if (confirm("Apakah Anda yakin ingin mengatur ulang semua data simulasi ke setelan default pabrik?")) {
+                localStorage.removeItem('coops');
+                localStorage.removeItem('rayfarm_commodities');
+                localStorage.removeItem('rayfarm_sales');
+                location.reload();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Retrieve coops data
+            const coopsStored = localStorage.getItem('coops');
+            let coops = [];
+            if (coopsStored) {
+                try { coops = JSON.parse(coopsStored); } catch(e) { coops = []; }
+            }
+
+            // Retrieve sales data
+            const salesStored = localStorage.getItem('rayfarm_sales');
+            let sales = [];
+            if (salesStored) {
+                try { sales = JSON.parse(salesStored); } catch(e) { sales = []; }
+            }
+
+            // Calculate POS Revenue
+            let totalPOSRevenue = 0;
+            sales.forEach(tx => {
+                totalPOSRevenue += tx.totalPrice || 0;
+            });
+            document.getElementById('global-pos-revenue').textContent = formatRupiah(totalPOSRevenue);
+
+            // Calculations
+            let globalFeedKg = 0;
+            let globalEggKg = 0;
+
+            const tbody = document.getElementById('coop-breakdown-tbody');
+            tbody.innerHTML = '';
+
+            coops.forEach(coop => {
+                let coopFeedKg = 0;
+                let coopEggKg = 0;
+
+                if (coop.history && Array.isArray(coop.history)) {
+                    coop.history.forEach(log => {
+                        if (log) {
+                            if (log.type === 'pakan') {
+                                coopFeedKg += log.pakan || 0;
+                            } else if (log.type === 'produksi' && log.komoditas && log.komoditas.includes('Telur')) {
+                                coopEggKg += log.total_kg || log.telur || 0;
+                            }
+                        }
+                    });
+                }
+
+                globalFeedKg += coopFeedKg;
+                globalEggKg += coopEggKg;
+
+                const feedHPP = 9000;
+                const eggMarketPrice = 24000;
+
+                const coopFeedCost = coopFeedKg * feedHPP;
+                const coopEggRevenue = coopEggKg * eggMarketPrice;
+                const coopNetProfit = coopEggRevenue - coopFeedCost;
+
+                const hasActivePeriod = coop.periodName && coop.periodName !== "Periode Ditutup / Afkir";
+                const displayPeriod = hasActivePeriod ? coop.periodName : "Tidak Aktif";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 600; color: var(--ink);">${coop.name}</td>
+                        <td style="color: var(--ink2);">${displayPeriod}</td>
+                        <td>${coopFeedKg.toLocaleString('id')} Kg</td>
+                        <td style="color: var(--rust); font-weight: 500;">${formatRupiah(coopFeedCost)}</td>
+                        <td>${coopEggKg.toLocaleString('id')} Kg</td>
+                        <td style="color: var(--sage); font-weight: 500;">${formatRupiah(coopEggRevenue)}</td>
+                        <td style="font-weight: 700; color: ${coopNetProfit >= 0 ? 'var(--sage)' : 'var(--rust)'};">${formatRupiah(coopNetProfit)}</td>
+                        <td>
+                            <span class="badge-status ${coopNetProfit >= 0 ? 'profit' : 'loss'}">
+                                ${coopNetProfit >= 0 ? 'UNTUNG' : 'RUGI'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            if (coops.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--ink3); padding: 24px;">Tidak ada data kandang tersedia.</td></tr>`;
+            }
+
+            const feedHPPGlobal = 9000;
+            const eggMarketPriceGlobal = 24000;
+
+            const globalFeedCost = globalFeedKg * feedHPPGlobal;
+            const globalEggRevenue = globalEggKg * eggMarketPriceGlobal;
+            const globalNetProfit = totalPOSRevenue + globalEggRevenue - globalFeedCost;
+
+            document.getElementById('global-egg-revenue').textContent = formatRupiah(globalEggRevenue);
+            document.getElementById('global-egg-weight').textContent = `${globalEggKg.toLocaleString('id')} Kg telur terproduksi`;
+
+            document.getElementById('global-feed-cost').textContent = formatRupiah(globalFeedCost);
+            document.getElementById('global-feed-weight').textContent = `${globalFeedKg.toLocaleString('id')} Kg pakan terkonsumsi`;
+
+            const netValEl = document.getElementById('global-net-value');
+            const netCardEl = document.getElementById('global-net-card');
+            const netStatusEl = document.getElementById('global-net-status');
+            const netTitleEl = document.getElementById('global-net-title');
+
+            if (netValEl && netCardEl && netStatusEl && netTitleEl) {
+                netValEl.textContent = formatRupiah(globalNetProfit);
+                if (globalNetProfit > 0) {
+                    netValEl.style.color = 'var(--sage)';
+                    netCardEl.style.borderLeftColor = 'var(--sage)';
+                    netTitleEl.style.color = 'var(--sage)';
+                    netStatusEl.textContent = 'Status: Surplus Laba';
+                    netStatusEl.style.color = 'var(--sage)';
+                } else if (globalNetProfit < 0) {
+                    netValEl.style.color = 'var(--rust)';
+                    netCardEl.style.borderLeftColor = 'var(--rust)';
+                    netTitleEl.style.color = 'var(--rust)';
+                    netStatusEl.textContent = 'Status: Defisit Rugi';
+                    netStatusEl.style.color = 'var(--rust)';
+                } else {
+                    netValEl.style.color = 'var(--ink)';
+                    netCardEl.style.borderLeftColor = 'var(--bdr)';
+                    netTitleEl.style.color = 'var(--ink2)';
+                    netStatusEl.textContent = 'Status: Stabil / Netral';
+                    netStatusEl.style.color = 'var(--ink3)';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
